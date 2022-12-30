@@ -2,29 +2,58 @@ import {AbstractScene} from './abstractScene';
 import Home from './home';
 import Authorization from './authorization';
 
+export enum Scenes {
+    Home,
+    Authorization,
+}
+
+export type SceneParams = {
+    route: string,
+    name: string,
+}
+
+export type RouteParam = {
+    name: string,
+    instance: AbstractScene,
+}
 
 export default class Manager {
-    private scene: any;
+    private scene: AbstractScene;
 
-    public static SCENE_HOME = new Home({name: 'home'});
-    public static SCENE_AUTHORIZATION = new Authorization({name: 'authorization'});
+    // public static SCENE_HOME = new Home({name: 'home', route: 'home'});
+    // public static SCENE_AUTHORIZATION = new Authorization({name: 'authorization', route: 'authorization'});
 
-    constructor() {
+    // public static SCENE_HOME = new Home({name: 'home', route: 'home'});
+    // public static SCENE_AUTHORIZATION = new Authorization({name: 'authorization', route: 'authorization'});
+
+    protected getSceneClass(route: Scenes, params: SceneParams): AbstractScene {
+        switch (route) {
+            case Scenes.Home:
+                return new Home(params);
+            case Scenes.Authorization:
+                return new Authorization(params);
+        }
     }
 
+    private readonly routes: RouteParam[];
 
+    constructor() {
+        this.routes = [];
+    }
 
     private hide(scene: AbstractScene): void {
-        scene.element.classList.remove('show');
-        scene.element.classList.add('hide');
+        const sceneContainer: HTMLElement = scene.getContainer();
+        sceneContainer.classList.remove('show');
+        sceneContainer.classList.add('hide');
     }
 
     private show(scene: AbstractScene): void {
-        scene.element.classList.remove('hide');
-        scene.element.classList.add('show');
+        const sceneContainer: HTMLElement = scene.getContainer();
+        sceneContainer.classList.remove('hide');
+        sceneContainer.classList.add('show');
     }
 
-    public open(nextScene: AbstractScene): void {
+    public open(nextScene: Scenes, params: SceneParams): void {
         let prevScene;
 
         if (this.scene) {
@@ -33,10 +62,16 @@ export default class Manager {
             this.hide(this.scene);
         }
 
-        nextScene.beforeDOMShow();
+        const scene = this.getSceneClass(nextScene, params);
 
-        this.scene = nextScene;
+        scene.beforeDOMShow();
+
+        this.scene = scene;
         this.show(this.scene);
+
+        document.body.append(this.scene.getContainer());
+
+        this.routes.push({name: this.scene.getRoute(), instance: this.scene});
 
         if (prevScene) {
             prevScene.afterDOMHide();
@@ -45,7 +80,26 @@ export default class Manager {
         this.scene.afterDOMShow();
     }
 
-    public onBack(): void {
+    public unmountScene(): void {
 
+    }
+
+    public getCurrentRoute(): RouteParam {
+        return this.routes[this.routes.length - 1];
+    }
+
+    public goBack(): void {
+        this.scene.beforeDOMHide();
+        this.hide(this.scene);
+        this.scene.afterDOMHide();
+
+        this.routes.pop();
+
+        const currentRoute: RouteParam = this.getCurrentRoute();
+
+        this.scene = currentRoute.instance;
+        this.scene.beforeDOMShow();
+        this.show(this.scene);
+        this.scene.afterDOMShow();
     }
 }

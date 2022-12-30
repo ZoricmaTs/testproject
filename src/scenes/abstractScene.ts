@@ -1,10 +1,17 @@
 export class AbstractScene {
-    protected name: string;
-    element: HTMLDivElement;
+    name: string;
+    root: HTMLDivElement;
+    private readonly route: string;
 
     constructor(params: any) {
         this.name = params.name;
-        this.init();
+        this.route = params.route;
+
+        this.create();
+    }
+
+    public getRoute(): string {
+        return this.route;
     }
 
     public beforeDOMHide(): void {
@@ -12,24 +19,21 @@ export class AbstractScene {
     }
 
     public beforeDOMShow(): void {
-
     }
 
     public afterDOMShow(): void {
-
     }
 
     public afterDOMHide(): void {
 
     }
 
-    protected init(): void {
-        this.element = document.createElement('div');
-        this.element.classList.add(`scene-${this.name}`);
-        document.body.append(this.element);
+    public getContainer(): HTMLElement {
+        return this.root;
     }
 
-    protected render(): any {
-        return;
+    public create(): void {
+        this.root = document.createElement('div');
+        this.root.classList.add(`scene-${this.name}`);
     }
 }
