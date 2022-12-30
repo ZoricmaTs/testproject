@@ -20,12 +20,6 @@ export type RouteParam = {
 export default class Manager {
     private scene: AbstractScene;
 
-    // public static SCENE_HOME = new Home({name: 'home', route: 'home'});
-    // public static SCENE_AUTHORIZATION = new Authorization({name: 'authorization', route: 'authorization'});
-
-    // public static SCENE_HOME = new Home({name: 'home', route: 'home'});
-    // public static SCENE_AUTHORIZATION = new Authorization({name: 'authorization', route: 'authorization'});
-
     protected getSceneClass(route: Scenes, params: SceneParams): AbstractScene {
         switch (route) {
             case Scenes.Home:
@@ -81,7 +75,7 @@ export default class Manager {
     }
 
     public unmountScene(): void {
-
+        this.scene.getContainer().remove();
     }
 
     public getCurrentRoute(): RouteParam {
@@ -94,6 +88,7 @@ export default class Manager {
         this.scene.afterDOMHide();
 
         this.routes.pop();
+        this.unmountScene();
 
         const currentRoute: RouteParam = this.getCurrentRoute();
 
