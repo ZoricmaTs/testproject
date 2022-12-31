@@ -1,11 +1,15 @@
+import AbstractWidget from '../widgets/abstractWidget';
+
 export class AbstractScene {
-    name: string;
-    root: HTMLDivElement;
+    public name: string;
+    private root: HTMLDivElement;
     private readonly route: string;
+    protected widgets: AbstractWidget[];
 
     constructor(params: any) {
         this.name = params.name;
         this.route = params.route;
+        this.widgets = [];
 
         this.create();
     }
@@ -15,16 +19,22 @@ export class AbstractScene {
     }
 
     public beforeDOMHide(): void {
-
+        this.widgets.forEach((widget: AbstractWidget) => {
+            widget.beforeDOMHide();
+        })
     }
 
     public beforeDOMShow(): void {
-    }
-
-    public afterDOMShow(): void {
+        this.widgets.forEach((widget: AbstractWidget) => {
+            widget.beforeDOMShow();
+        })
     }
 
     public afterDOMHide(): void {
+
+    }
+
+    public afterDOMShow(): void {
 
     }
 

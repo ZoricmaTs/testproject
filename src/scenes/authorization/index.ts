@@ -1,9 +1,9 @@
 import {AbstractScene} from '../abstractScene';
-import Btn from '../../widgets/btn/btn';
+import Index, {ButtonType} from '../../widgets/btn';
 import {manager} from '../../index';
 
 export default class Authorization extends AbstractScene {
-    private button: Btn;
+    private button: Index;
     constructor(params: any) {
         super(params);
 
@@ -24,7 +24,12 @@ export default class Authorization extends AbstractScene {
     }
 
     public initButton(): void {
-        this.button = new Btn({title: 'back', classes: ['back-button'], onClick: this.onBack});
+        this.button = new Index({
+            title: 'back',
+            classes: ['back-button'],
+            onClick: this.onBack,
+            type: ButtonType.TEXT,
+        });
         this.button.init();
         this.getContainer().append(this.button.getRoot());
     }

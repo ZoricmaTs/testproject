@@ -1,4 +1,5 @@
 import './scenes/style.styl';
+import './fonts/style.styl'
 import Manager, {Scenes} from './scenes/manager';
 
 export const manager = new Manager();
