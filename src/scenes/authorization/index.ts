@@ -32,5 +32,6 @@ export default class Authorization extends AbstractScene {
         });
         this.button.init();
         this.getContainer().append(this.button.getRoot());
+        this.widgets.push(this.button);
     }
 }
