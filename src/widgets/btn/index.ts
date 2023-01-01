@@ -5,13 +5,13 @@ import './style.styl';
 export type ButtonParams = {
     title?: string,
     classes: string[],
-    onClick: () => void,
+    action: (params?: any) => void,
     type: ButtonType,
     icon?: string,
+    iconClasses?: string[]
 }
 
 export enum ButtonType {
-    ICON = 0,
     TEXT = 1,
     TEXT_WITH_ICON = 2,
 }
@@ -23,6 +23,7 @@ export default class Btn extends AbstractWidget {
     private readonly action: () => void;
     private readonly type: ButtonType;
     private readonly icon: string;
+    private iconClasses: string[];
 
     constructor(params: ButtonParams) {
         super(params);
@@ -30,7 +31,9 @@ export default class Btn extends AbstractWidget {
         this.title = params.title;
         this.icon = params.icon;
         this.classes = ['button'].concat(params.classes);
-        this.action = params.onClick;
+
+        this.iconClasses = params.iconClasses ? ['material-icons'].concat(params.iconClasses) : ['material-icons'];
+        this.action = params.action;
         this.type = params.type;
 
         this.onPress = this.onPress.bind(this);
@@ -58,20 +61,15 @@ export default class Btn extends AbstractWidget {
         let buttonMarkup: string;
 
         switch (this.type) {
-            case ButtonType.ICON:
-                buttonMarkup = `<button class="${this.classes.join(' ')}"><span class="material-icons">arrow_forward</span></button>`;
-                break;
             case ButtonType.TEXT:
                 buttonMarkup = `<button class="${this.classes.join(' ')}">${this.getTitle()}</button>`;
                 break;
             case ButtonType.TEXT_WITH_ICON:
-                buttonMarkup = `<button class="${this.classes.join(' ')}">${this.getTitle()}<span class="material-icons">${this.getIcon()}</span></button>`;
+                buttonMarkup = `<button class="${this.classes.join(' ')}"><div>${this.getTitle()}</div><div class="${this.iconClasses.join(' ')}">${this.getIcon()}</div></button>`;
                 break;
         }
 
-        const button = Helper.DOM(buttonMarkup);
-
-        this.rootElement = button;
+        this.rootElement = Helper.DOM(buttonMarkup);
     }
 
     protected addEvents():void {

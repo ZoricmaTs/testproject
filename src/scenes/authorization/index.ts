@@ -27,7 +27,7 @@ export default class Authorization extends AbstractScene {
         this.button = new Index({
             title: 'back',
             classes: ['back-button'],
-            onClick: this.onBack,
+            action: this.onBack,
             type: ButtonType.TEXT,
         });
         this.button.init();
