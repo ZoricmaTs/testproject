@@ -14,8 +14,6 @@ export type DropdownType = {
     items: DropdownItem[],
 }
 
-
-
 export default class Dropdown extends AbstractWidget {
     private rootElement: Element;
     private items: DropdownItem[];
@@ -23,6 +21,7 @@ export default class Dropdown extends AbstractWidget {
     private buttons: Btn[];
     private isOpen: boolean;
     private toggle: Btn;
+    private list: Element;
 
     constructor(params: DropdownType) {
         super(params);
@@ -31,28 +30,62 @@ export default class Dropdown extends AbstractWidget {
         this.isOpen = false;
         this.initRootElement();
 
-        this.initToggle();
+        this.initList();
 
         this.onPressToggle = this.onPressToggle.bind(this);
+        this.initToggle();
+
+        this.initItems();
+
+        // this.onPressItem = this.onPressItem.bind(this);
+    }
+
+    public beforeDOMHide() {
+        super.beforeDOMHide();
+    }
+
+    public beforeDOMShow() {
+        super.beforeDOMShow();
     }
 
     public getRoot(): any {
         return this.rootElement;
     }
 
-    private initItems(): Btn[] {
+    private initList(): void {
+        this.list = Helper.DOM('<div class="dropdown_list"></div>');
+        this.list.classList.add('hide');
+        this.rootElement.append(this.list);
+    }
+
+    private initItems(): void {
         this.buttons = this.items.map(({title, action, isActive}: DropdownItem) => {
-            return new Btn({title, action, type: ButtonType.TEXT, classes: ['dropdown-list__item']})
-        });
+            return new Btn({title, action, type: ButtonType.TEXT, classes: ['dropdown_list__item']})
+        })
 
-        return this.buttons;
+        this.buttons.map((button) => button.init());
+        this.buttons.forEach((button) => {
+            const buttonContainer = button.getRoot();
+            this.list.append(buttonContainer);
+            this.widgets.push(button);
+        })
+
+
     }
 
-    private onPressToggle() {
-        console.log('isOpen');
+    private onPressToggle(): void {
+        this.isOpen = !this.isOpen;
+
+        if (this.isOpen) {
+            this.list.classList.add('show');
+            this.list.classList.remove('hide');
+        } else {
+            this.list.classList.add('hide');
+            this.list.classList.remove('show');
+        }
     }
 
-    private initToggle(): Btn {
+    private initToggle(): void {
         this.toggle = new Btn({
             title: this.title,
             action: this.onPressToggle,
@@ -63,8 +96,7 @@ export default class Dropdown extends AbstractWidget {
 
         this.toggle.init();
         this.rootElement.append(this.toggle.getRoot());
-
-        return this.toggle;
+        this.widgets.push(this.toggle);
     }
 
     private initRootElement(): void {

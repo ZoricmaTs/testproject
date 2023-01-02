@@ -15,7 +15,7 @@ export default class Home extends AbstractScene {
         super(params);
 
         this.initDropdown();
-        this.initAuthButton();
+        // this.initAuthButton();
         // this.initLogo();
         this.openScene = this.openScene.bind(this);
         this.openAuthScene = this.openAuthScene.bind(this);
@@ -44,7 +44,7 @@ export default class Home extends AbstractScene {
 
     public initAuthButton(): void {
         this.authButton = new Btn({
-            title: 'authorization',
+            title: 'authorization gfdgdfg',
             classes: ['button_fill', 'button_fill__with-icon'],
             action: this.openAuthScene,
             type: ButtonType.TEXT_WITH_ICON,

@@ -44,6 +44,7 @@ export class AbstractScene {
 
     public create(): void {
         this.root = document.createElement('div');
+        this.root.classList.add(`scene`);
         this.root.classList.add(`scene-${this.name}`);
     }
 }
