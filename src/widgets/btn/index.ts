@@ -5,10 +5,12 @@ import './style.styl';
 export type ButtonParams = {
     title?: string,
     classes: string[],
-    action: (params?: any) => void,
+    onPress: (params: any) => void,
+    onBlur?: () => void,
     type: ButtonType,
     icon?: string,
-    iconClasses?: string[]
+    iconClasses?: string[],
+    data?: any,
 }
 
 export enum ButtonType {
@@ -20,23 +22,31 @@ export default class Btn extends AbstractWidget {
     private classes: string[];
     private readonly title: string;
     private rootElement: Element;
-    private readonly action: () => void;
+    private readonly onPressButton: (data: any) => void;
+    private readonly data?: any
     private readonly type: ButtonType;
     private readonly icon: string;
     private iconClasses: string[];
+    private readonly onBlurButton: () => void;
 
     constructor(params: ButtonParams) {
         super(params);
-
+        this.data = params.data;
         this.title = params.title;
         this.icon = params.icon;
         this.classes = ['button'].concat(params.classes);
-
-        this.iconClasses = params.iconClasses ? ['material-icons'].concat(params.iconClasses) : ['material-icons'];
-        this.action = params.action;
         this.type = params.type;
+        this.iconClasses = params.iconClasses ? ['material-icons'].concat(params.iconClasses) : ['material-icons'];
+
+        if (this.data) {
+            this.setActive(this.data);
+        }
+
+        this.onPressButton = params.onPress;
+        this.onBlurButton = params.onBlur;
 
         this.onPress = this.onPress.bind(this);
+        this.onBlur = this.onBlur.bind(this);
     }
 
     public getTitle(): string {
@@ -52,8 +62,22 @@ export default class Btn extends AbstractWidget {
     }
 
     public onPress(): void {
-        if (this.action) {
-            this.action();
+        if (this.onPressButton) {
+            this.onPressButton(this.data);
+        }
+    }
+
+    public onBlur(): void {
+        if (this.onBlurButton) {
+            this.onBlurButton();
+        }
+    }
+
+    public setActive(data: any): void {
+        if (data) {
+            this.rootElement.classList.add('active');
+        } else {
+            this.rootElement.classList.remove('active');
         }
     }
 
@@ -74,10 +98,16 @@ export default class Btn extends AbstractWidget {
 
     protected addEvents():void {
         this.rootElement.addEventListener('click', this.onPress);
+        if (this.onBlurButton) {
+            this.rootElement.addEventListener('blur', this.onBlur);
+        }
     }
 
     protected removeEvents(): void {
         this.rootElement.removeEventListener('click', this.onPress);
+        if (this.onBlurButton) {
+            this.rootElement.removeEventListener('blur', this.onBlur);
+        }
     }
 
 }

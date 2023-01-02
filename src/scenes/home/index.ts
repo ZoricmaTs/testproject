@@ -10,15 +10,22 @@ export default class Home extends AbstractScene {
     private dropdown: Dropdown;
     private authButton: Btn;
     private logo: Logo;
+    private activeButtonIndex: number;
 
     constructor(params: any) {
         super(params);
 
+        this.activeButtonIndex = 2;
+
+        this.openScene = this.openScene.bind(this);
+        this.openAuthScene = this.openAuthScene.bind(this);
+        this.onPressDropdownItem = this.onPressDropdownItem.bind(this);
+
         this.initDropdown();
         // this.initAuthButton();
         // this.initLogo();
-        this.openScene = this.openScene.bind(this);
-        this.openAuthScene = this.openAuthScene.bind(this);
+
+
     }
 
     afterDOMShow() {
@@ -34,7 +41,6 @@ export default class Home extends AbstractScene {
     }
 
     public openAuthScene(): void {
-        console.log('openAuthScene')
         return manager.open(Scenes.Authorization, {name: 'authorization', route: 'authorization'});
     }
 
@@ -46,7 +52,7 @@ export default class Home extends AbstractScene {
         this.authButton = new Btn({
             title: 'authorization gfdgdfg',
             classes: ['button_fill', 'button_fill__with-icon'],
-            action: this.openAuthScene,
+            onPress: this.openAuthScene,
             type: ButtonType.TEXT_WITH_ICON,
             icon: 'keyboard_arrow_down',
             iconClasses: ['fill-icon']
@@ -63,18 +69,21 @@ export default class Home extends AbstractScene {
             items: [
                 {
                     title: 'qweqwe',
-                    isActive: false,
-                    action: () => console.log('111'),
+                    isActive: this.activeButtonIndex === 0,
+                    data: 0,
+                    onPress: this.onPressDropdownItem,
                 },
                 {
                     title: 'rtyrty',
-                    isActive: false,
-                    action: () => console.log('222'),
+                    isActive: this.activeButtonIndex === 1,
+                    data: 1,
+                    onPress: this.onPressDropdownItem,
                 },
                 {
                     title: 'asdasd',
-                    isActive: true,
-                    action: () => console.log('333'),
+                    isActive: this.activeButtonIndex === 2,
+                    data: 2,
+                    onPress: this.onPressDropdownItem,
                 },
             ]
         });
@@ -82,6 +91,11 @@ export default class Home extends AbstractScene {
         this.dropdown.init();
         this.getContainer().append(this.dropdown.getRoot());
         this.widgets.push(this.dropdown);
+    }
+
+    public onPressDropdownItem(data: number):void {
+        this.activeButtonIndex = data;
+        this.dropdown.setActiveIndex(data);
     }
 
     public initLogo(): void {

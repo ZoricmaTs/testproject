@@ -5,8 +5,9 @@ import Btn, {ButtonType} from '../btn';
 
 export type DropdownItem = {
     title: string,
-    action: () => void,
+    onPress: (data: number) => void,
     isActive: boolean,
+    data?: number
 }
 
 export type DropdownType = {
@@ -33,6 +34,8 @@ export default class Dropdown extends AbstractWidget {
         this.initList();
 
         this.onPressToggle = this.onPressToggle.bind(this);
+        this.onBlur = this.onBlur.bind(this);
+
         this.initToggle();
 
         this.initItems();
@@ -52,6 +55,12 @@ export default class Dropdown extends AbstractWidget {
         return this.rootElement;
     }
 
+    public setActiveIndex(index: number): void {
+        this.buttons.map((button, i) => {
+            button.setActive(index === i);
+        })
+    }
+
     private initList(): void {
         this.list = Helper.DOM('<div class="dropdown_list"></div>');
         this.list.classList.add('hide');
@@ -59,8 +68,10 @@ export default class Dropdown extends AbstractWidget {
     }
 
     private initItems(): void {
-        this.buttons = this.items.map(({title, action, isActive}: DropdownItem) => {
-            return new Btn({title, action, type: ButtonType.TEXT, classes: ['dropdown_list__item']})
+        this.buttons = this.items.map(({title, onPress, isActive}: DropdownItem) => {
+            const classes = ['dropdown_list__item'];
+
+            return new Btn({title, onPress, type: ButtonType.TEXT, classes: classes, data: isActive})
         })
 
         this.buttons.map((button) => button.init());
@@ -69,26 +80,37 @@ export default class Dropdown extends AbstractWidget {
             this.list.append(buttonContainer);
             this.widgets.push(button);
         })
+    }
 
+    private showList(): void {
+        this.list.classList.add('show');
+        this.list.classList.remove('hide');
+    }
 
+    private hideList(): void {
+        this.list.classList.add('hide');
+        this.list.classList.remove('show');
     }
 
     private onPressToggle(): void {
         this.isOpen = !this.isOpen;
 
         if (this.isOpen) {
-            this.list.classList.add('show');
-            this.list.classList.remove('hide');
+            this.showList()
         } else {
-            this.list.classList.add('hide');
-            this.list.classList.remove('show');
+            this.hideList();
         }
+    }
+
+    private onBlur(): void {
+        this.hideList();
     }
 
     private initToggle(): void {
         this.toggle = new Btn({
             title: this.title,
-            action: this.onPressToggle,
+            onPress: this.onPressToggle,
+            onBlur: this.onBlur,
             type: ButtonType.TEXT_WITH_ICON,
             classes: ['dropdown_toggle'],
             icon: 'keyboard_arrow_down',
