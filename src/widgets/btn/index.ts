@@ -11,6 +11,7 @@ export type ButtonParams = {
     icon?: string,
     iconClasses?: string[],
     data?: any,
+    isActive?: boolean,
 }
 
 export enum ButtonType {
@@ -28,25 +29,31 @@ export default class Btn extends AbstractWidget {
     private readonly icon: string;
     private iconClasses: string[];
     private readonly onBlurButton: () => void;
+    private readonly isActive: boolean;
 
     constructor(params: ButtonParams) {
         super(params);
         this.data = params.data;
+        this.isActive = params.isActive;
         this.title = params.title;
         this.icon = params.icon;
         this.classes = ['button'].concat(params.classes);
         this.type = params.type;
         this.iconClasses = params.iconClasses ? ['material-icons'].concat(params.iconClasses) : ['material-icons'];
 
-        if (this.data) {
-            this.setActive(this.data);
-        }
-
         this.onPressButton = params.onPress;
         this.onBlurButton = params.onBlur;
 
         this.onPress = this.onPress.bind(this);
         this.onBlur = this.onBlur.bind(this);
+    }
+
+    public beforeDOMShow() {
+        super.beforeDOMShow();
+
+        if (this.isActive) {
+            this.setActive(this.isActive);
+        }
     }
 
     public getTitle(): string {
@@ -73,11 +80,11 @@ export default class Btn extends AbstractWidget {
         }
     }
 
-    public setActive(data: any): void {
-        if (data) {
-            this.rootElement.classList.add('active');
+    public setActive(value: any): void {
+        if (value) {
+            this.getRoot().classList.add('active');
         } else {
-            this.rootElement.classList.remove('active');
+            this.getRoot().classList.remove('active');
         }
     }
 

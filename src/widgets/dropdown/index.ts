@@ -29,18 +29,15 @@ export default class Dropdown extends AbstractWidget {
         this.items = params.items;
         this.title = params.title;
         this.isOpen = false;
-        this.initRootElement();
-
-        this.initList();
 
         this.onPressToggle = this.onPressToggle.bind(this);
         this.onBlur = this.onBlur.bind(this);
 
-        this.initToggle();
 
+        this.initRootElement();
+        this.initList();
         this.initItems();
-
-        // this.onPressItem = this.onPressItem.bind(this);
+        this.initToggle();
     }
 
     public beforeDOMHide() {
@@ -68,14 +65,14 @@ export default class Dropdown extends AbstractWidget {
     }
 
     private initItems(): void {
-        this.buttons = this.items.map(({title, onPress, isActive}: DropdownItem) => {
+        this.buttons = this.items.map(({title, onPress, isActive, data}: DropdownItem) => {
             const classes = ['dropdown_list__item'];
 
-            return new Btn({title, onPress, type: ButtonType.TEXT, classes: classes, data: isActive})
-        })
+            return new Btn({title, onPress, type: ButtonType.TEXT, classes: classes, isActive: isActive, data: data})
+        });
 
-        this.buttons.map((button) => button.init());
         this.buttons.forEach((button) => {
+            button.init();
             const buttonContainer = button.getRoot();
             this.list.append(buttonContainer);
             this.widgets.push(button);
