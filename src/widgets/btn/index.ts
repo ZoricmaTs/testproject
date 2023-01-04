@@ -69,6 +69,7 @@ export default class Btn extends AbstractWidget {
     }
 
     public onPress(): void {
+        console.log('onPress btn', this.onPressButton)
         if (this.onPressButton) {
             this.onPressButton(this.data);
         }

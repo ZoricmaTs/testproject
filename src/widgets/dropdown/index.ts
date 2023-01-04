@@ -13,6 +13,7 @@ export type DropdownItem = {
 export type DropdownType = {
     title: string,
     items: DropdownItem[],
+    onPress?: () => void,
 }
 
 export default class Dropdown extends AbstractWidget {
@@ -23,12 +24,14 @@ export default class Dropdown extends AbstractWidget {
     private isOpen: boolean;
     private toggle: Btn;
     private list: Element;
+    private readonly onPress: (isOpen: boolean) => void;
 
     constructor(params: DropdownType) {
         super(params);
         this.items = params.items;
         this.title = params.title;
         this.isOpen = false;
+        this.onPress = params.onPress;
 
         this.onPressToggle = this.onPressToggle.bind(this);
         this.onBlur = this.onBlur.bind(this);

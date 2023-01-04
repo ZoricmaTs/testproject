@@ -1,16 +1,23 @@
 import {AbstractScene} from '../abstractScene';
 import './style.styl';
 import Btn, {ButtonType} from '../../widgets/btn';
-import {manager} from '../../index';
+import {manager, operator, user} from '../../index';
 import {Scenes} from '../manager';
 import Logo from '../../widgets/logo';
 import Dropdown from '../../widgets/dropdown';
+import UserModel from '../../models/user';
+import Operator from '../../models/operator';
+import Header from '../../widgets/header';
 
 export default class Home extends AbstractScene {
     private dropdown: Dropdown;
     private authButton: Btn;
     private logo: Logo;
     private activeButtonIndex: number;
+    private options: { user: any };
+    private user: UserModel;
+    private operator: Operator;
+    private header: Header;
 
     constructor(params: any) {
         super(params);
@@ -21,7 +28,7 @@ export default class Home extends AbstractScene {
         this.openAuthScene = this.openAuthScene.bind(this);
         this.onPressDropdownItem = this.onPressDropdownItem.bind(this);
 
-        this.initDropdown();
+        // this.initDropdown();
         // this.initAuthButton();
         // this.initLogo();
 
@@ -37,11 +44,16 @@ export default class Home extends AbstractScene {
     }
 
     beforeDOMShow() {
+        const {user, operator} = this.getOptions();
+        this.user = user;
+        this.operator = operator;
+        this.initHeader();
+
         super.beforeDOMShow();
     }
 
-    public openAuthScene(): void {
-        return manager.open(Scenes.Authorization, {name: 'authorization', route: 'authorization'});
+    public openAuthScene(): Promise<void> {
+        return manager.open(Scenes.AUTHORIZATION, {name: 'authorization', route: 'authorization'});
     }
 
     public openScene(): void {
@@ -93,16 +105,42 @@ export default class Home extends AbstractScene {
         this.widgets.push(this.dropdown);
     }
 
-    public onPressDropdownItem(data: number):void {
+    private onPressDropdownItem(data: number):void {
         this.activeButtonIndex = data;
         this.dropdown.setActiveIndex(data);
     }
 
-    public initLogo(): void {
+    private initHeader(): void {
+        this.header = new Header({items: this.operator.getHeaderItems()});
+        this.header.init();
+        this.getContainer().append(this.header.getRoot());
+        this.widgets.push(this.header);
+    }
+
+    private initLogo(): void {
         this.logo = new Logo({});
 
         this.logo.init();
         this.getContainer().append(this.logo.getRoot());
         this.widgets.push(this.logo);
+    }
+
+    public open(): Promise<any> {
+        return Promise.all([operator.getOperator(), user.getUser()])
+            .then((response) => {
+                const operator = response[0];
+                const user = response[1];
+
+                this.setOptions({user, operator});
+            })
+            .catch((err) => console.log('err open HOME', err));
+    }
+
+    protected setOptions(param: { user: UserModel, operator: Operator }) {
+        this.options = param;
+    }
+
+    protected getOptions(): any {
+        return this.options;
     }
 }

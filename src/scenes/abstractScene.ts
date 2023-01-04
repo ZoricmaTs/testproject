@@ -25,6 +25,7 @@ export class AbstractScene {
     }
 
     public beforeDOMShow(): void {
+        console.log('scene beforeDOMShow', this.widgets);
         this.widgets.forEach((widget: AbstractWidget) => {
             widget.beforeDOMShow();
         })
@@ -46,5 +47,9 @@ export class AbstractScene {
         this.root = document.createElement('div');
         this.root.classList.add(`scene`);
         this.root.classList.add(`scene-${this.name}`);
+    }
+
+    public open(): Promise<any> {
+        return;
     }
 }

@@ -1,0 +1,48 @@
+{
+  "operator": {
+    "isAuthorization": false,
+    "headerItems": [
+      {
+        "id": 1,
+        "title": "о нас",
+        "route": "company",
+        "name": "company",
+        "type": "simple"
+      },
+      {
+        "id": 2,
+        "title": "услуги",
+        "type": "dropdown",
+        "items": [
+          {
+            "id": 1111,
+            "title": "бронирование",
+            "route": "services-booking",
+            "name": "services-booking"
+          },
+          {
+            "id": 2222,
+            "title": "завтрак",
+            "route": "services-breakfast",
+            "name": "services-breakfast"
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "title": "вакансии",
+        "route": "vacation",
+        "name": "vacation",
+        "type": "simple"
+      },
+      {
+        "id": 4,
+        "title": "соглашения",
+        "route": "agreements",
+        "name": "agreements",
+        "type": "simple"
+      }
+    ]
+  },
+  "user": { "id": 1, "name": "zori", "email": "zori@ya.ru" }
+}

@@ -1,10 +1,18 @@
 import {AbstractScene} from './abstractScene';
 import Home from './home';
 import Authorization from './authorization';
+import Company from './company';
+import Vacation from './vacation';
+import Agreements from './agreements';
 
 export enum Scenes {
-    Home,
-    Authorization,
+    AGREEMENTS ='agreements',
+    AUTHORIZATION = 'authorization',
+    COMPANY = 'company',
+    HOME = 'home',
+    SERVICES_BOOKING = 'services-booking',
+    SERVICES_BREAKFAST = 'services-breakfast',
+    VACATION = 'vacation',
 }
 
 export type SceneParams = {
@@ -22,9 +30,23 @@ export default class Manager {
 
     protected getSceneClass(route: Scenes, params: SceneParams): AbstractScene {
         switch (route) {
-            case Scenes.Home:
+            case Scenes.COMPANY:
+                return new Company(params);
+                break;
+            case Scenes.SERVICES_BOOKING:
                 return new Home(params);
-            case Scenes.Authorization:
+                break;
+            case Scenes.SERVICES_BREAKFAST:
+                return new Home(params);
+                break;
+            case Scenes.VACATION:
+                return new Vacation(params);
+                break;
+            case Scenes.AGREEMENTS:
+                return new Agreements(params);
+            case Scenes.HOME:
+                return new Home(params);
+            case Scenes.AUTHORIZATION:
                 return new Authorization(params);
         }
     }
@@ -47,8 +69,8 @@ export default class Manager {
         sceneContainer.classList.add('show');
     }
 
-    public open(nextScene: Scenes, params: SceneParams): void {
-        let prevScene;
+    public open(nextScene: Scenes, params: SceneParams): Promise<void> {
+        let prevScene: AbstractScene;
 
         if (this.scene) {
             prevScene = this.scene;
@@ -56,22 +78,22 @@ export default class Manager {
             this.hide(this.scene);
         }
 
-        const scene = this.getSceneClass(nextScene, params);
+        this.scene = this.getSceneClass(nextScene, params);
 
-        scene.beforeDOMShow();
+        return this.scene.open().then((data: any) => {
+            this.scene.beforeDOMShow();
+            this.show(this.scene);
 
-        this.scene = scene;
-        this.show(this.scene);
+            document.body.append(this.scene.getContainer());
 
-        document.body.append(this.scene.getContainer());
+            this.routes.push({name: this.scene.getRoute(), instance: this.scene});
 
-        this.routes.push({name: this.scene.getRoute(), instance: this.scene});
+            if (prevScene) {
+                prevScene.afterDOMHide();
+            }
 
-        if (prevScene) {
-            prevScene.afterDOMHide();
-        }
-
-        this.scene.afterDOMShow();
+            this.scene.afterDOMShow();
+        })
     }
 
     public unmountScene(): void {
