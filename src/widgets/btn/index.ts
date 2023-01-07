@@ -25,7 +25,7 @@ export default class Btn extends AbstractWidget {
     private readonly title: string;
     private rootElement: Element;
     private readonly onPressButton: (data: any) => void;
-    private readonly data?: any
+    public data?: any
     private readonly type: ButtonType;
     private icon: string;
     private readonly iconClasses: string[];

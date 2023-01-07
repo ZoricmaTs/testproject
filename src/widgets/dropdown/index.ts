@@ -12,6 +12,7 @@ export type DropdownItem = {
 }
 
 export type DropdownType = {
+    id: number,
     title: string,
     items: DropdownItem[],
 }
@@ -25,11 +26,14 @@ export default class Dropdown extends AbstractWidget {
     private toggle: Btn;
     private list: Element;
     private icon: string;
+    public id: number;
 
     constructor(params: DropdownType) {
         super(params);
+        this.id = params.id;
         this.items = params.items;
         this.title = params.title;
+
         this.isOpen = false;
 
         this.icon = 'keyboard_arrow_down';
@@ -56,10 +60,12 @@ export default class Dropdown extends AbstractWidget {
         return this.rootElement;
     }
 
-    public setActiveIndex(index: number): void {
-        this.buttons.map((button: Btn) => {
-            button.setActive(index === button.id);
-        })
+    public setActiveIndex(index: number, parentId: number): void {
+        if (parentId === this.id) {
+            this.buttons.map((button: Btn) => {
+                button.setActive(index === button.id);
+            })
+        }
     }
 
     private hasActiveIndex(): boolean {

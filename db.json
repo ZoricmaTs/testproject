@@ -36,9 +36,14 @@
       {
         "id": 4,
         "title": "соглашения",
-        "route": "agreements",
-        "name": "agreements",
-        "type": "simple"
+        "type": "dropdown",
+        "items": [
+          {
+            "id": 11,
+            "title": "соглашение",
+            "data": "agreement"
+          }
+        ]
       }
     ]
   },
