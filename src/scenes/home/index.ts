@@ -4,17 +4,14 @@ import Btn, {ButtonType} from '../../widgets/btn';
 import {manager, operator, user} from '../../index';
 import {Scenes} from '../manager';
 import Logo from '../../widgets/logo';
-import Dropdown from '../../widgets/dropdown';
 import UserModel from '../../models/user';
 import Operator from '../../models/operator';
 import Header from '../../widgets/header';
 
 export default class Home extends AbstractScene {
-    private dropdown: Dropdown;
     private authButton: Btn;
     private logo: Logo;
-    private activeButtonIndex: number;
-    private options: { user: any };
+    protected options: any;
     private user: UserModel;
     private operator: Operator;
     private header: Header;
@@ -22,17 +19,8 @@ export default class Home extends AbstractScene {
     constructor(params: any) {
         super(params);
 
-        this.activeButtonIndex = 2;
-
         this.openScene = this.openScene.bind(this);
         this.openAuthScene = this.openAuthScene.bind(this);
-        this.onPressDropdownItem = this.onPressDropdownItem.bind(this);
-
-        // this.initDropdown();
-        // this.initAuthButton();
-        // this.initLogo();
-
-
     }
 
     afterDOMShow() {
@@ -44,11 +32,6 @@ export default class Home extends AbstractScene {
     }
 
     beforeDOMShow() {
-        const {user, operator} = this.getOptions();
-        this.user = user;
-        this.operator = operator;
-        this.initHeader();
-
         super.beforeDOMShow();
     }
 
@@ -75,41 +58,6 @@ export default class Home extends AbstractScene {
         this.widgets.push(this.authButton);
     }
 
-    public initDropdown(): void {
-        this.dropdown = new Dropdown({
-            title: 'Услуги',
-            items: [
-                {
-                    title: 'qweqwe',
-                    isActive: this.activeButtonIndex === 0,
-                    data: 0,
-                    onPress: this.onPressDropdownItem,
-                },
-                {
-                    title: 'rtyrty',
-                    isActive: this.activeButtonIndex === 1,
-                    data: 1,
-                    onPress: this.onPressDropdownItem,
-                },
-                {
-                    title: 'asdasd',
-                    isActive: this.activeButtonIndex === 2,
-                    data: 2,
-                    onPress: this.onPressDropdownItem,
-                },
-            ]
-        });
-
-        this.dropdown.init();
-        this.getContainer().append(this.dropdown.getRoot());
-        this.widgets.push(this.dropdown);
-    }
-
-    private onPressDropdownItem(data: number):void {
-        this.activeButtonIndex = data;
-        this.dropdown.setActiveIndex(data);
-    }
-
     private initHeader(): void {
         this.header = new Header({items: this.operator.getHeaderItems()});
         this.header.init();
@@ -125,6 +73,12 @@ export default class Home extends AbstractScene {
         this.widgets.push(this.logo);
     }
 
+    protected initWidgets(): void {
+        this.initHeader();
+        // this.initAuthButton();
+        // this.initLogo();
+    }
+
     public open(): Promise<any> {
         return Promise.all([operator.getOperator(), user.getUser()])
             .then((response) => {
@@ -132,6 +86,11 @@ export default class Home extends AbstractScene {
                 const user = response[1];
 
                 this.setOptions({user, operator});
+                const options = this.getOptions();
+                this.user = options.user;
+                this.operator = options.operator;
+
+                this.initWidgets();
             })
             .catch((err) => console.log('err open HOME', err));
     }

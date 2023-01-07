@@ -34,4 +34,8 @@ export default class Authorization extends AbstractScene {
         this.getContainer().append(this.button.getRoot());
         this.widgets.push(this.button);
     }
+
+    public open(): Promise<any> {
+        return;
+    }
 }

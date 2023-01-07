@@ -5,6 +5,9 @@ export default class AbstractWidget {
         this.widgets = [];
     }
 
+    protected initWidgets(): void {
+
+    }
 
     public beforeDOMShow(): void {
         this.widgets.forEach((widget: AbstractWidget) => {

@@ -5,7 +5,7 @@ import UserModel from '../../models/user';
 import Operator from '../../models/operator';
 import Header from '../../widgets/header';
 
-export default class Company extends AbstractScene {
+export default class ServicesBooking extends AbstractScene {
     private button: Index;
     private header: Header;
     private operator: Operator;
@@ -51,9 +51,6 @@ export default class Company extends AbstractScene {
     protected initWidgets(): void {
         this.initHeader();
         this.initButton();
-        // this.initDropdown();
-        // this.initAuthButton();
-        // this.initLogo();
     }
 
     public open(): Promise<any> {
@@ -70,7 +67,7 @@ export default class Company extends AbstractScene {
 
                 this.initWidgets();
             })
-            .catch((err) => console.log('err open COMPANY', err));
+            .catch((err) => console.log('err open SERVICES_BOOKING', err));
     }
 
     protected setOptions(param: { user: UserModel, operator: Operator }) {

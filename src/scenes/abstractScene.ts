@@ -5,6 +5,7 @@ export class AbstractScene {
     private root: HTMLDivElement;
     private readonly route: string;
     protected widgets: AbstractWidget[];
+    protected options: any;
 
     constructor(params: any) {
         this.name = params.name;
@@ -25,7 +26,6 @@ export class AbstractScene {
     }
 
     public beforeDOMShow(): void {
-        console.log('scene beforeDOMShow', this.widgets);
         this.widgets.forEach((widget: AbstractWidget) => {
             widget.beforeDOMShow();
         })
@@ -51,5 +51,13 @@ export class AbstractScene {
 
     public open(): Promise<any> {
         return;
+    }
+
+    protected setOptions(param: any) {
+        this.options = param;
+    }
+
+    protected getOptions(): any {
+        return this.options;
     }
 }

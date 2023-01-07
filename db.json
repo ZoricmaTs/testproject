@@ -17,14 +17,12 @@
           {
             "id": 1111,
             "title": "бронирование",
-            "route": "services-booking",
-            "name": "services-booking"
+            "data": "services-booking"
           },
           {
             "id": 2222,
             "title": "завтрак",
-            "route": "services-breakfast",
-            "name": "services-breakfast"
+            "data": "services-breakfast"
           }
         ]
       },

@@ -7,13 +7,13 @@ export type DropdownItem = {
     title: string,
     onPress: (data: number) => void,
     isActive: boolean,
-    data?: number
+    data?: any,
+    id: number,
 }
 
 export type DropdownType = {
     title: string,
     items: DropdownItem[],
-    onPress?: () => void,
 }
 
 export default class Dropdown extends AbstractWidget {
@@ -24,14 +24,15 @@ export default class Dropdown extends AbstractWidget {
     private isOpen: boolean;
     private toggle: Btn;
     private list: Element;
-    private readonly onPress: (isOpen: boolean) => void;
+    private icon: string;
 
     constructor(params: DropdownType) {
         super(params);
         this.items = params.items;
         this.title = params.title;
         this.isOpen = false;
-        this.onPress = params.onPress;
+
+        this.icon = 'keyboard_arrow_down';
 
         this.onPressToggle = this.onPressToggle.bind(this);
         this.onBlur = this.onBlur.bind(this);
@@ -56,9 +57,24 @@ export default class Dropdown extends AbstractWidget {
     }
 
     public setActiveIndex(index: number): void {
-        this.buttons.map((button, i) => {
-            button.setActive(index === i);
+        this.buttons.map((button: Btn) => {
+            button.setActive(index === button.id);
         })
+    }
+
+    private hasActiveIndex(): boolean {
+        return Boolean(this.buttons.find((button: Btn) => button.getActive()));
+    }
+
+    private changeToggleStyle(): void {
+        const isActive: boolean = this.hasActiveIndex();
+        const toggleElement: Element = this.toggle.getRoot();
+
+        if (isActive) {
+            toggleElement.classList.add('active');
+        } else {
+            toggleElement.classList.remove('active');
+        }
     }
 
     private initList(): void {
@@ -68,10 +84,9 @@ export default class Dropdown extends AbstractWidget {
     }
 
     private initItems(): void {
-        this.buttons = this.items.map(({title, onPress, isActive, data}: DropdownItem) => {
+        this.buttons = this.items.map(({title, onPress, isActive, data, id}: DropdownItem) => {
             const classes = ['dropdown_list__item'];
-
-            return new Btn({title, onPress, type: ButtonType.TEXT, classes: classes, isActive: isActive, data: data})
+            return new Btn({title, onPress, type: ButtonType.TEXT, classes, isActive, data, id})
         });
 
         this.buttons.forEach((button) => {
@@ -85,11 +100,17 @@ export default class Dropdown extends AbstractWidget {
     private showList(): void {
         this.list.classList.add('show');
         this.list.classList.remove('hide');
+
+        this.icon = 'keyboard_arrow_up';
+        this.toggle.setIcon(this.icon);
     }
 
     private hideList(): void {
         this.list.classList.add('hide');
         this.list.classList.remove('show');
+
+        this.icon = 'keyboard_arrow_down';
+        this.toggle.setIcon(this.icon);
     }
 
     private onPressToggle(): void {
@@ -102,28 +123,40 @@ export default class Dropdown extends AbstractWidget {
         }
     }
 
-    private onBlur(): void {
-        this.hideList();
+    private onBlur(e: Event): void {
+        const isNodeContains = this.getRoot().contains(e.target);
+
+        if (!isNodeContains) {
+            this.hideList();
+        }
     }
 
     private initToggle(): void {
         this.toggle = new Btn({
             title: this.title,
             onPress: this.onPressToggle,
-            onBlur: this.onBlur,
             type: ButtonType.TEXT_WITH_ICON,
             classes: ['dropdown_toggle'],
-            icon: 'keyboard_arrow_down',
+            icon: this.icon,
         });
 
         this.toggle.init();
+        this.changeToggleStyle();
         this.rootElement.append(this.toggle.getRoot());
         this.widgets.push(this.toggle);
     }
 
     private initRootElement(): void {
-        this.rootElement = Helper.DOM('<div class="dropdown"></div>');
+        this.rootElement = Helper.DOM('<div class="dropdown"/>');
     }
 
-    public init(): void {}
+    protected addEvents() {
+        super.addEvents();
+        window.addEventListener('click', this.onBlur);
+    }
+
+    protected removeEvents() {
+        super.removeEvents();
+        window.removeEventListener('click', this.onBlur);
+    }
 }

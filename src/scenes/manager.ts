@@ -4,6 +4,8 @@ import Authorization from './authorization';
 import Company from './company';
 import Vacation from './vacation';
 import Agreements from './agreements';
+import ServicesBreakfast from './services-breakfast';
+import ServicesBooking from './services-booking';
 
 export enum Scenes {
     AGREEMENTS ='agreements',
@@ -32,16 +34,12 @@ export default class Manager {
         switch (route) {
             case Scenes.COMPANY:
                 return new Company(params);
-                break;
             case Scenes.SERVICES_BOOKING:
-                return new Home(params);
-                break;
+                return new ServicesBooking(params);
             case Scenes.SERVICES_BREAKFAST:
-                return new Home(params);
-                break;
+                return new ServicesBreakfast(params);
             case Scenes.VACATION:
                 return new Vacation(params);
-                break;
             case Scenes.AGREEMENTS:
                 return new Agreements(params);
             case Scenes.HOME:
@@ -102,6 +100,29 @@ export default class Manager {
 
     public getCurrentRoute(): RouteParam {
         return this.routes[this.routes.length - 1];
+    }
+
+    public isCurrentScene(route: string): boolean {
+        return this.scene.getRoute() === route;
+    }
+
+    public getSceneRoute(route: string): Scenes {
+        switch (route) {
+            case Scenes.COMPANY:
+                return Scenes.COMPANY;
+            case Scenes.SERVICES_BOOKING:
+                return Scenes.SERVICES_BOOKING;
+            case Scenes.SERVICES_BREAKFAST:
+                return Scenes.SERVICES_BREAKFAST;
+            case Scenes.VACATION:
+                return Scenes.VACATION;
+            case Scenes.AGREEMENTS:
+                return Scenes.AGREEMENTS;
+            case Scenes.HOME:
+                return Scenes.HOME;
+            case Scenes.AUTHORIZATION:
+                return Scenes.AUTHORIZATION;
+        }
     }
 
     public goBack(): void {
