@@ -15,6 +15,7 @@ export type DropdownType = {
     id: number,
     title: string,
     items: DropdownItem[],
+    styles?: string[],
 }
 
 export default class Dropdown extends AbstractWidget {
@@ -27,12 +28,14 @@ export default class Dropdown extends AbstractWidget {
     private list: Element;
     private icon: string;
     public id: number;
+    private readonly styles: string[];
 
     constructor(params: DropdownType) {
         super(params);
         this.id = params.id;
         this.items = params.items;
         this.title = params.title;
+        this.styles = params.styles;
 
         this.isOpen = false;
 
@@ -42,7 +45,7 @@ export default class Dropdown extends AbstractWidget {
         this.onBlur = this.onBlur.bind(this);
 
 
-        this.initRootElement();
+        this.initRootElement(this.styles);
         this.initList();
         this.initItems();
         this.initToggle();
@@ -152,8 +155,11 @@ export default class Dropdown extends AbstractWidget {
         this.widgets.push(this.toggle);
     }
 
-    private initRootElement(): void {
-        this.rootElement = Helper.DOM('<div class="dropdown"/>');
+    private initRootElement(stylesClass: string[]): void {
+        const styles = stylesClass ? ['dropdown'].concat(stylesClass) : ['dropdown'];
+        const classes = styles.join(' ');
+
+        this.rootElement = Helper.DOM(`<div class="${classes}"/>`);
     }
 
     protected addEvents() {

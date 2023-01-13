@@ -18,6 +18,7 @@ export type HeaderItem = {
     name: string,
     type: HeaderType,
     items?: DropdownItem[],
+    styles?: string[],
 }
 
 export enum HeaderType {
@@ -77,6 +78,7 @@ export default class Header extends AbstractWidget {
                         parentId: item.id,
                     });
                 })
+                item.styles = ['header_item']
             } else {
                 const nextScene = manager.getSceneRoute(item.route);
                 item.isActive = manager.isCurrentScene(item.route);
@@ -98,7 +100,8 @@ export default class Header extends AbstractWidget {
                 return new Dropdown({
                     id: item.id,
                     title: item.title,
-                    items: item.items
+                    items: item.items,
+                    styles: item.styles,
                 });
             }
 
@@ -107,7 +110,7 @@ export default class Header extends AbstractWidget {
                 title: item.title,
                 onPress: () => this.openScene(nextScene, {route: item.route, name: item.route}),
                 type: ButtonType.TEXT,
-                classes: ['header_button'],
+                classes: ['header_button', 'header_item'],
                 isActive: item.isActive,
                 data: item.data,
             })
@@ -129,7 +132,7 @@ export default class Header extends AbstractWidget {
     private getAuthBtn(): Btn {
         return new Btn({
             title: 'authorization',
-            classes: ['button_stroke'],
+            classes: ['button_stroke', 'header_item'],
             onPress: () => this.openScene(Scenes.AUTHORIZATION, {route: 'authorization', name: 'authorization'}),
             type: ButtonType.TEXT,
         })
@@ -138,7 +141,7 @@ export default class Header extends AbstractWidget {
     private getRegistrationBtn(): Btn {
         return new Btn({
             title: 'registration',
-            classes: ['button_fill'],
+            classes: ['button_fill', 'header_item'],
             onPress: () => this.openScene(Scenes.AUTHORIZATION, {route: 'authorization', name: 'authorization'}),
             type: ButtonType.TEXT,
         })
