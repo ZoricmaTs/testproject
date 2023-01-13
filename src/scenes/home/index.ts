@@ -59,7 +59,7 @@ export default class Home extends AbstractScene {
     }
 
     private initHeader(): void {
-        this.header = new Header({items: this.operator.getHeaderItems()});
+        this.header = new Header({items: this.operator.getHeaderItems(), user: this.user, operator: this.operator});
         this.header.init();
         this.getContainer().append(this.header.getRoot());
         this.widgets.push(this.header);

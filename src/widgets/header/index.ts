@@ -5,6 +5,8 @@ import Dropdown, {DropdownItem} from '../dropdown';
 import {SceneParams, Scenes} from '../../scenes/manager';
 import {manager} from '../../index';
 import Btn, {ButtonType} from '../btn';
+import UserModel from '../../models/user';
+import Operator from '../../models/operator';
 
 export type HeaderItem = {
     isActive: boolean;
@@ -26,12 +28,16 @@ export enum HeaderType {
 export default class Header extends AbstractWidget {
     private rootElement: Element;
     private items: HeaderItem[];
-    private dropdown: Dropdown;
+    private user: UserModel;
+    private operator: Operator;
+    private authBtn: Btn;
 
     constructor(params: any) {
         super(params);
 
         this.items = params.items;
+        this.operator = params.operator;
+        this.user = params.user;
 
         this.onPressDropdownItem = this.onPressDropdownItem.bind(this);
         this.openScene = this.openScene.bind(this);
@@ -46,10 +52,7 @@ export default class Header extends AbstractWidget {
     }
 
     public onPressDropdownItem({nextScene, sceneParams, index, parentId}: any): Promise<void> {
-        const currentDropdown = this.getDropdowns().find((item: Dropdown) => {
-            return item.id === parentId
-        });
-        console.log('this.currentDropdown', currentDropdown);
+        const currentDropdown = this.getDropdowns().find((item: Dropdown) => item.id === parentId);
         currentDropdown.setActiveIndex(index, parentId);
 
         return manager.open(nextScene, sceneParams).catch(null);
@@ -123,15 +126,49 @@ export default class Header extends AbstractWidget {
         })
     }
 
+    private getAuthBtn(): Btn {
+        return new Btn({
+            title: 'authorization',
+            classes: ['button_stroke'],
+            onPress: () => this.openScene(Scenes.AUTHORIZATION, {route: 'authorization', name: 'authorization'}),
+            type: ButtonType.TEXT,
+        })
+    }
+
+    private getRegistrationBtn(): Btn {
+        return new Btn({
+            title: 'registration',
+            classes: ['button_fill'],
+            onPress: () => this.openScene(Scenes.AUTHORIZATION, {route: 'authorization', name: 'authorization'}),
+            type: ButtonType.TEXT,
+        })
+    }
+
+    private initAuthBtns(): void {
+        if (this.operator.isDemo()) {
+            const authBtn = this.getAuthBtn();
+            authBtn.init();
+
+            this.getRoot().append(authBtn.getRoot());
+            this.widgets.push(authBtn);
+
+            const registrationBtn = this.getRegistrationBtn();
+            registrationBtn.init();
+
+            this.getRoot().append(registrationBtn.getRoot());
+            this.widgets.push(registrationBtn);
+        }
+    }
+
     public getRoot(): any {
         return this.rootElement;
     }
 
     public init(): void {
         const markUp: string = `<header class="header"/>`;
-
         this.rootElement = Helper.DOM(markUp);
 
         this.initItemsElements();
+        this.initAuthBtns();
     }
 }

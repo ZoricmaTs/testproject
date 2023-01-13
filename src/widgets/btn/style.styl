@@ -7,6 +7,40 @@
   position relative
   cursor pointer
 
+  &_stroke
+    position relative
+    {text-h3}
+    padding 14px 19px 15px 21px
+
+    background $gradient
+    -webkit-background-clip text
+    background-clip text
+    -webkit-text-fill-color: transparent
+    color transparent
+
+    border-radius 22px
+
+    &::before
+      content ''
+      position:absolute
+      z-index -1
+      inset 0
+      border 2px solid transparent
+      border-radius 22px
+      background inherit
+      background-origin border-box
+      background-clip border-box
+      -webkit-mask:
+              linear-gradient(#fff 0 0) padding-box,
+              linear-gradient(#fff 0 0)
+      -webkit-mask-composite: xor
+      mask-composite: exclude
+      -webkit-mask-repeat: no-repeat
+
+    &:hover
+    &:focus
+      opacity 0.5
+
   &_fill
     {text-h3}
     padding 14px 19px 15px 21px
@@ -22,7 +56,6 @@
       padding-right 0
 
     //border-image linear-gradient(180deg, #BC9CFF 0%, #8BA4F9 100%)
-
 .material-icons
   font-family 'Material Icons'
   font-weight normal

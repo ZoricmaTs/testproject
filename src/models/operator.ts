@@ -1,6 +1,6 @@
 
 export default class Operator {
-    private isAuthorization: boolean;
+    private readonly isAuthorization: boolean;
     private readonly headerItems: any;
 
     constructor(params: any) {
@@ -10,5 +10,9 @@ export default class Operator {
 
     public getHeaderItems(): any {
         return this.headerItems;
+    }
+
+    public isDemo(): boolean {
+        return !this.isAuthorization;
     }
 }
