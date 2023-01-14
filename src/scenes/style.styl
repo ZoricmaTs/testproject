@@ -78,12 +78,21 @@ text-body = @block {
 }
 
 
-$grid-sides = 16px
 $grid-gutter = 16px
-$grid-columns = 4
 $grid-color = rgba(255, 0, 0, 0.2)
-$grid-column-width = "calc((100% - %s * %s) / %s)" % ($grid-gutter $grid-columns $grid-columns)
 
+grid(sides, columns)
+  column-width = "calc((100% - %s * %s) / %s)" % ($grid-gutter columns columns)
+  border-width 0 (sides - $grid-gutter / 2)
+  background-image repeating-linear-gradient(
+          to right,
+          transparent 0,
+          transparent $grid-gutter / 2,
+          $grid-color $grid-gutter / 2,
+          $grid-color "calc(%s + %s / 2)" % (column-width $grid-gutter),
+          transparent "calc(%s + %s / 2)" % (column-width $grid-gutter),
+          transparent "calc(%s + %s)" % (column-width $grid-gutter)
+  )
 
 .grid
   &::before
@@ -93,17 +102,32 @@ $grid-column-width = "calc((100% - %s * %s) / %s)" % ($grid-gutter $grid-columns
     left 0
     bottom 0
     right 0
-
     pointer-events none
-    border solid red
+    border solid transparent
 
-    border-width 0 ($grid-sides - $grid-gutter / 2)
-    background-image repeating-linear-gradient(
-            to right,
-            transparent 0,
-            transparent $grid-gutter / 2,
-            $grid-color $grid-gutter / 2,
-            $grid-color "calc(%s + %s / 2)" % ($grid-column-width $grid-gutter),
-            transparent "calc(%s + %s / 2)" % ($grid-column-width $grid-gutter),
-            transparent "calc(%s + %s)" % ($grid-column-width $grid-gutter)
-    )
+    grid(16px, 4)
+    background-repeat no-repeat
+
+@media screen and (min-width 736px)
+  .grid
+    &::before
+      grid(100px, 8)
+
+@media screen and (min-width 1008px)
+  .grid
+    &::before
+      grid(140px, 12)
+
+.scene
+  margin-left 16px
+  margin-right 16px
+
+@media screen and (min-width 736px)
+  .scene
+    margin-left 100px
+    margin-right 100px
+
+@media screen and (min-width 1008px)
+  .scene
+    margin-left 140px
+    margin-right 140px
