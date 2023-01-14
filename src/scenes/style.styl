@@ -76,3 +76,34 @@ text-body = @block {
   font-size 14px
   line-height 24px
 }
+
+
+$grid-sides = 16px
+$grid-gutter = 16px
+$grid-columns = 4
+$grid-color = rgba(255, 0, 0, 0.2)
+$grid-column-width = "calc((100% - %s * %s) / %s)" % ($grid-gutter $grid-columns $grid-columns)
+
+
+.grid
+  &::before
+    content ''
+    position absolute
+    top 0
+    left 0
+    bottom 0
+    right 0
+
+    pointer-events none
+    border solid red
+
+    border-width 0 ($grid-sides - $grid-gutter / 2)
+    background-image repeating-linear-gradient(
+            to right,
+            transparent 0,
+            transparent $grid-gutter / 2,
+            $grid-color $grid-gutter / 2,
+            $grid-color "calc(%s + %s / 2)" % ($grid-column-width $grid-gutter),
+            transparent "calc(%s + %s / 2)" % ($grid-column-width $grid-gutter),
+            transparent "calc(%s + %s)" % ($grid-column-width $grid-gutter)
+    )
