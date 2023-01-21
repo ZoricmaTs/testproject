@@ -42,7 +42,6 @@ export default class Header extends AbstractWidget {
     private itemsElements: (Btn | Dropdown)[];
     private itemsMobileElements: (Btn | Dropdown)[];
     private isContain: boolean;
-    private checkSize: boolean;
 
     constructor(params: any) {
         super(params);
@@ -50,7 +49,6 @@ export default class Header extends AbstractWidget {
         this.itemsData = params.items;
         this.operator = params.operator;
         this.user = params.user;
-        this.checkSize = true;
 
         this.onResize = this.onResize.bind(this);
         this.onPressDropdownItem = this.onPressDropdownItem.bind(this);
@@ -60,27 +58,21 @@ export default class Header extends AbstractWidget {
     public afterDOMShow() {
         super.afterDOMShow();
 
-        if (this.checkSize) {
-            this.checkSize = false;
-        }
-
         const widthRootElement = this.rootElement.getBoundingClientRect().width;
-        this.update(widthRootElement, this.checkSize);
+        this.update(widthRootElement);
     }
 
     public afterDOMHide() {
         super.afterDOMHide();
 
-        this.update(this.getRoot().getBoundingClientRect().width, this.checkSize);
+        this.itemsElement.style.display = 'flex';
     }
 
-    private update(width: number, checkSize: boolean): void {
+    private update(width: number): void {
         const widthLogo: number = this.logo.getRoot().getBoundingClientRect().width;
 
-        if (checkSize) {
-            this.fullHeaderWidth = this.getItemsElementWidth() + widthLogo;
-            this.isContain = width > this.fullHeaderWidth;
-        }
+        this.fullHeaderWidth = this.getItemsElementWidth() + widthLogo;
+        this.isContain = width > this.fullHeaderWidth;
 
         if (this.isContain) {
             this.itemsElement.style.display = 'flex';
@@ -281,7 +273,7 @@ export default class Header extends AbstractWidget {
     }
 
     private onResize(params: any) {
-        this.update(params.width, this.checkSize);
+        this.update(params.width);
     }
 
     protected addEvents():void {
