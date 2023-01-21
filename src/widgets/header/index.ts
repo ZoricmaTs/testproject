@@ -222,6 +222,7 @@ export default class Header extends AbstractWidget {
     }
 
     private getRegistrationBtn(): Btn {
+        console.log('fix');
         return new Btn({
             title: 'registration',
             classes: ['button_fill', 'header_item'],
