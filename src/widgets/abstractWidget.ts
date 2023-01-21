@@ -17,6 +17,18 @@ export default class AbstractWidget {
         this.addEvents();
     }
 
+    public afterDOMShow(): void {
+        this.widgets.forEach((widget: AbstractWidget) => {
+            widget.afterDOMShow();
+        });
+    }
+
+    public afterDOMHide(): void {
+        this.widgets.forEach((widget: AbstractWidget) => {
+            widget.afterDOMHide();
+        });
+    }
+
     public beforeDOMHide(): void {
         this.widgets.forEach((widget: AbstractWidget) => {
             widget.beforeDOMHide();

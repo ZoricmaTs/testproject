@@ -1,16 +1,12 @@
 import {AbstractScene} from '../abstractScene';
 import './style.styl';
-import Btn, {ButtonType} from '../../widgets/btn';
 import {manager, operator, user} from '../../index';
 import {Scenes} from '../manager';
-import Logo from '../../widgets/logo';
 import UserModel from '../../models/user';
 import Operator from '../../models/operator';
 import Header from '../../widgets/header';
 
 export default class Home extends AbstractScene {
-    private authButton: Btn;
-    private logo: Logo;
     protected options: any;
     private user: UserModel;
     private operator: Operator;
@@ -43,21 +39,6 @@ export default class Home extends AbstractScene {
         console.log('openScene');
     }
 
-    public initAuthButton(): void {
-        this.authButton = new Btn({
-            title: 'authorization gfdgdfg',
-            classes: ['button_fill', 'button_fill__with-icon'],
-            onPress: this.openAuthScene,
-            type: ButtonType.TEXT_WITH_ICON,
-            icon: 'keyboard_arrow_down',
-            iconClasses: ['fill-icon']
-        });
-
-        this.authButton.init();
-        this.getContainer().append(this.authButton.getRoot());
-        this.widgets.push(this.authButton);
-    }
-
     private initHeader(): void {
         this.header = new Header({items: this.operator.getHeaderItems(), user: this.user, operator: this.operator});
         this.header.init();
@@ -65,18 +46,8 @@ export default class Home extends AbstractScene {
         this.widgets.push(this.header);
     }
 
-    private initLogo(): void {
-        this.logo = new Logo({});
-
-        this.logo.init();
-        this.getContainer().append(this.logo.getRoot());
-        this.widgets.push(this.logo);
-    }
-
     protected initWidgets(): void {
         this.initHeader();
-        // this.initAuthButton();
-        // this.initLogo();
     }
 
     public open(): Promise<any> {

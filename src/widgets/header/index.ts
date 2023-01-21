@@ -3,12 +3,14 @@ import * as Helper from '../../helper';
 import './style.styl';
 import Dropdown, {DropdownItem} from '../dropdown';
 import {SceneParams, Scenes} from '../../scenes/manager';
-import {manager} from '../../index';
+import {manager, screen} from '../../index';
 import Btn, {ButtonType} from '../btn';
 import UserModel from '../../models/user';
 import Operator from '../../models/operator';
+import Logo from '../logo';
+import Screen from '../../services/screen';
 
-export type HeaderItem = {
+export type ItemParams = {
     isActive: boolean;
     data: string;
     onPress: () => Promise<void>;
@@ -28,20 +30,67 @@ export enum HeaderType {
 
 export default class Header extends AbstractWidget {
     private rootElement: Element;
-    private items: HeaderItem[];
+    private itemsData: ItemParams[];
     private user: UserModel;
     private operator: Operator;
-    private authBtn: Btn;
+    private logo: Logo;
+    private itemsElement: HTMLDivElement;
+
+    private headerWrapper: HTMLDivElement;
+    private isContain: boolean;
+    private fullHeaderWidth: number;
+    private mobileWrapper: HTMLDivElement;
+    private itemsElements: (Btn | Dropdown)[];
+    private itemsMobileElements: (Btn | Dropdown)[];
 
     constructor(params: any) {
         super(params);
 
-        this.items = params.items;
+        this.itemsData = params.items;
         this.operator = params.operator;
         this.user = params.user;
 
         this.onPressDropdownItem = this.onPressDropdownItem.bind(this);
         this.openScene = this.openScene.bind(this);
+    }
+
+    public afterDOMShow() {
+        super.afterDOMShow();
+
+        const widthLogo: number = this.logo.getRoot().getBoundingClientRect().width;
+        const widthRootElement = this.rootElement.getBoundingClientRect().width;
+
+        this.fullHeaderWidth = this.getItemsElementWidth() + widthLogo;
+        this.isContain = widthRootElement > this.fullHeaderWidth;
+
+
+        if (this.isContain) {
+            console.log('rty', this.isContain);
+            this.itemsElement.style.display = 'flex';
+            this.mobileWrapper.style.display = 'none';
+        } else {
+
+            console.log('qwe');
+            this.itemsElement.style.display = 'none';
+            this.mobileWrapper.style.display = 'flex';
+            const position: string = `${this.rootElement.getBoundingClientRect().height}px`;
+
+            this.mobileWrapper.style.top = position;
+        }
+    }
+
+    private initItemsElement(): void {
+        this.itemsElement = document.createElement('div');
+        this.itemsElement.classList.add('header_items');
+        this.headerWrapper.append(this.itemsElement);
+
+        this.mobileWrapper = document.createElement('div');
+        this.mobileWrapper.classList.add('header_items-mobile');
+        this.getRoot().append(this.mobileWrapper);
+    }
+
+    private getItemsElementWidth(): number {
+        return this.itemsElement.getBoundingClientRect().width;
     }
 
     public beforeDOMShow() {
@@ -63,8 +112,8 @@ export default class Header extends AbstractWidget {
         return manager.open(nextScene, params).catch(null);
     }
 
-    private getItems(): HeaderItem[] {
-        return this.items.map((item: HeaderItem) => {
+    private getItems(): ItemParams[] {
+        return this.itemsData.map((item: ItemParams) => {
             if (item.type === HeaderType.DROPDOWN) {
                 item.items.map((dropdownItem: DropdownItem) => {
                     dropdownItem.isActive = manager.isCurrentScene(dropdownItem.data);
@@ -91,10 +140,10 @@ export default class Header extends AbstractWidget {
     }
 
     private getDropdowns(): Dropdown[] {
-        return this.getItemsElement().filter((item: Btn | Dropdown) => item instanceof Dropdown);
+        return this.itemsElements.filter((item: Btn | Dropdown) => item instanceof Dropdown) as Dropdown[];
     }
 
-    private getItemsElement(): any {
+    private getItemsElements(): any {
         return this.getItems().map((item) => {
             if (item.type === HeaderType.DROPDOWN) {
                 return new Dropdown({
@@ -117,15 +166,23 @@ export default class Header extends AbstractWidget {
         });
     }
 
-    private initItemsElements(): void {
-        this.getItemsElement().map((item: Btn | Dropdown) => {
+    private initItems(): void {
+        this.itemsElements = this.getItemsElements().map((item: Btn | Dropdown) => {
             if (!(item instanceof Dropdown)) {
                 item.init();
                 item.setActive(manager.isCurrentScene(item.data));
             }
 
-            this.getRoot().append(item.getRoot());
-            this.widgets.push(item);
+            return item;
+        });
+
+        this.itemsMobileElements = this.getItemsElements().map((item: Btn | Dropdown) => {
+            if (!(item instanceof Dropdown)) {
+                item.init();
+                item.setActive(manager.isCurrentScene(item.data));
+            }
+
+            return item;
         })
     }
 
@@ -147,18 +204,27 @@ export default class Header extends AbstractWidget {
         })
     }
 
+    private initLogo(): void {
+        this.logo = new Logo({});
+
+        this.logo.init();
+        this.logo.getRoot().classList.add('logo_header-position')
+        this.headerWrapper.append(this.logo.getRoot());
+        this.widgets.push(this.logo);
+    }
+
     private initAuthBtns(): void {
         if (this.operator.isDemo()) {
             const authBtn = this.getAuthBtn();
             authBtn.init();
 
-            this.getRoot().append(authBtn.getRoot());
+            this.itemsElement.append(authBtn.getRoot());
             this.widgets.push(authBtn);
 
             const registrationBtn = this.getRegistrationBtn();
             registrationBtn.init();
 
-            this.getRoot().append(registrationBtn.getRoot());
+            this.itemsElement.append(registrationBtn.getRoot());
             this.widgets.push(registrationBtn);
         }
     }
@@ -170,8 +236,43 @@ export default class Header extends AbstractWidget {
     public init(): void {
         const markUp: string = `<header class="header"/>`;
         this.rootElement = Helper.DOM(markUp);
+        this.headerWrapper = document.createElement('div');
+        this.headerWrapper.classList.add('header_wrapper');
+        this.rootElement.append(this.headerWrapper);
 
-        this.initItemsElements();
-        this.initAuthBtns();
+        this.initLogo();
+
+        this.initItemsElement();
+
+        this.initItems();
+
+        this.itemsElements.forEach((item) => {
+            this.itemsElement.append(item.getRoot());
+
+            this.widgets.push(item);
+        });
+
+        this.itemsMobileElements.forEach((item) => {
+            this.mobileWrapper.append(item.getRoot());
+
+            this.widgets.push(item);
+        });
+
+
+        // this.initAuthBtns();
+    }
+
+    private onResize(params: any) {
+        // console.log('dsfsdf', params)
+    }
+
+    protected addEvents():void {
+        super.addEvents();
+
+        screen.on(Screen.EVENT_RESIZE, [this.onResize])
+    }
+
+    protected removeEvents() {
+        super.removeEvents();
     }
 }

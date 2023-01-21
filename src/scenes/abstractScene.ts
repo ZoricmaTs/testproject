@@ -32,11 +32,15 @@ export class AbstractScene {
     }
 
     public afterDOMHide(): void {
-
+        this.widgets.forEach((widget: AbstractWidget) => {
+            widget.afterDOMHide();
+        })
     }
 
     public afterDOMShow(): void {
-
+        this.widgets.forEach((widget: AbstractWidget) => {
+            widget.afterDOMShow();
+        })
     }
 
     public getContainer(): HTMLElement {
