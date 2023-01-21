@@ -22,7 +22,7 @@ export enum ButtonType {
 
 export default class Btn extends AbstractWidget {
     private classes: string[];
-    private readonly title: string;
+    private title: string;
     private rootElement: Element;
     private readonly onPressButton: (data: any) => void;
     public data?: any
@@ -65,6 +65,12 @@ export default class Btn extends AbstractWidget {
 
     public getTitle(): string {
         return this.title;
+    }
+
+    public setTitle(title: string): void {
+        this.title = title;
+
+        this.rootElement.innerHTML = this.getTitle();
     }
 
     public getIcon(): string {

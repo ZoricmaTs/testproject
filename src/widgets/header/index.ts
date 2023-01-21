@@ -42,6 +42,8 @@ export default class Header extends AbstractWidget {
     private itemsElements: (Btn | Dropdown)[];
     private itemsMobileElements: (Btn | Dropdown)[];
     private isContain: boolean;
+    private menuButton: Btn;
+    private isOpenMenu: boolean;
 
     constructor(params: any) {
         super(params);
@@ -50,6 +52,7 @@ export default class Header extends AbstractWidget {
         this.operator = params.operator;
         this.user = params.user;
 
+        this.openMenu = this.openMenu.bind(this);
         this.onResize = this.onResize.bind(this);
         this.onPressDropdownItem = this.onPressDropdownItem.bind(this);
         this.openScene = this.openScene.bind(this);
@@ -58,6 +61,9 @@ export default class Header extends AbstractWidget {
     public afterDOMShow() {
         super.afterDOMShow();
 
+        this.isOpenMenu = false;
+        this.hide(this.mobileWrapper);
+
         const widthRootElement = this.rootElement.getBoundingClientRect().width;
         this.update(widthRootElement);
     }
@@ -65,7 +71,7 @@ export default class Header extends AbstractWidget {
     public afterDOMHide() {
         super.afterDOMHide();
 
-        this.itemsElement.style.display = 'flex';
+        this.show(this.itemsElement);
     }
 
     private update(width: number): void {
@@ -75,15 +81,25 @@ export default class Header extends AbstractWidget {
         this.isContain = width > this.fullHeaderWidth;
 
         if (this.isContain) {
-            this.itemsElement.style.display = 'flex';
-            this.mobileWrapper.style.display = 'none';
+            this.show(this.itemsElement);
+            this.hide(this.menuButton.getRoot());
         } else {
-            this.itemsElement.style.display = 'none';
-            this.mobileWrapper.style.display = 'flex';
+            this.hide(this.itemsElement);
 
             this.mobileWrapper.style.top = `${this.rootElement.getBoundingClientRect().height}px`;
         }
     }
+
+    private show(element: HTMLElement): void {
+        element.classList.add('show');
+        element.classList.remove('hide');
+    }
+
+    private hide(element: HTMLElement): void {
+        element.classList.add('hide');
+        element.classList.remove('show');
+    }
+
 
     private initItemsElement(): void {
         this.itemsElement = document.createElement('div');
@@ -243,6 +259,30 @@ export default class Header extends AbstractWidget {
         return this.rootElement;
     }
 
+    private openMenu(): any {
+        this.isOpenMenu = !this.isOpenMenu;
+        console.log('this.isOpenMenu', this.isOpenMenu);
+        if (this.isOpenMenu) {
+            this.show(this.mobileWrapper);
+        } else {
+            this.hide(this.mobileWrapper);
+        }
+    }
+
+    private initMobileMenuButton(): void {
+        this.menuButton = new Btn({
+            title: 'menu',
+            classes: ['header_menu-button', 'material-icons', 'icon'],
+            onPress: () => this.openMenu(),
+            type: ButtonType.TEXT,
+        });
+
+        this.menuButton.init();
+        this.headerWrapper.append(this.menuButton.getRoot());
+
+        this.widgets.push(this.menuButton);
+    }
+
     public init(): void {
         const markUp: string = `<header class="header"/>`;
         this.rootElement = Helper.DOM(markUp);
@@ -268,7 +308,7 @@ export default class Header extends AbstractWidget {
             this.widgets.push(item);
         });
 
-
+        this.initMobileMenuButton();
         // this.initAuthBtns();
     }
 
