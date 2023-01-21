@@ -37,7 +37,6 @@ export default class Header extends AbstractWidget {
     private itemsElement: HTMLDivElement;
 
     private headerWrapper: HTMLDivElement;
-    private isContain: boolean;
     private fullHeaderWidth: number;
     private mobileWrapper: HTMLDivElement;
     private itemsElements: (Btn | Dropdown)[];
@@ -50,32 +49,39 @@ export default class Header extends AbstractWidget {
         this.operator = params.operator;
         this.user = params.user;
 
+        this.onResize = this.onResize.bind(this);
         this.onPressDropdownItem = this.onPressDropdownItem.bind(this);
         this.openScene = this.openScene.bind(this);
     }
 
+    private isContain(width?: number): boolean {
+        const widthLogo: number = this.logo.getRoot().getBoundingClientRect().width;
+        this.fullHeaderWidth = this.getItemsElementWidth() + widthLogo;
+
+        return  width ? width > this.fullHeaderWidth : true;
+    }
+
     public afterDOMShow() {
         super.afterDOMShow();
-
-        const widthLogo: number = this.logo.getRoot().getBoundingClientRect().width;
         const widthRootElement = this.rootElement.getBoundingClientRect().width;
 
-        this.fullHeaderWidth = this.getItemsElementWidth() + widthLogo;
-        this.isContain = widthRootElement > this.fullHeaderWidth;
+        this.update(widthRootElement);
+    }
 
+    public afterDOMHide() {
+        super.afterDOMHide();
+        this.update();
+    }
 
-        if (this.isContain) {
-            console.log('rty', this.isContain);
+    private update(width?: number): void {
+        if (this.isContain(width)) {
             this.itemsElement.style.display = 'flex';
             this.mobileWrapper.style.display = 'none';
         } else {
-
-            console.log('qwe');
             this.itemsElement.style.display = 'none';
             this.mobileWrapper.style.display = 'flex';
-            const position: string = `${this.rootElement.getBoundingClientRect().height}px`;
 
-            this.mobileWrapper.style.top = position;
+            this.mobileWrapper.style.top = `${this.rootElement.getBoundingClientRect().height}px`;
         }
     }
 
@@ -263,16 +269,18 @@ export default class Header extends AbstractWidget {
     }
 
     private onResize(params: any) {
-        // console.log('dsfsdf', params)
+        this.update(params.width);
     }
 
     protected addEvents():void {
         super.addEvents();
 
-        screen.on(Screen.EVENT_RESIZE, [this.onResize])
+        screen.on(Screen.EVENT_RESIZE, [this.onResize]);
     }
 
     protected removeEvents() {
         super.removeEvents();
+
+        screen.off(Screen.EVENT_RESIZE, this.onResize);
     }
 }
