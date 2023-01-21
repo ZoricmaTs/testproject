@@ -41,6 +41,8 @@ export default class Header extends AbstractWidget {
     private mobileWrapper: HTMLDivElement;
     private itemsElements: (Btn | Dropdown)[];
     private itemsMobileElements: (Btn | Dropdown)[];
+    private isContain: boolean;
+    private checkSize: boolean;
 
     constructor(params: any) {
         super(params);
@@ -48,33 +50,39 @@ export default class Header extends AbstractWidget {
         this.itemsData = params.items;
         this.operator = params.operator;
         this.user = params.user;
+        this.checkSize = true;
 
         this.onResize = this.onResize.bind(this);
         this.onPressDropdownItem = this.onPressDropdownItem.bind(this);
         this.openScene = this.openScene.bind(this);
     }
 
-    private isContain(width?: number): boolean {
-        const widthLogo: number = this.logo.getRoot().getBoundingClientRect().width;
-        this.fullHeaderWidth = this.getItemsElementWidth() + widthLogo;
-
-        return  width ? width > this.fullHeaderWidth : true;
-    }
-
     public afterDOMShow() {
         super.afterDOMShow();
-        const widthRootElement = this.rootElement.getBoundingClientRect().width;
 
-        this.update(widthRootElement);
+        if (this.checkSize) {
+            this.checkSize = false;
+        }
+
+        const widthRootElement = this.rootElement.getBoundingClientRect().width;
+        this.update(widthRootElement, this.checkSize);
     }
 
     public afterDOMHide() {
         super.afterDOMHide();
-        this.update();
+
+        this.update(this.getRoot().getBoundingClientRect().width, this.checkSize);
     }
 
-    private update(width?: number): void {
-        if (this.isContain(width)) {
+    private update(width: number, checkSize: boolean): void {
+        const widthLogo: number = this.logo.getRoot().getBoundingClientRect().width;
+
+        if (checkSize) {
+            this.fullHeaderWidth = this.getItemsElementWidth() + widthLogo;
+            this.isContain = width > this.fullHeaderWidth;
+        }
+
+        if (this.isContain) {
             this.itemsElement.style.display = 'flex';
             this.mobileWrapper.style.display = 'none';
         } else {
@@ -146,7 +154,11 @@ export default class Header extends AbstractWidget {
     }
 
     private getDropdowns(): Dropdown[] {
-        return this.itemsElements.filter((item: Btn | Dropdown) => item instanceof Dropdown) as Dropdown[];
+        if (this.isContain) {
+            return this.itemsElements.filter((item: Btn | Dropdown) => item instanceof Dropdown) as Dropdown[];
+        }
+
+        return this.itemsMobileElements.filter((item: Btn | Dropdown) => item instanceof Dropdown) as Dropdown[];
     }
 
     private getItemsElements(): any {
@@ -269,7 +281,7 @@ export default class Header extends AbstractWidget {
     }
 
     private onResize(params: any) {
-        this.update(params.width);
+        this.update(params.width, this.checkSize);
     }
 
     protected addEvents():void {
