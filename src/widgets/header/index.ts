@@ -276,8 +276,10 @@ export default class Header extends AbstractWidget {
         this.showHideMenu(this.isOpenMenu);
     }
 
-    private onBlurMenu(): void {
-        if (this.isOpenMenu) {
+    private onBlurMenu(e: Event): void {
+        const isNodeContains = this.getRoot().contains(e.target);
+
+        if (!isNodeContains) {
             this.isOpenMenu = false;
             this.showHideMenu(this.isOpenMenu);
         }
@@ -334,19 +336,13 @@ export default class Header extends AbstractWidget {
         super.addEvents();
 
         screen.on(Screen.EVENT_RESIZE, [this.onResize]);
-        window.addEventListener('click',  (e) => {
-            const isNodeContains = this.getRoot().contains(e.target);
-
-            if (!isNodeContains) {
-                this.isOpenMenu = false;
-                this.showHideMenu(this.isOpenMenu);
-            }
-        });
+        window.addEventListener('click',  this.onBlurMenu);
     }
 
     protected removeEvents() {
         super.removeEvents();
 
         screen.off(Screen.EVENT_RESIZE, this.onResize);
+        window.removeEventListener('click', this.onBlurMenu);
     }
 }
