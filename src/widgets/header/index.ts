@@ -277,8 +277,10 @@ export default class Header extends AbstractWidget {
     }
 
     private onBlurMenu(): void {
-        this.isOpenMenu = false;
-        this.showHideMenu(this.isOpenMenu);
+        if (this.isOpenMenu) {
+            this.isOpenMenu = false;
+            this.showHideMenu(this.isOpenMenu);
+        }
     }
 
     private initMobileMenuButton(): void {
@@ -286,7 +288,6 @@ export default class Header extends AbstractWidget {
             title: 'menu',
             classes: ['header_menu-button', 'material-icons', 'icon'],
             onPress: () => this.onPressMenu(),
-            onBlur: () => this.onBlurMenu(),
             type: ButtonType.TEXT,
         });
 
@@ -333,6 +334,14 @@ export default class Header extends AbstractWidget {
         super.addEvents();
 
         screen.on(Screen.EVENT_RESIZE, [this.onResize]);
+        window.addEventListener('click',  (e) => {
+            const isNodeContains = this.getRoot().contains(e.target);
+
+            if (!isNodeContains) {
+                this.isOpenMenu = false;
+                this.showHideMenu(this.isOpenMenu);
+            }
+        });
     }
 
     protected removeEvents() {
