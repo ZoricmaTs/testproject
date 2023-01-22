@@ -44,6 +44,7 @@ export default class Header extends AbstractWidget {
     private isContain: boolean;
     private menuButton: Btn;
     private isOpenMenu: boolean;
+    private menuIcon: string;
 
     constructor(params: any) {
         super(params);
@@ -52,7 +53,8 @@ export default class Header extends AbstractWidget {
         this.operator = params.operator;
         this.user = params.user;
 
-        this.openMenu = this.openMenu.bind(this);
+        this.onPressMenu = this.onPressMenu.bind(this);
+        this.onBlurMenu = this.onBlurMenu.bind(this);
         this.onResize = this.onResize.bind(this);
         this.onPressDropdownItem = this.onPressDropdownItem.bind(this);
         this.openScene = this.openScene.bind(this);
@@ -76,16 +78,15 @@ export default class Header extends AbstractWidget {
 
     private update(width: number): void {
         const widthLogo: number = this.logo.getRoot().getBoundingClientRect().width;
-
+        this.show(this.itemsElement);
         this.fullHeaderWidth = this.getItemsElementWidth() + widthLogo;
         this.isContain = width > this.fullHeaderWidth;
 
         if (this.isContain) {
-            this.show(this.itemsElement);
             this.hide(this.menuButton.getRoot());
         } else {
             this.hide(this.itemsElement);
-
+            this.show(this.menuButton.getRoot());
             this.mobileWrapper.style.top = `${this.rootElement.getBoundingClientRect().height}px`;
         }
     }
@@ -100,6 +101,17 @@ export default class Header extends AbstractWidget {
         element.classList.remove('show');
     }
 
+    private showHideMenu(isOpen: boolean): void {
+        if (isOpen) {
+            this.menuIcon = 'close';
+            this.show(this.mobileWrapper);
+        } else {
+            this.menuIcon = 'menu';
+            this.hide(this.mobileWrapper);
+        }
+
+        this.menuButton.setTitle(this.menuIcon);
+    }
 
     private initItemsElement(): void {
         this.itemsElement = document.createElement('div');
@@ -222,7 +234,6 @@ export default class Header extends AbstractWidget {
     }
 
     private getRegistrationBtn(): Btn {
-        console.log('fix');
         return new Btn({
             title: 'registration',
             classes: ['button_fill', 'header_item'],
@@ -260,21 +271,22 @@ export default class Header extends AbstractWidget {
         return this.rootElement;
     }
 
-    private openMenu(): any {
+    private onPressMenu(): void {
         this.isOpenMenu = !this.isOpenMenu;
-        console.log('this.isOpenMenu', this.isOpenMenu);
-        if (this.isOpenMenu) {
-            this.show(this.mobileWrapper);
-        } else {
-            this.hide(this.mobileWrapper);
-        }
+        this.showHideMenu(this.isOpenMenu);
+    }
+
+    private onBlurMenu(): void {
+        this.isOpenMenu = false;
+        this.showHideMenu(this.isOpenMenu);
     }
 
     private initMobileMenuButton(): void {
         this.menuButton = new Btn({
             title: 'menu',
             classes: ['header_menu-button', 'material-icons', 'icon'],
-            onPress: () => this.openMenu(),
+            onPress: () => this.onPressMenu(),
+            onBlur: () => this.onBlurMenu(),
             type: ButtonType.TEXT,
         });
 
