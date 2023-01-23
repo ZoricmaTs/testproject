@@ -10,6 +10,7 @@
   padding-bottom 15px
   padding-left 16px
   padding-right 16px
+  background-color white
 
   &_menu-button
     position relative
@@ -59,26 +60,35 @@
     display flex
     flex-direction column
     width 100%
+    background-color white
+
     &.hide
       display none
     &.show
       display flex
 
   &_items-mobile .header_item
+    justify-content center
     margin-left 0
     margin-right 0
     padding-left 16px
     padding-right 16px
     padding-top 8px
     padding-bottom 8px
+
   &_items-mobile .dropdown
     width 100%
+  &_items-mobile .dropdown_toggle
+    justify-content center
   &_items-mobile .dropdown .dropdown_list
+    width 100%
     left 0
     top 32px
   &_items-mobile .dropdown .dropdown_list__item
-    padding-left 16px
-    padding-right 16px
+    width 100%
+    margin-left 16px
+    margin-right 16px
+    justify-content center
 
 .active
   color: $color-dark-shade-75
@@ -88,10 +98,25 @@
     padding-right 100px
     padding-left 100px
 
+    &_items-mobile .header_item
+      margin-right 100px
+      margin-left 100px
+
+    &_items-mobile .dropdown .dropdown_list__item
+      margin-right 100px
+      margin-left 100px
+
 @media screen and (min-width 1008px)
   .header
     padding-right 140px
     padding-left 140px
+
+    &_items-mobile .header_item
+      margin-right 140px
+      margin-left 140px
+    &_items-mobile .dropdown .dropdown_list__item
+      margin-right 140px
+      margin-left 140px
 //.scene
 //margin-left 16px
 //margin-right 16px

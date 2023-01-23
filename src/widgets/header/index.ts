@@ -45,6 +45,10 @@ export default class Header extends AbstractWidget {
     private menuButton: Btn;
     private isOpenMenu: boolean;
     private menuIcon: string;
+    private authButton: Btn;
+    private authMobileButton: Btn;
+    private regButton: Btn;
+    private regMobileButton: Btn;
 
     constructor(params: any) {
         super(params);
@@ -66,7 +70,7 @@ export default class Header extends AbstractWidget {
         this.isOpenMenu = false;
         this.hide(this.mobileWrapper);
 
-        const widthRootElement = this.rootElement.getBoundingClientRect().width;
+        const widthRootElement = this.headerWrapper.getBoundingClientRect().width;
         this.update(widthRootElement);
     }
 
@@ -79,6 +83,7 @@ export default class Header extends AbstractWidget {
     private update(width: number): void {
         const widthLogo: number = this.logo.getRoot().getBoundingClientRect().width;
         this.show(this.itemsElement);
+
         this.fullHeaderWidth = this.getItemsElementWidth() + widthLogo;
         this.isContain = width > this.fullHeaderWidth;
 
@@ -224,16 +229,29 @@ export default class Header extends AbstractWidget {
         })
     }
 
-    private getAuthBtn(): Btn {
+    private createAuthButton(): Btn {
         return new Btn({
             title: 'authorization',
             classes: ['button_stroke', 'header_item'],
             onPress: () => this.openScene(Scenes.AUTHORIZATION, {route: 'authorization', name: 'authorization'}),
             type: ButtonType.TEXT,
-        })
+        });
     }
 
-    private getRegistrationBtn(): Btn {
+    private initAuthButton(): void {
+        this.authButton = this.createAuthButton();
+        this.authButton.init();
+
+        this.authMobileButton = this.createAuthButton();
+        this.authMobileButton.init();
+
+        this.itemsElement.append(this.authButton.getRoot());
+        this.widgets.push(this.authButton);
+        this.mobileWrapper.append(this.authMobileButton.getRoot());
+        this.widgets.push(this.authMobileButton);
+    }
+
+    private createRegButton(): Btn {
         return new Btn({
             title: 'registration',
             classes: ['button_fill', 'header_item'],
@@ -251,19 +269,17 @@ export default class Header extends AbstractWidget {
         this.widgets.push(this.logo);
     }
 
-    private initAuthBtns(): void {
+    private initRegButton(): void {
         if (this.operator.isDemo()) {
-            const authBtn = this.getAuthBtn();
-            authBtn.init();
+            this.regButton = this.createRegButton();
+            this.regButton.init();
+            this.regMobileButton = this.createRegButton();
+            this.regMobileButton.init();
 
-            this.itemsElement.append(authBtn.getRoot());
-            this.widgets.push(authBtn);
-
-            const registrationBtn = this.getRegistrationBtn();
-            registrationBtn.init();
-
-            this.itemsElement.append(registrationBtn.getRoot());
-            this.widgets.push(registrationBtn);
+            this.itemsElement.append(this.regButton.getRoot());
+            this.widgets.push(this.regButton);
+            this.mobileWrapper.append(this.regMobileButton.getRoot());
+            this.widgets.push(this.regMobileButton);
         }
     }
 
@@ -324,12 +340,17 @@ export default class Header extends AbstractWidget {
             this.widgets.push(item);
         });
 
+        this.initAuthButton();
+        this.initRegButton();
+
         this.initMobileMenuButton();
-        // this.initAuthBtns();
     }
 
     private onResize(params: any) {
-        this.update(params.width);
+        const widthRootElement = this.headerWrapper.getBoundingClientRect().width;
+        this.update(widthRootElement);
+        this.isOpenMenu = false;
+        this.showHideMenu(this.isOpenMenu);
     }
 
     protected addEvents():void {
