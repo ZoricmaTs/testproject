@@ -29,6 +29,7 @@ export default class Dropdown extends AbstractWidget {
     private icon: string;
     public id: number;
     private readonly styles: string[];
+    private activeIndex: number;
 
     constructor(params: DropdownType) {
         super(params);
@@ -63,12 +64,10 @@ export default class Dropdown extends AbstractWidget {
         return this.rootElement;
     }
 
-    public setActiveIndex(index: number, parentId: number): void {
-        if (parentId === this.id) {
-            this.buttons.map((button: Btn) => {
-                button.setActive(index === button.id);
-            })
-        }
+    public setActiveIndex(index: number): void {
+        this.buttons.map((button: Btn) => {
+            button.setActive(index === button.id);
+        })
     }
 
     private hasActiveIndex(): boolean {
@@ -95,15 +94,16 @@ export default class Dropdown extends AbstractWidget {
     private initItems(): void {
         this.buttons = this.items.map(({title, onPress, isActive, data, id}: DropdownItem) => {
             const classes = ['dropdown_list__item'];
-            return new Btn({title, onPress, type: ButtonType.TEXT, classes, isActive, data, id})
-        });
 
-        this.buttons.forEach((button) => {
+            const button = new Btn({title, onPress, type: ButtonType.TEXT, classes, isActive, data, id})
             button.init();
+            this.widgets.push(button);
+
             const buttonContainer = button.getRoot();
             this.list.append(buttonContainer);
-            this.widgets.push(button);
-        })
+
+            return button;
+        });
     }
 
     private showList(): void {

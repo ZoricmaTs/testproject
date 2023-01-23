@@ -41,7 +41,7 @@ export default class Company extends AbstractScene {
     }
 
     private initHeader(): void {
-        this.header = new Header({items: this.operator.getHeaderItems()});
+        this.header = new Header({items: this.operator.getHeaderItems(), operator: this.operator});
         this.header.init();
         this.getContainer().append(this.header.getRoot());
         this.widgets.push(this.header);
@@ -51,9 +51,6 @@ export default class Company extends AbstractScene {
     protected initWidgets(): void {
         this.initHeader();
         this.initButton();
-        // this.initDropdown();
-        // this.initAuthButton();
-        // this.initLogo();
     }
 
     public open(): Promise<any> {

@@ -32,15 +32,15 @@ export default class Header extends AbstractWidget {
     private rootElement: Element;
     private itemsData: ItemParams[];
     private user: UserModel;
-    private operator: Operator;
+    private readonly operator: Operator;
     private logo: Logo;
-    private itemsElement: HTMLDivElement;
+    private desktopWrapper: HTMLDivElement;
 
     private headerWrapper: HTMLDivElement;
     private fullHeaderWidth: number;
     private mobileWrapper: HTMLDivElement;
-    private itemsElements: (Btn | Dropdown)[];
-    private itemsMobileElements: (Btn | Dropdown)[];
+    private desktopElements: (Btn | Dropdown)[];
+    private mobileElements: (Btn | Dropdown)[];
     private isContain: boolean;
     private menuButton: Btn;
     private isOpenMenu: boolean;
@@ -56,7 +56,7 @@ export default class Header extends AbstractWidget {
         this.itemsData = params.items;
         this.operator = params.operator;
         this.user = params.user;
-
+        console.log('this.operator', this.operator);
         this.onPressMenu = this.onPressMenu.bind(this);
         this.onBlurMenu = this.onBlurMenu.bind(this);
         this.onResize = this.onResize.bind(this);
@@ -70,27 +70,22 @@ export default class Header extends AbstractWidget {
         this.isOpenMenu = false;
         this.hide(this.mobileWrapper);
 
-        const widthRootElement = this.headerWrapper.getBoundingClientRect().width;
-        this.update(widthRootElement);
+        this.update();
     }
 
-    public afterDOMHide() {
-        super.afterDOMHide();
-
-        this.show(this.itemsElement);
-    }
-
-    private update(width: number): void {
+    private update(): void {
+        const width = this.headerWrapper.getBoundingClientRect().width;
         const widthLogo: number = this.logo.getRoot().getBoundingClientRect().width;
-        this.show(this.itemsElement);
 
-        this.fullHeaderWidth = this.getItemsElementWidth() + widthLogo;
+        this.show(this.desktopWrapper);
+
+        this.fullHeaderWidth = this.getDesktopWrapperWidth() + widthLogo;
         this.isContain = width > this.fullHeaderWidth;
 
         if (this.isContain) {
             this.hide(this.menuButton.getRoot());
         } else {
-            this.hide(this.itemsElement);
+            this.hide(this.desktopWrapper);
             this.show(this.menuButton.getRoot());
             this.mobileWrapper.style.top = `${this.rootElement.getBoundingClientRect().height}px`;
         }
@@ -107,6 +102,8 @@ export default class Header extends AbstractWidget {
     }
 
     private showHideMenu(isOpen: boolean): void {
+        this.isOpenMenu = isOpen;
+
         if (isOpen) {
             this.menuIcon = 'close';
             this.show(this.mobileWrapper);
@@ -118,18 +115,18 @@ export default class Header extends AbstractWidget {
         this.menuButton.setTitle(this.menuIcon);
     }
 
-    private initItemsElement(): void {
-        this.itemsElement = document.createElement('div');
-        this.itemsElement.classList.add('header_items');
-        this.headerWrapper.append(this.itemsElement);
+    private initWrappers(): void {
+        this.desktopWrapper = document.createElement('div');
+        this.desktopWrapper.classList.add('header_items');
+        this.headerWrapper.append(this.desktopWrapper);
 
         this.mobileWrapper = document.createElement('div');
         this.mobileWrapper.classList.add('header_items-mobile');
         this.getRoot().append(this.mobileWrapper);
     }
 
-    private getItemsElementWidth(): number {
-        return this.itemsElement.getBoundingClientRect().width;
+    private getDesktopWrapperWidth(): number {
+        return this.desktopWrapper.getBoundingClientRect().width;
     }
 
     public beforeDOMShow() {
@@ -141,8 +138,8 @@ export default class Header extends AbstractWidget {
     }
 
     public onPressDropdownItem({nextScene, sceneParams, index, parentId}: any): Promise<void> {
-        const currentDropdown = this.getDropdowns().find((item: Dropdown) => item.id === parentId);
-        currentDropdown.setActiveIndex(index, parentId);
+        const currentDropdown = this.getDropdowns().find((dropdown: Dropdown) => dropdown.id === parentId);
+        currentDropdown.setActiveIndex(index);
 
         return manager.open(nextScene, sceneParams).catch(null);
     }
@@ -151,7 +148,7 @@ export default class Header extends AbstractWidget {
         return manager.open(nextScene, params).catch(null);
     }
 
-    private getItems(): ItemParams[] {
+    private prepareItemsData(): ItemParams[] {
         return this.itemsData.map((item: ItemParams) => {
             if (item.type === HeaderType.DROPDOWN) {
                 item.items.map((dropdownItem: DropdownItem) => {
@@ -180,14 +177,14 @@ export default class Header extends AbstractWidget {
 
     private getDropdowns(): Dropdown[] {
         if (this.isContain) {
-            return this.itemsElements.filter((item: Btn | Dropdown) => item instanceof Dropdown) as Dropdown[];
+            return this.desktopElements.filter((item: Btn | Dropdown) => item instanceof Dropdown) as Dropdown[];
         }
 
-        return this.itemsMobileElements.filter((item: Btn | Dropdown) => item instanceof Dropdown) as Dropdown[];
+        return this.mobileElements.filter((item: Btn | Dropdown) => item instanceof Dropdown) as Dropdown[];
     }
 
-    private getItemsElements(): any {
-        return this.getItems().map((item) => {
+    private createMenuElements(): any {
+        return this.prepareItemsData().map((item) => {
             if (item.type === HeaderType.DROPDOWN) {
                 return new Dropdown({
                     id: item.id,
@@ -198,35 +195,26 @@ export default class Header extends AbstractWidget {
             }
 
             const nextScene = manager.getSceneRoute(item.route);
-            return new Btn({
+            const button = new Btn({
                 title: item.title,
                 onPress: () => this.openScene(nextScene, {route: item.route, name: item.route}),
                 type: ButtonType.TEXT,
                 classes: ['header_button', 'header_item'],
                 isActive: item.isActive,
                 data: item.data,
-            })
+            });
+
+            button.init();
+            button.setActive(manager.isCurrentScene(item.data));
+
+            return button;
+
         });
     }
 
-    private initItems(): void {
-        this.itemsElements = this.getItemsElements().map((item: Btn | Dropdown) => {
-            if (!(item instanceof Dropdown)) {
-                item.init();
-                item.setActive(manager.isCurrentScene(item.data));
-            }
-
-            return item;
-        });
-
-        this.itemsMobileElements = this.getItemsElements().map((item: Btn | Dropdown) => {
-            if (!(item instanceof Dropdown)) {
-                item.init();
-                item.setActive(manager.isCurrentScene(item.data));
-            }
-
-            return item;
-        })
+    private initMenuElements(): void {
+        this.desktopElements = this.createMenuElements();
+        this.mobileElements = this.createMenuElements();
     }
 
     private createAuthButton(): Btn {
@@ -238,14 +226,14 @@ export default class Header extends AbstractWidget {
         });
     }
 
-    private initAuthButton(): void {
+    private initAuthButtons(): void {
         this.authButton = this.createAuthButton();
         this.authButton.init();
 
         this.authMobileButton = this.createAuthButton();
         this.authMobileButton.init();
 
-        this.itemsElement.append(this.authButton.getRoot());
+        this.desktopWrapper.append(this.authButton.getRoot());
         this.widgets.push(this.authButton);
         this.mobileWrapper.append(this.authMobileButton.getRoot());
         this.widgets.push(this.authMobileButton);
@@ -269,14 +257,14 @@ export default class Header extends AbstractWidget {
         this.widgets.push(this.logo);
     }
 
-    private initRegButton(): void {
+    private initRegButtons(): void {
         if (this.operator.isDemo()) {
             this.regButton = this.createRegButton();
             this.regButton.init();
             this.regMobileButton = this.createRegButton();
             this.regMobileButton.init();
 
-            this.itemsElement.append(this.regButton.getRoot());
+            this.desktopWrapper.append(this.regButton.getRoot());
             this.widgets.push(this.regButton);
             this.mobileWrapper.append(this.regMobileButton.getRoot());
             this.widgets.push(this.regMobileButton);
@@ -288,16 +276,14 @@ export default class Header extends AbstractWidget {
     }
 
     private onPressMenu(): void {
-        this.isOpenMenu = !this.isOpenMenu;
-        this.showHideMenu(this.isOpenMenu);
+        this.showHideMenu(!this.isOpenMenu);
     }
 
     private onBlurMenu(e: Event): void {
         const isNodeContains = this.getRoot().contains(e.target);
 
         if (!isNodeContains) {
-            this.isOpenMenu = false;
-            this.showHideMenu(this.isOpenMenu);
+            this.showHideMenu(false);
         }
     }
 
@@ -324,33 +310,32 @@ export default class Header extends AbstractWidget {
 
         this.initLogo();
 
-        this.initItemsElement();
+        this.initWrappers();
 
-        this.initItems();
+        this.initMenuElements();
 
-        this.itemsElements.forEach((item) => {
-            this.itemsElement.append(item.getRoot());
+        this.desktopElements.forEach((item) => {
+            this.desktopWrapper.append(item.getRoot());
 
             this.widgets.push(item);
         });
 
-        this.itemsMobileElements.forEach((item) => {
+        this.mobileElements.forEach((item) => {
             this.mobileWrapper.append(item.getRoot());
 
             this.widgets.push(item);
         });
 
-        this.initAuthButton();
-        this.initRegButton();
+        this.initAuthButtons();
+        this.initRegButtons();
 
         this.initMobileMenuButton();
     }
 
     private onResize(params: any) {
-        const widthRootElement = this.headerWrapper.getBoundingClientRect().width;
-        this.update(widthRootElement);
-        this.isOpenMenu = false;
-        this.showHideMenu(this.isOpenMenu);
+        this.update();
+
+        this.showHideMenu(false);
     }
 
     protected addEvents():void {
