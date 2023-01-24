@@ -61,6 +61,9 @@
     flex-direction column
     width 100%
     background-color white
+    padding-bottom 16px
+    padding-left 16px
+    padding-right 16px
 
     &.hide
       display none
@@ -69,25 +72,26 @@
 
   &_items-mobile .header_item
     justify-content center
-    margin-left 0
-    margin-right 0
-    padding-left 16px
-    padding-right 16px
     padding-top 8px
     padding-bottom 8px
+    margin-top 4px
+    margin-bottom 4px
+    margin-left 0
+    margin-right 0
 
   &_items-mobile .dropdown
     width 100%
+
   &_items-mobile .dropdown_toggle
     justify-content center
+
   &_items-mobile .dropdown .dropdown_list
     width 100%
     left 0
     top 32px
+
   &_items-mobile .dropdown .dropdown_list__item
     width 100%
-    margin-left 16px
-    margin-right 16px
     justify-content center
 
 .active
@@ -98,36 +102,32 @@
     padding-right 100px
     padding-left 100px
 
+    &_items-mobile
+      padding-right 100px
+      padding-left 100px
     &_items-mobile .header_item
-      margin-right 100px
-      margin-left 100px
+      background-color red
+      margin-top 4px
+      margin-bottom 4px
 
     &_items-mobile .dropdown .dropdown_list__item
-      margin-right 100px
-      margin-left 100px
+      //margin-right 100px
+      //margin-left 100px
 
 @media screen and (min-width 1008px)
   .header
     padding-right 140px
     padding-left 140px
 
+    &_items-mobile
+      padding-right 140px
+      padding-left 140px
+
     &_items-mobile .header_item
-      margin-right 140px
-      margin-left 140px
+      margin-top 4px
+      margin-bottom 4px
+
     &_items-mobile .dropdown .dropdown_list__item
-      margin-right 140px
-      margin-left 140px
-//.scene
-//margin-left 16px
-//margin-right 16px
-
-//@media screen.ts and (min-width 736px)
-//  .scene
-//margin-left 100px
-//margin-right 100px
-
-//@media screen.ts and (min-width 1008px)
-//  .scene
-//margin-left 140px
-//margin-right 140px
+      //margin-right 140px
+      //margin-left 140px
 

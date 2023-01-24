@@ -56,7 +56,7 @@ export default class Header extends AbstractWidget {
         this.itemsData = params.items;
         this.operator = params.operator;
         this.user = params.user;
-        console.log('this.operator', this.operator);
+
         this.onPressMenu = this.onPressMenu.bind(this);
         this.onBlurMenu = this.onBlurMenu.bind(this);
         this.onResize = this.onResize.bind(this);
