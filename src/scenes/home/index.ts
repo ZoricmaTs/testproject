@@ -5,12 +5,14 @@ import {Scenes} from '../manager';
 import UserModel from '../../models/user';
 import Operator from '../../models/operator';
 import Header from '../../widgets/header';
+import Checkbox from '../../widgets/checkbox';
 
 export default class Home extends AbstractScene {
     protected options: any;
     private user: UserModel;
     private operator: Operator;
     private header: Header;
+    private checkbox: Checkbox;
 
     constructor(params: any) {
         super(params);
@@ -39,6 +41,22 @@ export default class Home extends AbstractScene {
         console.log('openScene');
     }
 
+    public createCheckbox(): Checkbox {
+        return new Checkbox({
+            id: 'ssdfdsf',
+            title: 'dfsdf',
+            text: 'text'
+        });
+    }
+
+    public initCheckbox(): void {
+        this.checkbox = this.createCheckbox();
+        this.checkbox.init();
+
+        this.getContainer().append(this.checkbox.getRoot());
+        this.widgets.push(this.checkbox);
+    }
+
     private initHeader(): void {
         this.header = new Header({items: this.operator.getHeaderItems(), user: this.user, operator: this.operator});
         this.header.init();
@@ -48,6 +66,7 @@ export default class Home extends AbstractScene {
 
     protected initWidgets(): void {
         this.initHeader();
+        this.initCheckbox();
     }
 
     public open(): Promise<any> {

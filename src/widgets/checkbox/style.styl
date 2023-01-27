@@ -1,0 +1,44 @@
+@import '../../fonts/style.styl';
+@import '../../scenes/style.styl';
+
+.check
+  display flex
+  flex-direction column
+  align-items flex-start
+  position relative
+  margin-left 30px
+
+  &__input
+    position absolute
+    left -30px
+    -webkit-appearance none
+    -moz-appearance none
+    appearance none
+    width 20px
+    height 20px
+
+  &__box
+    position absolute
+    left -30px
+    width 20px
+    height 20px
+    background-image none
+    background-repeat no-repeat
+    background-position center
+    border 1px solid $color-purple
+    border-radius 4px
+
+  &__input:checked + .check__box
+    background-image url('./checkbox.svg')
+
+  &__input:focus + .check__box
+    box-shadow 0 0 0 0.1rem $color-purple, 0 0 0 0.2rem $color-purple
+
+  &__input:disabled + .check__box
+    border 1px solid $color-dark-shade-25
+    box-shadow 0 0 0 0.1rem $color-dark-shade-25
+
+  &__input:checked:disabled + .check__box
+    background-image url('./checkbox-disable.svg')
+
+

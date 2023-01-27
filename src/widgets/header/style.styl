@@ -5,31 +5,38 @@
   display flex
   align-items center
   position fixed
+  z-index 10
+  top 0
   width 100%
   padding-top  15px
   padding-bottom 15px
   padding-left 16px
   padding-right 16px
-  background-color white
+  background-color $color-white
 
-  &_menu-button
+  &__menu-button
     position relative
-    z-index 30
+    justify-content: center;
     width 34px
     height 34px
     {gradient-text}
+    &:focus
+    &:focus-visible
+      border-width 0
+      outline 2px $color-purple
+
     &.hide
       display none
     &.show
       display flex
 
-  &_wrapper
+  &__wrapper
     display flex
     align-items center
     justify-content space-between
     width 100%
 
-  &_button
+  &__button
     {text-link}
     color: $color-dark-shade-50
     background-color transparent
@@ -38,7 +45,7 @@
     &:focus
       color: $color-dark-shade-75
 
-  &_items
+  &__items
     display flex
     flex-direction row
     &.hide
@@ -46,21 +53,21 @@
     &.show
       display flex
 
-  &_item
+  &__item
     margin-left 10px
     margin-right 10px
 
     &:last-child
       margin-right 0
 
-  &_items-mobile
+  &__items-mobile
     position absolute
     left 0
     right 0
     display flex
     flex-direction column
     width 100%
-    background-color white
+    background-color $color-white
     padding-bottom 16px
     padding-left 16px
     padding-right 16px
@@ -70,7 +77,7 @@
     &.show
       display flex
 
-  &_items-mobile .header_item
+  &__items-mobile .header__item
     justify-content center
     padding-top 8px
     padding-bottom 8px
@@ -79,18 +86,18 @@
     margin-left 0
     margin-right 0
 
-  &_items-mobile .dropdown
+  &__items-mobile .dropdown
     width 100%
 
-  &_items-mobile .dropdown_toggle
+  &__items-mobile .dropdown_toggle
     justify-content center
 
-  &_items-mobile .dropdown .dropdown_list
+  &__items-mobile .dropdown .dropdown_list
     width 100%
     left 0
     top 32px
 
-  &_items-mobile .dropdown .dropdown_list__item
+  &__items-mobile .dropdown .dropdown_list__item
     width 100%
     justify-content center
 
@@ -102,15 +109,15 @@
     padding-right 100px
     padding-left 100px
 
-    &_items-mobile
+    &__items-mobile
       padding-right 100px
       padding-left 100px
-    &_items-mobile .header_item
+    &__items-mobile .header_item
       background-color red
       margin-top 4px
       margin-bottom 4px
 
-    &_items-mobile .dropdown .dropdown_list__item
+    &__items-mobile .dropdown .dropdown_list__item
       //margin-right 100px
       //margin-left 100px
 
@@ -119,15 +126,15 @@
     padding-right 140px
     padding-left 140px
 
-    &_items-mobile
+    &__items-mobile
       padding-right 140px
       padding-left 140px
 
-    &_items-mobile .header_item
+    &__items-mobile .header__item
       margin-top 4px
       margin-bottom 4px
 
-    &_items-mobile .dropdown .dropdown_list__item
+    &__items-mobile .dropdown .dropdown_list__item
       //margin-right 140px
       //margin-left 140px
 

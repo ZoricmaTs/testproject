@@ -117,11 +117,11 @@ export default class Header extends AbstractWidget {
 
     private initWrappers(): void {
         this.desktopWrapper = document.createElement('div');
-        this.desktopWrapper.classList.add('header_items');
+        this.desktopWrapper.classList.add('header__items');
         this.headerWrapper.append(this.desktopWrapper);
 
         this.mobileWrapper = document.createElement('div');
-        this.mobileWrapper.classList.add('header_items-mobile');
+        this.mobileWrapper.classList.add('header__items-mobile');
         this.getRoot().append(this.mobileWrapper);
     }
 
@@ -163,7 +163,7 @@ export default class Header extends AbstractWidget {
                         parentId: item.id,
                     });
                 })
-                item.styles = ['header_item']
+                item.styles = ['header__item']
             } else {
                 const nextScene = manager.getSceneRoute(item.route);
                 item.isActive = manager.isCurrentScene(item.route);
@@ -199,7 +199,7 @@ export default class Header extends AbstractWidget {
                 title: item.title,
                 onPress: () => this.openScene(nextScene, {route: item.route, name: item.route}),
                 type: ButtonType.TEXT,
-                classes: ['header_button', 'header_item'],
+                classes: ['header__button', 'header__item'],
                 isActive: item.isActive,
                 data: item.data,
             });
@@ -220,7 +220,7 @@ export default class Header extends AbstractWidget {
     private createAuthButton(): Btn {
         return new Btn({
             title: 'authorization',
-            classes: ['button_stroke', 'header_item'],
+            classes: ['button_stroke', 'header__item'],
             onPress: () => this.openScene(Scenes.AUTHORIZATION, {route: 'authorization', name: 'authorization'}),
             type: ButtonType.TEXT,
         });
@@ -242,7 +242,7 @@ export default class Header extends AbstractWidget {
     private createRegButton(): Btn {
         return new Btn({
             title: 'registration',
-            classes: ['button_fill', 'header_item'],
+            classes: ['button_fill', 'header__item'],
             onPress: () => this.openScene(Scenes.AUTHORIZATION, {route: 'authorization', name: 'authorization'}),
             type: ButtonType.TEXT,
         })
@@ -290,7 +290,7 @@ export default class Header extends AbstractWidget {
     private initMobileMenuButton(): void {
         this.menuButton = new Btn({
             title: 'menu',
-            classes: ['header_menu-button', 'material-icons', 'icon'],
+            classes: ['header__menu-button', 'material-icons', 'icon'],
             onPress: () => this.onPressMenu(),
             type: ButtonType.TEXT,
         });
@@ -305,7 +305,7 @@ export default class Header extends AbstractWidget {
         const markUp: string = `<header class="header"/>`;
         this.rootElement = Helper.DOM(markUp);
         this.headerWrapper = document.createElement('div');
-        this.headerWrapper.classList.add('header_wrapper');
+        this.headerWrapper.classList.add('header__wrapper');
         this.rootElement.append(this.headerWrapper);
 
         this.initLogo();
