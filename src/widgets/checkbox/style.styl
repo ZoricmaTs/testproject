@@ -1,12 +1,31 @@
 @import '../../fonts/style.styl';
 @import '../../scenes/style.styl';
 
+title = @block {
+  font-size 14px
+  line-height 18px
+}
+
+text = @block {
+  font-size 12px
+  line-height 14px
+  margin-top 5px
+}
+
 .check
   display flex
   flex-direction column
   align-items flex-start
   position relative
   margin-left 30px
+  {montserrat-regular}
+  color: $color-dark-shade-50
+
+  &__title
+    {title}
+
+  &__text
+    {text}
 
   &__input
     position absolute

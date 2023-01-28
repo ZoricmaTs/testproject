@@ -6,7 +6,10 @@ export type CheckboxParams = {
     title: string,
     text?: string,
     checked?: boolean,
-    disabled?: boolean
+    disabled?: boolean,
+    onChange?: (checked: boolean) => void;
+    titleClasses?: string[],
+    textClasses?: string[],
 }
 
 export default class Checkbox extends AbstractWidget {
@@ -20,6 +23,10 @@ export default class Checkbox extends AbstractWidget {
     private box: HTMLSpanElement;
     private checked: boolean;
     private disabled: boolean;
+    private readonly onChangeCheck: (checked: boolean) => void;
+    private readonly titleClasses: string[];
+    private readonly textClasses: string[];
+
     constructor(params: CheckboxParams) {
         super(params);
 
@@ -28,6 +35,11 @@ export default class Checkbox extends AbstractWidget {
         this.text = params.text;
         this.checked = params.checked ?? false;
         this.disabled = params.disabled ?? false;
+
+        this.titleClasses = params.titleClasses ? ['check__title'].concat(params.titleClasses) : ['check__title'];
+        this.textClasses = params.textClasses ? ['check__text'].concat(params.textClasses) : ['check__text'];
+
+        this.onChangeCheck = params.onChange;
         this.onChange = this.onChange.bind(this);
     }
 
@@ -58,30 +70,25 @@ export default class Checkbox extends AbstractWidget {
         this.input.disabled = disabled;
     }
 
-    private createLabel(): void {
-
-    }
-
     public init(): any {
         this.rootElement = document.createElement('label');
         this.rootElement.setAttribute('for', this.id);
         this.rootElement.classList.add('check');
 
         this.titleElement = document.createElement('span');
-        this.titleElement.classList.add('check__title');
+        this.titleElement.classList.add(...this.titleClasses);
         this.titleElement.innerText = this.title;
         this.rootElement.append(this.titleElement);
 
         if (this.text) {
             this.textElement = document.createElement('span');
-            this.textElement.classList.add('check__text');
+            this.textElement.classList.add(...this.textClasses);
             this.textElement.innerText = this.text;
             this.rootElement.append(this.textElement);
         }
 
         this.createInput();
 
-        this.createLabel();
         this.rootElement.append(this.input);
         this.rootElement.append(this.box);
     }
@@ -92,6 +99,10 @@ export default class Checkbox extends AbstractWidget {
 
         this.setChecked(this.checked);
         this.setDisabled(this.disabled);
+
+        if (this.onChangeCheck) {
+            this.onChangeCheck(this.checked);
+        }
     }
 
     protected addEvents():void {

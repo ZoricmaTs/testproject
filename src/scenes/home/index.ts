@@ -19,6 +19,7 @@ export default class Home extends AbstractScene {
 
         this.openScene = this.openScene.bind(this);
         this.openAuthScene = this.openAuthScene.bind(this);
+        this.onChangeCheck = this.onChangeCheck.bind(this);
     }
 
     afterDOMShow() {
@@ -41,11 +42,16 @@ export default class Home extends AbstractScene {
         console.log('openScene');
     }
 
+    public onChangeCheck(checked: boolean): void {
+        console.log('onChangeCheck', checked);
+    }
+
     public createCheckbox(): Checkbox {
         return new Checkbox({
             id: 'ssdfdsf',
             title: 'dfsdf',
-            text: 'text'
+            text: 'text',
+            onChange: this.onChangeCheck,
         });
     }
 
