@@ -1,0 +1,68 @@
+@import '../../fonts/style.styl';
+@import '../../scenes/style.styl';
+
+.radio-selector
+  display flex
+  {text-body}
+  color $color-dark-shade-50
+
+  &__title
+    width 100%
+    margin-bottom 4px
+
+  &__item
+    position relative
+    display flex
+    flex-direction row-reverse
+    align-items center
+    justify-content center
+    margin-right 20px
+
+    &_text
+      margin-left 10px
+      color: $color-dark-shade-50
+
+    &_box
+      position relative
+      left 0
+      width 20px
+      height 20px
+      border-width 1px
+      border-style solid
+      border-image $color-dark-shade-25
+      background-color $color-white
+      border-radius 20px
+
+      &-check
+        position absolute
+        top calc(50% - 6px)
+        left calc(50% - 6px)
+        width 12px
+        height 12px
+        border-radius 12px
+        background-color 'transparent'
+
+    &_input
+      position absolute
+      left 0
+      width 20px
+      height 20px
+      -webkit-appearance none
+      -moz-appearance none
+      appearance none
+
+    &_input:checked + .radio-selector__item_text
+      color: $color-dark-shade-75
+
+    &_input:checked + .radio-selector__item_box
+      &::before
+        {gradient-border}
+
+    &_input:checked + .radio-selector__item_box > .radio-selector__item_box-check
+      background $gradient
+
+
+
+
+
+

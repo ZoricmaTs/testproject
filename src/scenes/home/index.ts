@@ -6,6 +6,7 @@ import UserModel from '../../models/user';
 import Operator from '../../models/operator';
 import Header from '../../widgets/header';
 import Checkbox from '../../widgets/checkbox';
+import RadioSelector from '../../widgets/radio-selector';
 
 export default class Home extends AbstractScene {
     protected options: any;
@@ -13,6 +14,7 @@ export default class Home extends AbstractScene {
     private operator: Operator;
     private header: Header;
     private checkbox: Checkbox;
+    private radioSelector: RadioSelector;
 
     constructor(params: any) {
         super(params);
@@ -20,6 +22,7 @@ export default class Home extends AbstractScene {
         this.openScene = this.openScene.bind(this);
         this.openAuthScene = this.openAuthScene.bind(this);
         this.onChangeCheck = this.onChangeCheck.bind(this);
+        this.onChangeRadioBtn = this.onChangeRadioBtn.bind(this);
     }
 
     afterDOMShow() {
@@ -63,6 +66,48 @@ export default class Home extends AbstractScene {
         this.widgets.push(this.checkbox);
     }
 
+    public onChangeRadioBtn(id: string): void {
+        console.log('id', id);
+    }
+
+    public createRadioButton(): RadioSelector {
+        return new RadioSelector({
+            id: '123',
+            title: 'кто ты',
+            name: 'sdfsdf',
+            onChange: this.onChangeRadioBtn,
+            buttons: [
+                {
+                    id: '111',
+                    label: 'мужчина',
+                    value: 'мужчина',
+                    checked: false,
+                },
+                {
+                    id: '222',
+                    label: 'ребёнок',
+                    value: 'ребёнок',
+                    checked: false,
+                },
+                {
+                    id: '333',
+                    label: 'Зус',
+                    value: 'Зус',
+                    checked: true,
+                }
+            ]
+        });
+    }
+
+
+    public initRadioButton(): void {
+        this.radioSelector = this.createRadioButton();
+        this.radioSelector.init();
+
+        this.getContainer().append(this.radioSelector.getRoot());
+        this.widgets.push(this.radioSelector);
+    }
+
     private initHeader(): void {
         this.header = new Header({items: this.operator.getHeaderItems(), user: this.user, operator: this.operator});
         this.header.init();
@@ -73,6 +118,7 @@ export default class Home extends AbstractScene {
     protected initWidgets(): void {
         this.initHeader();
         this.initCheckbox();
+        this.initRadioButton();
     }
 
     public open(): Promise<any> {
