@@ -7,6 +7,7 @@ import Operator from '../../models/operator';
 import Header from '../../widgets/header';
 import Checkbox from '../../widgets/checkbox';
 import RadioSelector from '../../widgets/radio-selector';
+import Input, {InputType} from '../../widgets/input';
 
 export default class Home extends AbstractScene {
     protected options: any;
@@ -15,6 +16,7 @@ export default class Home extends AbstractScene {
     private header: Header;
     private checkbox: Checkbox;
     private radioSelector: RadioSelector;
+    private textInput: Input;
 
     constructor(params: any) {
         super(params);
@@ -23,6 +25,7 @@ export default class Home extends AbstractScene {
         this.openAuthScene = this.openAuthScene.bind(this);
         this.onChangeCheck = this.onChangeCheck.bind(this);
         this.onChangeRadioBtn = this.onChangeRadioBtn.bind(this);
+        this.onChangeText = this.onChangeText.bind(this);
     }
 
     afterDOMShow() {
@@ -99,6 +102,28 @@ export default class Home extends AbstractScene {
         });
     }
 
+    public onChangeText(value: string): void {
+
+    }
+
+    public createInput(): Input {
+        return new Input({
+            id: 'text_1',
+            name: 'dfgdfg',
+            value: '',
+            type: InputType.PASSWORD,
+            placeholder: 'e',
+            required: true,
+            onChange: this.onChangeText
+        })
+    }
+
+    public initTextInput(): void {
+        this.textInput = this.createInput();
+        this.textInput.init();
+        this.getContainer().append(this.textInput.getRoot());
+        this.widgets.push(this.textInput)
+    }
 
     public initRadioButton(): void {
         this.radioSelector = this.createRadioButton();
@@ -117,8 +142,9 @@ export default class Home extends AbstractScene {
 
     protected initWidgets(): void {
         this.initHeader();
-        this.initCheckbox();
-        this.initRadioButton();
+        // this.initCheckbox();
+        // this.initRadioButton();
+        this.initTextInput();
     }
 
     public open(): Promise<any> {

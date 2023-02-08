@@ -1,0 +1,32 @@
+@import '../../fonts/style.styl';
+@import '../../scenes/style.styl';
+
+.input-text
+.input-email
+.input-password
+  display flex
+  flex-direction column
+  max-width 320px
+
+  &__input
+    {montserrat-regular}
+    font-size 14px
+    line-height 18px
+    color $color-dark-shade-25
+    background $color-white
+    border 1px solid $color-dark-shade-25
+    border-radius 4px
+    height 44px
+    padding 13px 15px
+    &:hover
+    &:focus
+      color $color-dark-shade-75
+      {text-body}
+      padding 12px 15px 8px 15px
+      border: 1px solid $color-dark-shade-50
+      outline 0
+    &::placeholder
+      text-transform capitalize
+    &:user-invalid
+      color $color-error
+      border: 1px solid $color-error
