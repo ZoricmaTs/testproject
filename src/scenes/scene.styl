@@ -1,0 +1,30 @@
+@import '../fonts/style.styl'
+@import './style.styl';
+
+.scene
+  position relative
+  width: 100%
+  height: 100%
+  padding-top 70px
+  &__title
+    {text-h1}
+    margin-bottom 20px
+  &__authorization
+  &__home
+    &_content-wrapper
+      display flex
+      justify-content center
+      align-items center
+      width 100%
+      height calc(100vh - 70px)
+
+  &__background
+    z-index -1
+    position absolute
+    top 0
+    left 0
+    right 0
+    bottom 0
+    width 100%
+    height 100%
+    object-fit cover

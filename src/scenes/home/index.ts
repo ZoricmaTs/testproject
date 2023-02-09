@@ -1,5 +1,6 @@
 import {AbstractScene} from '../abstractScene';
 import './style.styl';
+import '../scene.styl';
 import {manager, operator, user} from '../../index';
 import {Scenes} from '../manager';
 import UserModel from '../../models/user';
@@ -17,6 +18,7 @@ export default class Home extends AbstractScene {
     private checkbox: Checkbox;
     private radioSelector: RadioSelector;
     private textInput: Input;
+    private background: HTMLImageElement;
 
     constructor(params: any) {
         super(params);
@@ -38,6 +40,15 @@ export default class Home extends AbstractScene {
 
     beforeDOMShow() {
         super.beforeDOMShow();
+
+        this.initBackground();
+    }
+
+    private initBackground(): void {
+        this.background = document.createElement('img');
+        this.background.classList.add('scene__background');
+        this.background.src = require('./background.png');
+        this.getContainer().append(this.background);
     }
 
     public openAuthScene(): Promise<void> {
