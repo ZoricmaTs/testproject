@@ -12,10 +12,15 @@ export default class AuthorizationForm extends AbstractForm {
     protected button: Btn;
     private email: string;
     private password: string;
+    private regButton: Btn;
 
     constructor(params: any) {
         super(params);
 
+        this.email = '';
+        this.password = '';
+
+        this.openRegistration = this.openRegistration.bind(this);
         this.onChangeEmail = this.onChangeEmail.bind(this);
         this.onChangePassword = this.onChangePassword.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
@@ -38,9 +43,6 @@ export default class AuthorizationForm extends AbstractForm {
     }
 
     protected createInputs(): Input[] {
-        this.email = '';
-        this.password = '';
-
         return [
             new Input({
                 id: 'auth_email',
@@ -101,10 +103,39 @@ export default class AuthorizationForm extends AbstractForm {
 
         this.initInputs();
         this.initSubmitButton();
+        this.initRegistrationButton();
     }
 
     public getRoot() {
         return this.rootElement;
+    }
+
+    private openRegistration(): void {
+        this.email = '';
+        this.password = '';
+    }
+
+    private initRegistrationButton(): void {
+        this.regButton = new Btn({
+            title: 'создать',
+            classes: ['button__stroke'],
+            onPress: this.openRegistration,
+            type: ButtonType.TEXT,
+        });
+        this.regButton.init();
+
+        const wrapper = document.createElement('div');
+        wrapper.classList.add('form__button-wrapper');
+
+        const text = document.createElement('p');
+        text.classList.add('form__button-wrapper-text');
+        text.innerText = 'Нет аккаунта на Toxin?';
+
+        wrapper.append(text);
+        wrapper.append(this.regButton.getRoot());
+
+        this.rootElement.append(wrapper);
+        this.widgets.push(this.regButton);
     }
 
     protected initSubmitButton(): void {
