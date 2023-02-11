@@ -6,7 +6,7 @@ export type ButtonParams = {
     id?: number,
     title?: string,
     classes: string[],
-    onPress: (params: any) => void,
+    onPress?: (params: any) => void,
     onBlur?: () => void,
     type: ButtonType,
     icon?: string,

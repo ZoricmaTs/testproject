@@ -258,7 +258,7 @@ export default class Header extends AbstractWidget {
     }
 
     private initRegButtons(): void {
-        if (this.operator.isDemo()) {
+        if (this.operator.isDemo) {
             this.regButton = this.createRegButton();
             this.regButton.init();
             this.regMobileButton = this.createRegButton();

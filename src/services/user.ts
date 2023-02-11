@@ -7,14 +7,23 @@ export default class User {
 
     }
 
-    public getUser(): any {
+    public getUser(data?: any): any {
         if (this.userModel) {
             return Promise.resolve(this.userModel);
         }
 
-        return api.getUser().then((response: any) => {
-            this.userModel = new UserModel(response);
-            return this.userModel;
-        })
+        return api.getUser(data)
+            .then((response: any) => {
+                if (response.length === 0) {
+                    return  Promise.reject('User not found');
+                }
+
+                this.userModel = new UserModel(response);
+                return this.userModel;
+            })
+            .catch((error: ErrorEvent) => {
+                return Promise.reject(error);
+            })
+
     }
 }

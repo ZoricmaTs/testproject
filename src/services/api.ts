@@ -5,8 +5,8 @@ export default class Api {
         this.middlewareUrl = 'http://localhost:3000';
     }
 
-    public getUser(): Promise<any> {
-        const userUrl = this.middlewareUrl + '/user';
+    public getUser(data?: any): Promise<any> {
+        const userUrl = this.middlewareUrl + `/users?email=${data.email}&password=${data.password}`;
 
         return fetch(userUrl).then((response) => response.json());
     }

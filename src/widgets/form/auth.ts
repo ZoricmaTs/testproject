@@ -1,34 +1,23 @@
-import AbstractWidget from '../abstractWidget';
-import Input from '../input';
+import Input, {InputType} from '../input';
 import Btn, {ButtonType} from '../btn';
+import {user} from '../../index';
+import UserModel from '../../models/user';
+import AbstractForm, {FormMethod} from './index';
 import './style.styl';
 
-export enum FormMethod  {
-    GET = 'get',
-    POST = 'post',
-    DIALOG = 'dialog',
-}
 
-export type FormParams = {
-    additionalElement?: any
-    method?: FormMethod,
-    title?: string,
-}
-
-export default class AbstractForm extends AbstractWidget {
+export default class AuthorizationForm extends AbstractForm {
     protected rootElement: HTMLFormElement;
     protected inputs: Input[];
     protected button: Btn;
-    protected method: FormMethod;
-    protected title: string;
-    protected titleElement: HTMLDivElement;
+    private email: string;
+    private password: string;
 
-    constructor(params: FormParams) {
+    constructor(params: any) {
         super(params);
 
-        this.method = params.method ? params.method : FormMethod.GET;
-        this.title = params.title;
-
+        this.onChangeEmail = this.onChangeEmail.bind(this);
+        this.onChangePassword = this.onChangePassword.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
     }
 
@@ -48,15 +37,38 @@ export default class AbstractForm extends AbstractWidget {
         super.beforeDOMHide();
     }
 
-    protected initTitle(): void {
-        this.titleElement = document.createElement('div');
-        this.titleElement.classList.add('form__title');
-        this.titleElement.innerText = this.title;
-        this.rootElement.append(this.titleElement);
+    protected createInputs(): Input[] {
+        this.email = '';
+        this.password = '';
+
+        return [
+            new Input({
+                id: 'auth_email',
+                name: 'email',
+                value: this.email,
+                type: InputType.EMAIL,
+                placeholder: 'email',
+                required: true,
+                onChange: this.onChangeEmail,
+            }),
+            new Input({
+                id: 'auth_password',
+                name: 'password',
+                value: this.password,
+                type: InputType.PASSWORD,
+                placeholder: 'password',
+                required: true,
+                onChange: this.onChangePassword,
+            }),
+        ];
     }
 
-    protected createInputs(): Input[] {
-        return [];
+    private onChangeEmail(e: Event): void {
+        this.email = (e.target as HTMLInputElement).value;
+    }
+
+    private onChangePassword(e: Event): void {
+        this.password = (e.target as HTMLInputElement).value;
     }
 
     protected initInputs(): void {
@@ -71,12 +83,17 @@ export default class AbstractForm extends AbstractWidget {
 
     protected onSubmit(e: Event): void {
         e.preventDefault();
+
+        return user.getUser({email: this.email, password: this.password})
+            .then((response: UserModel) => {
+                console.log('response', response);
+            })
+            .catch((error: ErrorEvent) => console.log('error form: ', error))
     }
 
     public init(): void {
         this.rootElement = document.createElement('form');
         this.rootElement.classList.add('form');
-        this.rootElement.setAttribute('method', this.method);
 
         if (this.title) {
             this.initTitle();

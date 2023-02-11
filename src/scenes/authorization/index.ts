@@ -8,7 +8,8 @@ import './style.styl';
 import '../scene.styl';
 import Input, {InputType} from '../../widgets/input';
 import Btn from '../../widgets/btn';
-import AbstractForm from '../../widgets/form';
+import AuthorizationForm from '../../widgets/form/auth';
+import {FormMethod} from '../../widgets/form';
 
 export default class Authorization extends AbstractScene {
     private button: Index;
@@ -21,7 +22,7 @@ export default class Authorization extends AbstractScene {
     private inputs: Input[];
     private authButton: Btn;
     private regButton: Btn;
-    private formWidget: AbstractForm;
+    private formWidget: AuthorizationForm;
 
     constructor(params: any) {
         super(params);
@@ -162,7 +163,7 @@ export default class Authorization extends AbstractScene {
     }
 
     private initFormWidget(): void {
-        this.formWidget = new AbstractForm({});
+        this.formWidget = new AuthorizationForm({title: 'Войти'});
         this.formWidget.init();
         this.contentWrapper.append(this.formWidget.getRoot());
         this.widgets.push(this.formWidget);
@@ -181,24 +182,30 @@ export default class Authorization extends AbstractScene {
     }
 
     public open(): Promise<any> {
-        return Promise.all([operator.getOperator(), user.getUser()])
-            .then((response) => {
-                const operator = response[0];
-                const user = response[1];
-
-                this.setOptions({user, operator});
-                const options = this.getOptions();
-                this.user = options.user;
-                this.operator = options.operator;
-
+        return operator.getOperator()
+            .then((response: Operator) => {
+                this.operator = response;
+                this.setOptions({operator: this.operator});
                 this.initWidgets();
+
+                if (!response.isDemo) {
+                    return user.getUser()
+                        .then((response: UserModel) => {
+                            this.user = response;
+                        })
+                        .catch((error: ErrorEvent) => console.log(`open ${this.name}`, error));
+                }
             })
-            .catch((err) => console.log('err open AUTHORIZATION', err));
+            .catch((error: ErrorEvent) => console.log(`open ${this.name}`, error));
     }
 
 
-    protected setOptions(param: { user: UserModel, operator: Operator }) {
-        this.options = param;
+    protected setOptions(param: { user?: UserModel, operator?: Operator }) {
+        if (this.options) {
+            Object.assign(this.options, param);
+        } else {
+            this.options = param;
+        }
     }
 
     protected getOptions(): any {

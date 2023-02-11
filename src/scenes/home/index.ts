@@ -159,23 +159,29 @@ export default class Home extends AbstractScene {
     }
 
     public open(): Promise<any> {
-        return Promise.all([operator.getOperator(), user.getUser()])
-            .then((response) => {
-                const operator = response[0];
-                const user = response[1];
-
-                this.setOptions({user, operator});
-                const options = this.getOptions();
-                this.user = options.user;
-                this.operator = options.operator;
-
+        return operator.getOperator()
+            .then((response: Operator) => {
+                this.operator = response;
+                this.setOptions({operator: this.operator});
                 this.initWidgets();
+
+                if (!response.isDemo) {
+                    return user.getUser()
+                        .then((response: UserModel) => {
+                            this.user = response;
+                        })
+                        .catch((error: ErrorEvent) => console.log(`open ${this.name}`, error));
+                }
             })
-            .catch((err) => console.log('err open HOME', err));
+            .catch((error: ErrorEvent) => console.log(`open ${this.name}`, error));
     }
 
-    protected setOptions(param: { user: UserModel, operator: Operator }) {
-        this.options = param;
+    protected setOptions(param: { user?: UserModel, operator?: Operator }) {
+        if (this.options) {
+            Object.assign(this.options, param);
+        } else {
+            this.options = param;
+        }
     }
 
     protected getOptions(): any {
