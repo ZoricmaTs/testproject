@@ -123,7 +123,7 @@ export default class Btn extends AbstractWidget {
     }
 
     public init(): void {
-        const buttonMarkup = `<button class="${this.classes.join(' ')}"><div>${this.getTitle()}</div></button>`;
+        const buttonMarkup = `<button class="${this.classes.join(' ')}"><div class="content">${this.getTitle()}</div></button>`;
 
         this.rootElement = Helper.DOM(buttonMarkup);
 

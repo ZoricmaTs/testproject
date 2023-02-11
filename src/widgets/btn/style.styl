@@ -12,50 +12,46 @@
     outline 0
     box-shadow 0 0 0 0.1rem $color-purple, 0 0 0 0.2rem $color-purple
 
-  &_stroke
+  &__stroke
     position relative
     {text-h3}
-    padding 14px 19px 15px 21px
-    {gradient-text}
-
-   border-radius 22px
-
-    &::before
-      content ''
-      position:absolute
-      z-index -1
-      inset 0
-      border 2px solid transparent
-      border-radius 22px
-      background inherit
-      background-origin border-box
-      background-clip border-box
-      -webkit-mask:
-              linear-gradient(#fff 0 0) padding-box,
-              linear-gradient(#fff 0 0)
-      -webkit-mask-composite: xor
-      mask-composite: exclude
-      -webkit-mask-repeat: no-repeat
-
+    padding 2px
+    border-radius 22px
+    background: $gradient
     &:hover
     &:focus
       opacity 0.5
 
-  &_fill
+  &__stroke > .content
+    display flex
+    justify-content center
+    align-items center
+    width 100%
+    height 100%
+    padding 12px 17px 13px 19px
+    background-color white
+    border-radius: 20px
+    color: $color-purple
+
+  &__fill
+    position relative
     {text-h3}
     padding 14px 19px 15px 21px
     color $color-white
     background $gradient
-
     border-radius 22px
     &:hover
     &:focus
       opacity 0.5
+    &-icon
+      position absolute
+      right 0
+      width 44px
 
-    &__with-icon
-      padding-right 0
+  &__with-icon
+    justify-content center
+    width 100%
 
-    //border-image linear-gradient(180deg, #BC9CFF 0%, #8BA4F9 100%)
 .material-icons
   font-family 'Material Icons'
   font-weight normal
@@ -76,8 +72,3 @@
   -moz-osx-font-smoothing grayscale
   /* Support for IE. */
   font-feature-settings 'liga'
-
-.fill-icon
-  line-height 15px
-  width 44px
-  margin-left  21px

@@ -10,6 +10,7 @@ import ServicesBooking from './services-booking';
 export enum Scenes {
     AGREEMENTS ='agreements',
     AUTHORIZATION = 'authorization',
+    REGISTRATION = 'registration',
     COMPANY = 'company',
     HOME = 'home',
     SERVICES_BOOKING = 'services-booking',

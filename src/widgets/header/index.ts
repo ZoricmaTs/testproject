@@ -220,7 +220,7 @@ export default class Header extends AbstractWidget {
     private createAuthButton(): Btn {
         return new Btn({
             title: 'authorization',
-            classes: ['button_stroke', 'header__item'],
+            classes: ['button__stroke', 'header__item'],
             onPress: () => this.openScene(Scenes.AUTHORIZATION, {route: 'authorization', name: 'authorization'}),
             type: ButtonType.TEXT,
         });
@@ -242,8 +242,8 @@ export default class Header extends AbstractWidget {
     private createRegButton(): Btn {
         return new Btn({
             title: 'registration',
-            classes: ['button_fill', 'header__item'],
-            onPress: () => this.openScene(Scenes.AUTHORIZATION, {route: 'authorization', name: 'authorization'}),
+            classes: ['button__fill', 'header__item'],
+            onPress: () => this.openScene(Scenes.REGISTRATION, {route: 'registration', name: 'registration'}),
             type: ButtonType.TEXT,
         })
     }
