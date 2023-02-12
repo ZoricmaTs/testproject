@@ -15,7 +15,7 @@ export default class User {
         return api.getUser(data)
             .then((response: any) => {
                 if (response.length === 0) {
-                    return  Promise.reject('User not found');
+                    return Promise.reject(new Error('пользователь не найден'));
                 }
 
                 this.userModel = new UserModel(response);

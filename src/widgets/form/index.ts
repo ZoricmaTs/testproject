@@ -22,6 +22,8 @@ export default class AbstractForm extends AbstractWidget {
     protected method: FormMethod;
     protected title: string;
     protected titleElement: HTMLDivElement;
+    protected error: string;
+    protected errorElement: HTMLDivElement;
 
     constructor(params: FormParams) {
         super(params);
@@ -38,6 +40,8 @@ export default class AbstractForm extends AbstractWidget {
 
     public beforeDOMShow() {
         super.beforeDOMShow();
+
+        this.setError(undefined);
     }
 
     public afterDOMHide() {
@@ -46,6 +50,33 @@ export default class AbstractForm extends AbstractWidget {
 
     public beforeDOMHide() {
         super.beforeDOMHide();
+
+        this.setError(undefined);
+    }
+
+    protected showHideError(isError: boolean):void {
+        if (isError) {
+            this.errorElement.innerText = this.getError();
+            this.errorElement.classList.remove('hide');
+            this.errorElement.classList.add('show');
+        } else {
+            this.errorElement.classList.remove('show');
+            this.errorElement.classList.add('hide');
+        }
+    }
+
+    protected setError(message: string): void {
+        this.error = message;
+    }
+
+    protected getError(): string {
+        return this.error;
+    }
+
+    protected initErrorMessage(): void {
+        this.errorElement = document.createElement('div');
+        this.errorElement.classList.add('form__error', 'hide');
+        this.rootElement.append(this.errorElement);
     }
 
     protected initTitle(): void {
@@ -83,6 +114,7 @@ export default class AbstractForm extends AbstractWidget {
         }
 
         this.initInputs();
+        this.initErrorMessage();
         this.initSubmitButton();
     }
 

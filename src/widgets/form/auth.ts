@@ -33,6 +33,8 @@ export default class AuthorizationForm extends AbstractForm {
 
     public beforeDOMShow() {
         super.beforeDOMShow();
+
+        this.setError(undefined);
     }
 
     public afterDOMHide() {
@@ -41,6 +43,8 @@ export default class AuthorizationForm extends AbstractForm {
 
     public beforeDOMHide() {
         super.beforeDOMHide();
+
+        this.setError(undefined);
     }
 
     protected createInputs(): Input[] {
@@ -89,9 +93,12 @@ export default class AuthorizationForm extends AbstractForm {
 
         return user.getUser({email: this.email, password: this.password})
             .then((response: UserModel) => {
-                console.log('response', response);
+                this.showHideError(false);
             })
-            .catch((error: ErrorEvent) => console.log('error form: ', error))
+            .catch((error: ErrorEvent) => {
+                this.setError(error.message);
+                this.showHideError(true);
+            });
     }
 
     public init(): void {
@@ -103,6 +110,7 @@ export default class AuthorizationForm extends AbstractForm {
         }
 
         this.initInputs();
+        this.initErrorMessage();
         this.initSubmitButton();
         this.initRegistrationButton();
     }
@@ -125,6 +133,7 @@ export default class AuthorizationForm extends AbstractForm {
             onPress: this.openRegistration,
             type: ButtonType.TEXT,
         });
+
         this.regButton.init();
         this.regButton.getRoot().setAttribute('type', 'button');
         const wrapper = document.createElement('div');
