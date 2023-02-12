@@ -1,9 +1,10 @@
 import Input, {InputType} from '../input';
 import Btn, {ButtonType} from '../btn';
-import {user} from '../../index';
+import {manager, user} from '../../index';
 import UserModel from '../../models/user';
-import AbstractForm, {FormMethod} from './index';
+import AbstractForm from './index';
 import './style.styl';
+import {Scenes} from '../../scenes/manager';
 
 
 export default class AuthorizationForm extends AbstractForm {
@@ -110,9 +111,11 @@ export default class AuthorizationForm extends AbstractForm {
         return this.rootElement;
     }
 
-    private openRegistration(): void {
+    private openRegistration(): Promise<void> {
         this.email = '';
         this.password = '';
+
+        return manager.open(Scenes.REGISTRATION, {name: 'registration', route: 'registration'});
     }
 
     private initRegistrationButton(): void {
@@ -123,12 +126,12 @@ export default class AuthorizationForm extends AbstractForm {
             type: ButtonType.TEXT,
         });
         this.regButton.init();
-
+        this.regButton.getRoot().setAttribute('type', 'button');
         const wrapper = document.createElement('div');
         wrapper.classList.add('form__button-wrapper');
 
         const text = document.createElement('p');
-        text.classList.add('form__button-wrapper-text');
+        text.classList.add('form__button-wrapper_text');
         text.innerText = 'Нет аккаунта на Toxin?';
 
         wrapper.append(text);
@@ -141,7 +144,7 @@ export default class AuthorizationForm extends AbstractForm {
     protected initSubmitButton(): void {
         this.button = new Btn({
             title: 'Войти',
-            classes: ['button__fill', 'button__with-icon'],
+            classes: ['button__fill', 'button__with-icon', 'form__auth-button'],
             type: ButtonType.TEXT_WITH_ICON,
             icon: 'arrow_forward',
             iconClasses: ['button__fill-icon']

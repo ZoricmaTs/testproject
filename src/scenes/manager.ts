@@ -6,6 +6,7 @@ import Vacation from './vacation';
 import Agreements from './agreements';
 import ServicesBreakfast from './services-breakfast';
 import ServicesBooking from './services-booking';
+import Registration from './registration';
 
 export enum Scenes {
     AGREEMENTS ='agreements',
@@ -47,6 +48,8 @@ export default class Manager {
                 return new Home(params);
             case Scenes.AUTHORIZATION:
                 return new Authorization(params);
+            case Scenes.REGISTRATION:
+                return new Registration(params);
         }
     }
 
@@ -123,6 +126,8 @@ export default class Manager {
                 return Scenes.HOME;
             case Scenes.AUTHORIZATION:
                 return Scenes.AUTHORIZATION;
+            case Scenes.REGISTRATION:
+                return Scenes.REGISTRATION;
         }
     }
 
