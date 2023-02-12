@@ -1,5 +1,5 @@
 import AbstractWidget from '../abstractWidget';
-import Input from '../input';
+import Input, {InputType} from '../input';
 import Btn, {ButtonType} from '../btn';
 import './style.styl';
 
@@ -52,6 +52,19 @@ export default class AbstractForm extends AbstractWidget {
         super.beforeDOMHide();
 
         this.setError(undefined);
+    }
+
+    protected checkInputValidate(type: InputType, validityState: ValidityState) {
+        const input = this.getInput(type);
+        input.checkValidity(validityState);
+        const errors = input.getErrors().join(', ');
+
+        this.setError(errors);
+        this.showHideError(true);
+    }
+
+    protected getInput(type: InputType): Input {
+        return this.inputs.find((input: Input) => input.getType() === type);
     }
 
     protected showHideError(isError: boolean):void {

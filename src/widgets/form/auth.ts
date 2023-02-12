@@ -14,12 +14,15 @@ export default class AuthorizationForm extends AbstractForm {
     private email: string;
     private password: string;
     private regButton: Btn;
+    private values: { password: string; email: string };
 
     constructor(params: any) {
         super(params);
 
-        this.email = '';
-        this.password = '';
+        this.values = {
+            email: '',
+            password: '',
+        }
 
         this.openRegistration = this.openRegistration.bind(this);
         this.onChangeEmail = this.onChangeEmail.bind(this);
@@ -52,7 +55,7 @@ export default class AuthorizationForm extends AbstractForm {
             new Input({
                 id: 'auth_email',
                 name: 'email',
-                value: this.email,
+                value: this.values.email,
                 type: InputType.EMAIL,
                 placeholder: 'email',
                 required: true,
@@ -61,7 +64,7 @@ export default class AuthorizationForm extends AbstractForm {
             new Input({
                 id: 'auth_password',
                 name: 'password',
-                value: this.password,
+                value: this.values.password,
                 type: InputType.PASSWORD,
                 placeholder: 'password',
                 required: true,
@@ -71,11 +74,29 @@ export default class AuthorizationForm extends AbstractForm {
     }
 
     private onChangeEmail(e: Event): void {
-        this.email = (e.target as HTMLInputElement).value;
+        const target = (e.target as HTMLInputElement);
+        const isValid: boolean = target.validity.valid;
+
+        if (isValid) {
+            this.showHideError(false);
+            this.values.email = target.value;
+        } else {
+            const validity: ValidityState = target.validity;
+            this.checkInputValidate(InputType.EMAIL, validity);
+        }
     }
 
     private onChangePassword(e: Event): void {
-        this.password = (e.target as HTMLInputElement).value;
+        const target = (e.target as HTMLInputElement);
+        const isValid: boolean = target.validity.valid;
+
+        if (isValid) {
+            this.showHideError(false);
+            this.values.password = target.value;
+        } else {
+            const validity: ValidityState = target.validity;
+            this.checkInputValidate(InputType.PASSWORD, validity);
+        }
     }
 
     protected initInputs(): void {
@@ -120,8 +141,10 @@ export default class AuthorizationForm extends AbstractForm {
     }
 
     private openRegistration(): Promise<void> {
-        this.email = '';
-        this.password = '';
+        this.values = {
+            email: '',
+            password: '',
+        };
 
         return manager.open(Scenes.REGISTRATION, {name: 'registration', route: 'registration'});
     }
