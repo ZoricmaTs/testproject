@@ -17,4 +17,16 @@ export default class Operator {
             return this.operatorModel;
         })
     }
+
+    public isAuthorization(): Promise<OperatorModel> {
+        if (!this.operatorModel.isDemo) {
+            return Promise.resolve(this.operatorModel);
+        }
+
+        return api.isAuthorization().then((response: any) => {
+            this.operatorModel.isDemo = response;
+
+            return this.operatorModel;
+        })
+    }
 }

@@ -16,4 +16,14 @@ export default class Api {
 
         return fetch(userUrl).then((response) => response.json());
     }
+
+    public isAuthorization(): Promise<any> {
+        const userUrl = this.middlewareUrl + '/operator';
+
+        return fetch(userUrl, {
+            method: 'PATCH',
+            headers: {'Content-Type': 'application/json;charset=utf-8'},
+            body: JSON.stringify({isDemo: false})}
+        ).then((response) => response.json());
+    }
 }

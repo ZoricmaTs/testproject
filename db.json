@@ -48,6 +48,11 @@
     ]
   },
   "users": [
-    { "id": 1, "name": "zori", "email": "zori@ya.ru", "password": "1111"}
+    {
+      "id": 1,
+      "name": "zori",
+      "email": "zori@ya.ru",
+      "password": "1111"
+    }
   ]
 }

@@ -227,16 +227,18 @@ export default class Header extends AbstractWidget {
     }
 
     private initAuthButtons(): void {
-        this.authButton = this.createAuthButton();
-        this.authButton.init();
+        if (this.operator.isDemo) {
+            this.authButton = this.createAuthButton();
+            this.authButton.init();
 
-        this.authMobileButton = this.createAuthButton();
-        this.authMobileButton.init();
+            this.authMobileButton = this.createAuthButton();
+            this.authMobileButton.init();
 
-        this.desktopWrapper.append(this.authButton.getRoot());
-        this.widgets.push(this.authButton);
-        this.mobileWrapper.append(this.authMobileButton.getRoot());
-        this.widgets.push(this.authMobileButton);
+            this.desktopWrapper.append(this.authButton.getRoot());
+            this.widgets.push(this.authButton);
+            this.mobileWrapper.append(this.authMobileButton.getRoot());
+            this.widgets.push(this.authMobileButton);
+        }
     }
 
     private createRegButton(): Btn {

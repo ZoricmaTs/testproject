@@ -1,6 +1,6 @@
 import Input, {InputType} from '../input';
 import Btn, {ButtonType} from '../btn';
-import {manager, user} from '../../index';
+import {manager, operator, user} from '../../index';
 import UserModel from '../../models/user';
 import AbstractForm from './index';
 import './style.styl';
@@ -11,8 +11,6 @@ export default class AuthorizationForm extends AbstractForm {
     protected rootElement: HTMLFormElement;
     protected inputs: Input[];
     protected button: Btn;
-    private email: string;
-    private password: string;
     private regButton: Btn;
     private values: { password: string; email: string };
 
@@ -112,10 +110,10 @@ export default class AuthorizationForm extends AbstractForm {
     protected onSubmit(e: Event): void {
         e.preventDefault();
 
-        return user.getUser({email: this.email, password: this.password})
-            .then((response: UserModel) => {
-                this.showHideError(false);
-            })
+        return user.getUser({email: this.values.email, password: this.values.password})
+            .then((response: UserModel) => this.showHideError(false))
+            .then(() => operator.isAuthorization())
+            .then(() => manager.open(Scenes.HOME, {name: 'home', route: 'home'}))
             .catch((error: ErrorEvent) => {
                 this.setError(error.message);
                 this.showHideError(true);
