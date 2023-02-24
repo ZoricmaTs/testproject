@@ -6,7 +6,6 @@ import {SceneParams, Scenes} from '../../scenes/manager';
 import {manager, screen} from '../../index';
 import Btn, {ButtonType} from '../btn';
 import UserModel from '../../models/user';
-import Operator from '../../models/operator';
 import Logo from '../logo';
 import Screen from '../../services/screen';
 
@@ -32,7 +31,7 @@ export default class Header extends AbstractWidget {
     private rootElement: Element;
     private itemsData: ItemParams[];
     private user: UserModel;
-    private readonly operator: Operator;
+    private isDemo: boolean;
     private logo: Logo;
     private desktopWrapper: HTMLDivElement;
 
@@ -49,12 +48,14 @@ export default class Header extends AbstractWidget {
     private authMobileButton: Btn;
     private regButton: Btn;
     private regMobileButton: Btn;
+    private profileButton: Btn;
+    private profileMobileButton: Btn;
 
     constructor(params: any) {
         super(params);
 
         this.itemsData = params.items;
-        this.operator = params.operator;
+        this.isDemo = params.isDemo;
         this.user = params.user;
 
         this.onPressMenu = this.onPressMenu.bind(this);
@@ -227,7 +228,7 @@ export default class Header extends AbstractWidget {
     }
 
     private initAuthButtons(): void {
-        if (this.operator.isDemo) {
+        if (this.isDemo) {
             this.authButton = this.createAuthButton();
             this.authButton.init();
 
@@ -250,6 +251,15 @@ export default class Header extends AbstractWidget {
         })
     }
 
+    private createProfileButton(): Btn {
+        return new Btn({
+            title: this.user.getName(),
+            classes: ['header__button', 'header__item'],
+            onPress: () => console.log('open Profile'),
+            type: ButtonType.TEXT,
+        })
+    }
+
     private initLogo(): void {
         this.logo = new Logo({});
 
@@ -260,7 +270,7 @@ export default class Header extends AbstractWidget {
     }
 
     private initRegButtons(): void {
-        if (this.operator.isDemo) {
+        if (this.isDemo) {
             this.regButton = this.createRegButton();
             this.regButton.init();
             this.regMobileButton = this.createRegButton();
@@ -270,6 +280,31 @@ export default class Header extends AbstractWidget {
             this.widgets.push(this.regButton);
             this.mobileWrapper.append(this.regMobileButton.getRoot());
             this.widgets.push(this.regMobileButton);
+        }
+    }
+
+    private initProfileButton(): void {
+        if (!this.isDemo && this.user) {
+            this.profileButton = this.createProfileButton();
+            this.profileButton.init();
+            this.profileButton.getRoot().classList.add('header__button_profile')
+            this.desktopWrapper.append(this.profileButton.getRoot());
+            this.widgets.push(this.profileButton);
+
+            this.profileMobileButton = this.createProfileButton();
+            this.profileMobileButton.init();
+            this.mobileWrapper.append(this.profileMobileButton.getRoot());
+            this.widgets.push(this.profileMobileButton);
+        }
+    }
+
+    public setData({user, isDemo}: {user?: UserModel, isDemo?: boolean}): void {
+        if (user) {
+            this.user = user;
+        }
+
+        if (isDemo) {
+            this.isDemo = isDemo;
         }
     }
 
@@ -330,6 +365,7 @@ export default class Header extends AbstractWidget {
 
         this.initAuthButtons();
         this.initRegButtons();
+        this.initProfileButton();
 
         this.initMobileMenuButton();
     }

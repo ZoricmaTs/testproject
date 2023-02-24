@@ -41,7 +41,7 @@ export default class Company extends AbstractScene {
     }
 
     private initHeader(): void {
-        this.header = new Header({items: this.operator.getHeaderItems(), operator: this.operator});
+        this.header = new Header({items: this.operator.getHeaderItems(), user: this.user, isDemo: this.operator.isDemo});
         this.header.init();
         this.getContainer().append(this.header.getRoot());
         this.widgets.push(this.header);

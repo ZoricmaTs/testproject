@@ -24,7 +24,7 @@ export default class Operator {
         }
 
         return api.isAuthorization().then((response: any) => {
-            this.operatorModel.isDemo = response;
+            this.operatorModel.isDemo = response.isDemo;
 
             return this.operatorModel;
         })

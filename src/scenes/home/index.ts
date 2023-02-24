@@ -145,7 +145,7 @@ export default class Home extends AbstractScene {
     }
 
     private initHeader(): void {
-        this.header = new Header({items: this.operator.getHeaderItems(), user: this.user, operator: this.operator});
+        this.header = new Header({items: this.operator.getHeaderItems(), user: this.user, isDemo: this.operator.isDemo});
         this.header.init();
         this.getContainer().append(this.header.getRoot());
         this.widgets.push(this.header);
@@ -163,14 +163,20 @@ export default class Home extends AbstractScene {
             .then((response: Operator) => {
                 this.operator = response;
                 this.setOptions({operator: this.operator});
-                this.initWidgets();
-
-                if (!response.isDemo) {
+            })
+            .then(() => {
+                if (!this.operator.isDemo) {
                     return user.getUser()
                         .then((response: UserModel) => {
                             this.user = response;
-                        })
-                        .catch((error: ErrorEvent) => console.log(`open ${this.name}`, error));
+                            this.setOptions({user: this.user});
+                        });
+                }
+            })
+            .then(() => {
+                this.initWidgets();
+                if (!this.operator.isDemo && this.user) {
+                    this.header.setData({user: this.user, isDemo: this.operator.isDemo});
                 }
             })
             .catch((error: ErrorEvent) => console.log(`open ${this.name}`, error));

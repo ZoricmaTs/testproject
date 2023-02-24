@@ -111,9 +111,16 @@ export default class AuthorizationForm extends AbstractForm {
         e.preventDefault();
 
         return user.getUser({email: this.values.email, password: this.values.password})
-            .then((response: UserModel) => this.showHideError(false))
-            .then(() => operator.isAuthorization())
-            .then(() => manager.open(Scenes.HOME, {name: 'home', route: 'home'}))
+            .then((response: UserModel) => {
+                this.showHideError(false);
+                return response;
+            })
+            .then((response: UserModel) => operator.isAuthorization())
+            .then(() => {
+                localStorage.user = JSON.stringify({email: this.values.email, password: this.values.password});
+
+                return manager.open(Scenes.HOME, {name: 'home', route: 'home'});
+            })
             .catch((error: ErrorEvent) => {
                 this.setError(error.message);
                 this.showHideError(true);

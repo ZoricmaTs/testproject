@@ -39,7 +39,7 @@ export default class Registration extends AbstractScene {
     }
 
     protected initHeader(): void {
-        this.header = new Header({items: this.operator.getHeaderItems(), user: this.user, operator: this.operator});
+        this.header = new Header({items: this.operator.getHeaderItems(), user: this.user, isDemo: this.operator.isDemo});
         this.header.init();
         this.getContainer().append(this.header.getRoot());
         this.widgets.push(this.header);
