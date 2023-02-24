@@ -5,7 +5,7 @@ import Operator from '../../models/operator';
 import Header from '../../widgets/header';
 import './style.styl';
 import '../scene.styl';
-import AuthorizationForm from '../../widgets/form/auth';
+import AuthorizationForm from '../../widgets/form/authorization';
 
 export default class Authorization extends AbstractScene {
     private header: Header;

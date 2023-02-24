@@ -16,7 +16,6 @@ export default class Home extends AbstractScene {
     private operator: Operator;
     private header: Header;
     private checkbox: Checkbox;
-    private radioSelector: RadioSelector;
     private textInput: Input;
     private background: HTMLImageElement;
 
@@ -26,7 +25,6 @@ export default class Home extends AbstractScene {
         this.openScene = this.openScene.bind(this);
         this.openAuthScene = this.openAuthScene.bind(this);
         this.onChangeCheck = this.onChangeCheck.bind(this);
-        this.onChangeRadioBtn = this.onChangeRadioBtn.bind(this);
         this.onChangeText = this.onChangeText.bind(this);
     }
 
@@ -80,39 +78,6 @@ export default class Home extends AbstractScene {
         this.widgets.push(this.checkbox);
     }
 
-    public onChangeRadioBtn(id: string): void {
-        console.log('id', id);
-    }
-
-    public createRadioButton(): RadioSelector {
-        return new RadioSelector({
-            id: '123',
-            title: 'кто ты',
-            name: 'sdfsdf',
-            onChange: this.onChangeRadioBtn,
-            buttons: [
-                {
-                    id: '111',
-                    label: 'мужчина',
-                    value: 'мужчина',
-                    checked: false,
-                },
-                {
-                    id: '222',
-                    label: 'ребёнок',
-                    value: 'ребёнок',
-                    checked: false,
-                },
-                {
-                    id: '333',
-                    label: 'Зус',
-                    value: 'Зус',
-                    checked: true,
-                }
-            ]
-        });
-    }
-
     public onChangeText(value: string): void {
 
     }
@@ -136,14 +101,6 @@ export default class Home extends AbstractScene {
         this.widgets.push(this.textInput)
     }
 
-    public initRadioButton(): void {
-        this.radioSelector = this.createRadioButton();
-        this.radioSelector.init();
-
-        this.getContainer().append(this.radioSelector.getRoot());
-        this.widgets.push(this.radioSelector);
-    }
-
     private initHeader(): void {
         this.header = new Header({items: this.operator.getHeaderItems(), user: this.user, isDemo: this.operator.isDemo});
         this.header.init();
@@ -154,7 +111,6 @@ export default class Home extends AbstractScene {
     protected initWidgets(): void {
         this.initHeader();
         // this.initCheckbox();
-        // this.initRadioButton();
         this.initTextInput();
     }
 

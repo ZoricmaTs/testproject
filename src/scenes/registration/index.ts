@@ -5,7 +5,7 @@ import Operator from '../../models/operator';
 import Header from '../../widgets/header';
 import './style.styl';
 import '../scene.styl';
-import AuthorizationForm from '../../widgets/form/auth';
+import RegistrationForm from '../../widgets/form/registration';
 
 export default class Registration extends AbstractScene {
     private header: Header;
@@ -13,7 +13,7 @@ export default class Registration extends AbstractScene {
     private operator: Operator;
     private background: HTMLImageElement;
     private contentWrapper: HTMLDivElement;
-    private formWidget: AuthorizationForm;
+    private formWidget: RegistrationForm;
 
     constructor(params: any) {
         super(params);
@@ -56,11 +56,11 @@ export default class Registration extends AbstractScene {
         this.initHeader();
         this.initContentWrapper();
         this.initBackground();
-        // this.initFormWidget();
+        this.initFormWidget();
     }
     
     protected getTitle(): string {
-        return 'Войти';
+        return 'Регистрация аккаунта';
     }
 
     private onAuthorization(): void {
@@ -68,7 +68,7 @@ export default class Registration extends AbstractScene {
     }
 
     private initFormWidget(): void {
-        this.formWidget = new AuthorizationForm({title: this.getTitle()});
+        this.formWidget = new RegistrationForm({title: this.getTitle()});
         this.formWidget.init();
         this.contentWrapper.append(this.formWidget.getRoot());
         this.widgets.push(this.formWidget);

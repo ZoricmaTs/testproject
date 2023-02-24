@@ -5,26 +5,28 @@ import UserModel from '../../models/user';
 import AbstractForm from './index';
 import './style.styl';
 import {Scenes} from '../../scenes/manager';
+import RadioSelector from '../radio-selector';
 
-
-export default class AuthorizationForm extends AbstractForm {
+export default class RegistrationForm extends AbstractForm {
     protected rootElement: HTMLFormElement;
     protected inputs: Input[];
     protected button: Btn;
-    private regButton: Btn;
-    private values: { password: string; email: string };
+    private authButton: Btn;
+    private values: { firstName: string; lastName: string };
+    private radioSelector: RadioSelector;
 
     constructor(params: any) {
         super(params);
 
         this.values = {
-            email: '',
-            password: '',
+            firstName: '',
+            lastName: '',
         }
 
         this.openRegistration = this.openRegistration.bind(this);
-        this.onChangeEmail = this.onChangeEmail.bind(this);
-        this.onChangePassword = this.onChangePassword.bind(this);
+        this.onChangeFirstName = this.onChangeFirstName.bind(this);
+        this.onChangeLastName = this.onChangeLastName.bind(this);
+        this.onChangeRadioBtn = this.onChangeRadioBtn.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
     }
 
@@ -51,49 +53,49 @@ export default class AuthorizationForm extends AbstractForm {
     protected createInputs(): Input[] {
         return [
             new Input({
-                id: 'auth_email',
-                name: 'email',
-                value: this.values.email,
-                type: InputType.EMAIL,
-                placeholder: 'email',
+                id: 'reg_first-name',
+                name: 'first-name',
+                value: this.values.firstName,
+                type: InputType.TEXT,
+                placeholder: 'имя',
                 required: true,
-                onChange: this.onChangeEmail,
+                onChange: this.onChangeFirstName,
             }),
             new Input({
-                id: 'auth_password',
-                name: 'password',
-                value: this.values.password,
-                type: InputType.PASSWORD,
-                placeholder: 'password',
+                id: 'reg_last-name',
+                name: 'last-name',
+                value: this.values.lastName,
+                type: InputType.TEXT,
+                placeholder: 'фамилия',
                 required: true,
-                onChange: this.onChangePassword,
+                onChange: this.onChangeLastName,
             }),
         ];
     }
 
-    private onChangeEmail(e: Event): void {
+    private onChangeFirstName(e: Event): void {
         const target = (e.target as HTMLInputElement);
         const isValid: boolean = target.validity.valid;
 
         if (isValid) {
             this.showHideError(false);
-            this.values.email = target.value;
+            this.values.firstName = target.value;
         } else {
             const validity: ValidityState = target.validity;
-            this.checkInputValidate(InputType.EMAIL, validity);
+            this.checkInputValidate(InputType.TEXT, validity);
         }
     }
 
-    private onChangePassword(e: Event): void {
+    private onChangeLastName(e: Event): void {
         const target = (e.target as HTMLInputElement);
         const isValid: boolean = target.validity.valid;
 
         if (isValid) {
             this.showHideError(false);
-            this.values.password = target.value;
+            this.values.lastName = target.value;
         } else {
             const validity: ValidityState = target.validity;
-            this.checkInputValidate(InputType.PASSWORD, validity);
+            this.checkInputValidate(InputType.TEXT, validity);
         }
     }
 
@@ -110,21 +112,21 @@ export default class AuthorizationForm extends AbstractForm {
     protected onSubmit(e: Event): void {
         e.preventDefault();
 
-        return user.getUser({email: this.values.email, password: this.values.password})
-            .then((response: UserModel) => {
-                this.showHideError(false);
-                return response;
-            })
-            .then((response: UserModel) => operator.isAuthorization())
-            .then(() => {
-                localStorage.user = JSON.stringify({email: this.values.email, password: this.values.password});
-
-                return manager.open(Scenes.HOME, {name: 'home', route: 'home'});
-            })
-            .catch((error: ErrorEvent) => {
-                this.setError(error.message);
-                this.showHideError(true);
-            });
+        // return user.getUser({email: this.values.email, password: this.values.password})
+        //     .then((response: UserModel) => {
+        //         this.showHideError(false);
+        //         return response;
+        //     })
+        //     .then((response: UserModel) => operator.isAuthorization())
+        //     .then(() => {
+        //         localStorage.user = JSON.stringify({email: this.values.email, password: this.values.password});
+        //
+        //         return manager.open(Scenes.HOME, {name: 'home', route: 'home'});
+        //     })
+        //     .catch((error: ErrorEvent) => {
+        //         this.setError(error.message);
+        //         this.showHideError(true);
+        //     });
     }
 
     public init(): void {
@@ -137,8 +139,50 @@ export default class AuthorizationForm extends AbstractForm {
 
         this.initInputs();
         this.initErrorMessage();
+        this.initRadioButton();
         this.initSubmitButton();
-        this.initRegistrationButton();
+        this.initAuthorizationButton();
+    }
+
+    private onChangeRadioBtn(id: string): void {
+        console.log('id', id);
+    }
+
+    private createRadioButton(): RadioSelector {
+        return new RadioSelector({
+            id: '123',
+            title: 'кто ты',
+            name: 'sdfsdf',
+            onChange: this.onChangeRadioBtn,
+            buttons: [
+                {
+                    id: '111',
+                    label: 'мужчина',
+                    value: 'мужчина',
+                    checked: false,
+                },
+                {
+                    id: '222',
+                    label: 'ребёнок',
+                    value: 'ребёнок',
+                    checked: false,
+                },
+                {
+                    id: '333',
+                    label: 'Зус',
+                    value: 'Зус',
+                    checked: true,
+                }
+            ]
+        });
+    }
+
+    public initRadioButton(): void {
+        this.radioSelector = this.createRadioButton();
+        this.radioSelector.init();
+
+        this.getRoot().append(this.radioSelector.getRoot());
+        this.widgets.push(this.radioSelector);
     }
 
     public getRoot() {
@@ -147,40 +191,40 @@ export default class AuthorizationForm extends AbstractForm {
 
     private openRegistration(): Promise<void> {
         this.values = {
-            email: '',
-            password: '',
+            firstName: '',
+            lastName: '',
         };
 
         return manager.open(Scenes.REGISTRATION, {name: 'registration', route: 'registration'});
     }
 
-    private initRegistrationButton(): void {
-        this.regButton = new Btn({
-            title: 'создать',
+    private initAuthorizationButton(): void {
+        this.authButton = new Btn({
+            title: 'войти',
             classes: ['button__stroke'],
             onPress: this.openRegistration,
             type: ButtonType.TEXT,
         });
 
-        this.regButton.init();
-        this.regButton.getRoot().setAttribute('type', 'button');
+        this.authButton.init();
+        this.authButton.getRoot().setAttribute('type', 'button');
         const wrapper = document.createElement('div');
         wrapper.classList.add('form__button-wrapper');
 
         const text = document.createElement('p');
         text.classList.add('form__button-wrapper_text');
-        text.innerText = 'Нет аккаунта на Toxin?';
+        text.innerText = 'Уже есть аккаунт на Toxin';
 
         wrapper.append(text);
-        wrapper.append(this.regButton.getRoot());
+        wrapper.append(this.authButton.getRoot());
 
         this.rootElement.append(wrapper);
-        this.widgets.push(this.regButton);
+        this.widgets.push(this.authButton);
     }
 
     protected initSubmitButton(): void {
         this.button = new Btn({
-            title: 'Войти',
+            title: 'Зарегистрироваться',
             classes: ['button__fill', 'button__with-icon', 'form__auth-button'],
             type: ButtonType.TEXT_WITH_ICON,
             icon: 'arrow_forward',
