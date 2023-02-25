@@ -7,8 +7,8 @@ import UserModel from '../../models/user';
 import Operator from '../../models/operator';
 import Header from '../../widgets/header';
 import Checkbox from '../../widgets/checkbox';
-import RadioSelector from '../../widgets/radio-selector';
 import Input, {InputType} from '../../widgets/input';
+import DateAbstract from '../../widgets/date';
 
 export default class Home extends AbstractScene {
     protected options: any;
@@ -18,6 +18,7 @@ export default class Home extends AbstractScene {
     private checkbox: Checkbox;
     private textInput: Input;
     private background: HTMLImageElement;
+    private date: DateAbstract;
 
     constructor(params: any) {
         super(params);
@@ -94,6 +95,13 @@ export default class Home extends AbstractScene {
         })
     }
 
+    private initDate(): void {
+        this.date = new DateAbstract({});
+        this.date.init();
+        this.getContainer().append(this.date.getRoot());
+        this.widgets.push(this.date);
+    }
+
     public initTextInput(): void {
         this.textInput = this.createInput();
         this.textInput.init();
@@ -110,8 +118,9 @@ export default class Home extends AbstractScene {
 
     protected initWidgets(): void {
         this.initHeader();
+        this.initDate();
         // this.initCheckbox();
-        this.initTextInput();
+        // this.initTextInput();
     }
 
     public open(): Promise<any> {
