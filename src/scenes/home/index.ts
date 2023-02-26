@@ -9,6 +9,7 @@ import Header from '../../widgets/header';
 import Checkbox from '../../widgets/checkbox';
 import Input, {InputType} from '../../widgets/input';
 import DateAbstract from '../../widgets/date';
+import DateInput from '../../widgets/date';
 
 export default class Home extends AbstractScene {
     protected options: any;
@@ -18,7 +19,8 @@ export default class Home extends AbstractScene {
     private checkbox: Checkbox;
     private textInput: Input;
     private background: HTMLImageElement;
-    private date: DateAbstract;
+    private date: DateInput;
+    private dateEnd: DateInput;
 
     constructor(params: any) {
         super(params);
@@ -96,10 +98,15 @@ export default class Home extends AbstractScene {
     }
 
     private initDate(): void {
-        this.date = new DateAbstract({});
+        this.date = new DateAbstract({id: 1});
         this.date.init();
+
+        this.dateEnd = new DateAbstract({id: 1});
+        this.dateEnd.init();
         this.getContainer().append(this.date.getRoot());
+        this.getContainer().append(this.dateEnd.getRoot());
         this.widgets.push(this.date);
+        this.widgets.push(this.dateEnd);
     }
 
     public initTextInput(): void {
