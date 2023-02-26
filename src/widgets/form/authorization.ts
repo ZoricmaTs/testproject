@@ -136,6 +136,7 @@ export default class AuthorizationForm extends AbstractForm {
 
         this.initInputs();
         this.initErrorMessage();
+
         this.initSubmitButton();
         this.initRegistrationButton();
     }

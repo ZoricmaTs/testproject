@@ -1,14 +1,26 @@
 import AbstractWidget from '../abstractWidget';
 import './style.styl';
 
+export type DateInputType = {
+    id: number,
+    title?: string,
+    required?: boolean,
+}
+
 export default class DateInput extends AbstractWidget {
     protected rootElement: HTMLDivElement;
-    private datepicker: any;
+    protected datepicker: any;
     protected id: number;
-    constructor(params: any) {
+    protected inputElement: HTMLInputElement;
+    protected titleElement: HTMLDivElement;
+    protected title: string;
+    protected required: boolean;
+    constructor(params: DateInputType) {
         super(params);
 
         this.id = params.id;
+        this.title = params.title;
+        this.required = params.required;
 
         this.onChange = this.onChange.bind(this);
     }
@@ -37,8 +49,21 @@ export default class DateInput extends AbstractWidget {
         return 'Введите 4-значный год';
     }
 
+    protected validate(): void {
+        if (this.required) {
+            this.inputElement.required = this.required;
+        }
+    }
+
     public afterDOMShow() {
         super.afterDOMShow();
+
+        if (this.title) {
+            this.initTitle();
+        }
+
+        this.initInput();
+
         const datepicker = require('js-datepicker');
 
         const options = {
@@ -53,13 +78,29 @@ export default class DateInput extends AbstractWidget {
             overlayButton: 'Применить',
         };
 
-        this.datepicker = datepicker(this.rootElement, options);
+        this.datepicker = datepicker(this.inputElement, options);
     }
 
     public init(): any {
-        this.rootElement = document.createElement('input');
-        this.rootElement.setAttribute('type', 'text');
+        this.rootElement = document.createElement('div');
         this.rootElement.classList.add('date');
+    }
+
+    protected initTitle(): void {
+        this.titleElement = document.createElement('div');
+        this.titleElement.classList.add('date__title');
+        this.titleElement.innerText = this.title;
+        this.getRoot().append(this.titleElement);
+    }
+
+    protected initInput(): any {
+        this.inputElement = document.createElement('input');
+        this.inputElement.setAttribute('type', 'text');
+        this.inputElement.classList.add(`input-date`);
+
+        this.validate();
+
+        this.getRoot().append(this.inputElement);
     }
 
     public getRoot(): HTMLDivElement {

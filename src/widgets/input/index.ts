@@ -5,10 +5,11 @@ export enum InputType {
     TEXT = 'text',
     EMAIL = 'email',
     PASSWORD = 'password',
+    DATE = 'date',
 }
 
 export default class Input extends AbstractWidget {
-    public validateInputs: {[key in InputType]: {[k in keyof ValidityState]?: string}} = {
+    public static validateInputs: {[key in InputType]: {[k in keyof ValidityState]?: string}} = {
         [InputType.EMAIL]: {
             'typeMismatch': 'Некорректное значение',
             'tooLong': 'Количество символов не дожно превышать 255 значений'
@@ -21,7 +22,10 @@ export default class Input extends AbstractWidget {
             'typeMismatch': 'Некорректное значение',
             'tooLong': 'Количество символов не дожно превышать 255 значений',
             'tooShort': 'Количество символов не дожно превышать 4 значений'
-        }
+        },
+        [InputType.DATE]: {
+            'typeMismatch': 'Некорректное значение',
+        },
     }
 
     protected input: HTMLInputElement;
@@ -29,11 +33,13 @@ export default class Input extends AbstractWidget {
     protected id: string;
     protected name: string;
     protected value: string;
-    private rootElement: HTMLDivElement;
+    protected rootElement: HTMLDivElement;
     protected placeholder: string;
     protected required: boolean;
     protected onChangeValue: (value: any) => void;
     protected errors: string[];
+    protected title: string;
+    protected titleElement: HTMLDivElement;
 
     constructor(params: any) {
         super(params);
@@ -42,20 +48,32 @@ export default class Input extends AbstractWidget {
         this.id = params.id;
         this.name = params.name;
         this.value = params.value;
-        this.placeholder = params.placeholder;
+        this.title = params.title;
+        this.setPlaceholder(params.placeholder);
+
         this.required = params.required;
         this.errors = [];
+
         this.onChangeValue = params.onChange;
 
         this.onChange = this.onChange.bind(this);
     }
 
-    private createInput(): void {
+    protected setPlaceholder(placeholder: string): void {
+        this.placeholder = placeholder ? placeholder : undefined;
+    }
+
+    protected createInput(): void {
         this.input = document.createElement('input');
-        this.input.setAttribute('type', this.type);
+        if (this.type === InputType.DATE) {
+            this.input.setAttribute('type', 'text');
+        } else {
+            this.input.setAttribute('type', this.type);
+            this.input.setAttribute('value', this.value);
+        }
+
         this.input.setAttribute('id', this.id);
-        this.input.setAttribute('name', this.name)
-        this.input.setAttribute('value', this.value);
+        this.input.setAttribute('name', this.name);
 
         if (this.placeholder) {
             this.input.setAttribute('placeholder', this.placeholder);
@@ -66,7 +84,7 @@ export default class Input extends AbstractWidget {
         this.input.classList.add(`input-${this.type}__input`);
     }
 
-    private validate(): void {
+    protected validate(): void {
         if (this.required) {
             this.input.required = this.required;
         }
@@ -87,7 +105,7 @@ export default class Input extends AbstractWidget {
         return this.type;
     }
 
-    public onChange(e: Event): void {
+    protected onChange(e: Event): void {
         if (this.onChangeValue) {
             const value = (e.target as HTMLInputElement).value;
             const valid = (e.target as HTMLInputElement).validity.valid;
@@ -109,7 +127,7 @@ export default class Input extends AbstractWidget {
     }
 
     public checkValidity(validity: ValidityState): any {
-        Object.entries(this.validateInputs[this.type]).forEach(([key, value]: [keyof ValidityState, string]) => {
+        Object.entries(Input.validateInputs[this.type]).forEach(([key, value]: [keyof ValidityState, string]) => {
             const isExist = this.isErrorExist(value);
             if (!isExist) {
                 if (validity[key]) {
@@ -121,9 +139,21 @@ export default class Input extends AbstractWidget {
 
     public init(): void {
         this.rootElement = document.createElement('div');
-        this.rootElement.classList.add(`input-${this.type}`)
+        this.rootElement.classList.add(`input-${this.type}`);
+
+        if (this.title) {
+            this.initTitle();
+        }
+
         this.createInput();
         this.rootElement.append(this.input);
+    }
+
+    protected initTitle(): void {
+        this.titleElement = document.createElement('div');
+        this.titleElement.classList.add(`input-${this.type}__title`);
+        this.titleElement.innerText = this.title;
+        this.rootElement.append(this.titleElement);
     }
 
     public getRoot(): HTMLDivElement {

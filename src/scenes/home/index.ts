@@ -8,8 +8,7 @@ import Operator from '../../models/operator';
 import Header from '../../widgets/header';
 import Checkbox from '../../widgets/checkbox';
 import Input, {InputType} from '../../widgets/input';
-import DateAbstract from '../../widgets/date';
-import DateInput from '../../widgets/date';
+import DateInput from '../../widgets/input/date';
 
 export default class Home extends AbstractScene {
     protected options: any;
@@ -17,10 +16,7 @@ export default class Home extends AbstractScene {
     private operator: Operator;
     private header: Header;
     private checkbox: Checkbox;
-    private textInput: Input;
     private background: HTMLImageElement;
-    private date: DateInput;
-    private dateEnd: DateInput;
 
     constructor(params: any) {
         super(params);
@@ -85,37 +81,6 @@ export default class Home extends AbstractScene {
 
     }
 
-    public createInput(): Input {
-        return new Input({
-            id: 'text_1',
-            name: 'dfgdfg',
-            value: '',
-            type: InputType.PASSWORD,
-            placeholder: 'e',
-            required: true,
-            onChange: this.onChangeText
-        })
-    }
-
-    private initDate(): void {
-        this.date = new DateAbstract({id: 1});
-        this.date.init();
-
-        this.dateEnd = new DateAbstract({id: 1});
-        this.dateEnd.init();
-        this.getContainer().append(this.date.getRoot());
-        this.getContainer().append(this.dateEnd.getRoot());
-        this.widgets.push(this.date);
-        this.widgets.push(this.dateEnd);
-    }
-
-    public initTextInput(): void {
-        this.textInput = this.createInput();
-        this.textInput.init();
-        this.getContainer().append(this.textInput.getRoot());
-        this.widgets.push(this.textInput)
-    }
-
     private initHeader(): void {
         this.header = new Header({items: this.operator.getHeaderItems(), user: this.user, isDemo: this.operator.isDemo});
         this.header.init();
@@ -125,9 +90,7 @@ export default class Home extends AbstractScene {
 
     protected initWidgets(): void {
         this.initHeader();
-        this.initDate();
         // this.initCheckbox();
-        // this.initTextInput();
     }
 
     public open(): Promise<any> {

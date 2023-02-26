@@ -1,11 +1,11 @@
 import Input, {InputType} from '../input';
 import Btn, {ButtonType} from '../btn';
-import {manager, operator, user} from '../../index';
-import UserModel from '../../models/user';
+import {manager} from '../../index';
 import AbstractForm from './index';
 import './style.styl';
 import {Scenes} from '../../scenes/manager';
 import RadioSelector from '../radio-selector';
+import DateInput from '../input/date';
 
 export default class RegistrationForm extends AbstractForm {
     protected rootElement: HTMLFormElement;
@@ -14,6 +14,7 @@ export default class RegistrationForm extends AbstractForm {
     private authButton: Btn;
     private values: { firstName: string; lastName: string };
     private radioSelector: RadioSelector;
+    private birthDate: DateInput;
 
     constructor(params: any) {
         super(params);
@@ -140,8 +141,16 @@ export default class RegistrationForm extends AbstractForm {
         this.initInputs();
         this.initErrorMessage();
         this.initRadioButton();
+        this.initBirthDate();
         this.initSubmitButton();
         this.initAuthorizationButton();
+    }
+
+    private initBirthDate(): void {
+        this.birthDate = new DateInput({id: 1, title: 'дата рождения', type: InputType.DATE, name: 'date'});
+        this.birthDate.init();
+        this.rootElement.append(this.birthDate.getRoot());
+        this.widgets.push(this.birthDate);
     }
 
     private onChangeRadioBtn(id: string): void {
@@ -181,7 +190,7 @@ export default class RegistrationForm extends AbstractForm {
         this.radioSelector = this.createRadioButton();
         this.radioSelector.init();
 
-        this.getRoot().append(this.radioSelector.getRoot());
+        this.rootElement.append(this.radioSelector.getRoot());
         this.widgets.push(this.radioSelector);
     }
 

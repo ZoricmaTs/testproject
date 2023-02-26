@@ -20,13 +20,24 @@ text-normal = @block {
   line-height 15px
 }
 
-.date
+.input-date
   width 100%
-  {text-body}
-  border 1px solid $color-dark-shade-25
-  border-radius 4px
-  padding 7px 31px 11px 14px
-  background-color $color-white
+
+  &__title
+    {text-bold}
+    text-transform uppercase
+    color $color-dark-shade
+    text-align left
+    margin-bottom 5px
+
+  &__input
+    width 100%
+    {text-body}
+    border 1px solid $color-dark-shade-25
+    border-radius 4px
+    padding 7px 31px 11px 14px
+    background-color $color-white
+
 .qs-datepicker-container
   width 320px
 .qs-controls
