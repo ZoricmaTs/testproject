@@ -7,8 +7,6 @@ import UserModel from '../../models/user';
 import Operator from '../../models/operator';
 import Header from '../../widgets/header';
 import Checkbox from '../../widgets/checkbox';
-import Input, {InputType} from '../../widgets/input';
-import DateInput from '../../widgets/input/date';
 
 export default class Home extends AbstractScene {
     protected options: any;

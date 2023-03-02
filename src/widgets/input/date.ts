@@ -72,6 +72,24 @@ export default class DateInput extends Input {
         return this.type;
     }
 
+    protected getValidateRules(): any {
+
+    }
+
+    protected onChange(e: Event): void {
+        console.log('e', e.target)
+        if (this.onChangeValue) {
+            const value = (e.target as HTMLInputElement).value;
+            const valid = (e.target as HTMLInputElement).validity.valid;
+            this.onChangeValue(e);
+            this.input.setAttribute('value', value);
+
+            if (valid) {
+                this.errors = [];
+            }
+        }
+    }
+
     protected onChangeDate(input: any, date: any, instance: any): void {
         this.input.value = date.toLocaleDateString();
     }

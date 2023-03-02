@@ -12,7 +12,7 @@ export default class RegistrationForm extends AbstractForm {
     protected inputs: Input[];
     protected button: Btn;
     private authButton: Btn;
-    private values: { firstName: string; lastName: string };
+    private values: { firstName: string; lastName: string, email: string, password: string };
     private radioSelector: RadioSelector;
     private birthDate: DateInput;
 
@@ -22,12 +22,13 @@ export default class RegistrationForm extends AbstractForm {
         this.values = {
             firstName: '',
             lastName: '',
+            email: '',
+            password: '',
         }
 
         this.openRegistration = this.openRegistration.bind(this);
-        this.onChangeFirstName = this.onChangeFirstName.bind(this);
-        this.onChangeLastName = this.onChangeLastName.bind(this);
         this.onChangeRadioBtn = this.onChangeRadioBtn.bind(this);
+
         this.onSubmit = this.onSubmit.bind(this);
     }
 
@@ -51,7 +52,7 @@ export default class RegistrationForm extends AbstractForm {
         this.setError(undefined);
     }
 
-    protected createInputs(): Input[] {
+    protected createProfileInfoInputs(): Input[] | DateInput[] {
         return [
             new Input({
                 id: 'reg_first-name',
@@ -60,7 +61,7 @@ export default class RegistrationForm extends AbstractForm {
                 type: InputType.TEXT,
                 placeholder: 'имя',
                 required: true,
-                onChange: this.onChangeFirstName,
+                onChange: this.getInputHandler('firstName', InputType.TEXT),
             }),
             new Input({
                 id: 'reg_last-name',
@@ -69,39 +70,26 @@ export default class RegistrationForm extends AbstractForm {
                 type: InputType.TEXT,
                 placeholder: 'фамилия',
                 required: true,
-                onChange: this.onChangeLastName,
+                onChange: this.getInputHandler('lastName', InputType.TEXT),
             }),
         ];
     }
 
-    private onChangeFirstName(e: Event): void {
+    private onInput(e: Event, key: keyof typeof this.values, inputType: InputType): void {
         const target = (e.target as HTMLInputElement);
         const isValid: boolean = target.validity.valid;
 
         if (isValid) {
             this.showHideError(false);
-            this.values.firstName = target.value;
+            this.values[key] = target.value;
         } else {
             const validity: ValidityState = target.validity;
-            this.checkInputValidate(InputType.TEXT, validity);
+            this.checkInputValidate(inputType, validity);
         }
     }
 
-    private onChangeLastName(e: Event): void {
-        const target = (e.target as HTMLInputElement);
-        const isValid: boolean = target.validity.valid;
-
-        if (isValid) {
-            this.showHideError(false);
-            this.values.lastName = target.value;
-        } else {
-            const validity: ValidityState = target.validity;
-            this.checkInputValidate(InputType.TEXT, validity);
-        }
-    }
-
-    protected initInputs(): void {
-        this.inputs = this.createInputs();
+    protected initProfileInfoInputs(): void {
+        this.inputs = this.createProfileInfoInputs();
 
         this.inputs.forEach((input: Input) => {
             input.init();
@@ -109,6 +97,43 @@ export default class RegistrationForm extends AbstractForm {
             this.widgets.push(input);
         });
     }
+
+    private getInputHandler<T extends keyof typeof this.values>(key: T, inputType: InputType): ((e: Event, key: T) => void) {
+        return (e: Event) => this.onInput(e, key, inputType);
+    }
+
+    private createEmailInputs(): Input[] | DateInput[] {
+        return [
+            new Input({
+                id: 'reg_email',
+                name: 'email',
+                value: this.values.email,
+                type: InputType.EMAIL,
+                placeholder: 'email',
+                required: true,
+                onChange: this.getInputHandler('email', InputType.EMAIL),
+            }),
+            new Input({
+                id: 'reg_password',
+                name: 'password',
+                value: this.values.password,
+                type: InputType.PASSWORD,
+                placeholder: 'пароль',
+                required: true,
+                onChange: this.getInputHandler('password', InputType.PASSWORD),
+            }),
+        ];
+    }
+    private initEmailInputs(): void {
+        this.inputs = this.createEmailInputs();
+
+        this.inputs.forEach((input: Input) => {
+            input.init();
+            this.rootElement.append(input.getRoot());
+            this.widgets.push(input);
+        });
+    }
+
 
     protected onSubmit(e: Event): void {
         e.preventDefault();
@@ -138,10 +163,15 @@ export default class RegistrationForm extends AbstractForm {
             this.initTitle();
         }
 
-        this.initInputs();
+        this.initProfileInfoInputs();
         this.initErrorMessage();
+
         this.initRadioButton();
+
         this.initBirthDate();
+
+        this.initEmailInputs();
+
         this.initSubmitButton();
         this.initAuthorizationButton();
     }
@@ -202,6 +232,8 @@ export default class RegistrationForm extends AbstractForm {
         this.values = {
             firstName: '',
             lastName: '',
+            email: '',
+            password: '',
         };
 
         return manager.open(Scenes.REGISTRATION, {name: 'registration', route: 'registration'});

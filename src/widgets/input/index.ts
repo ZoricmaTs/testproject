@@ -30,7 +30,7 @@ export default class Input extends AbstractWidget {
 
     protected input: HTMLInputElement;
     protected type: InputType;
-    protected id: string;
+    protected id: string | number;
     protected name: string;
     protected value: string;
     protected rootElement: HTMLDivElement;
@@ -72,7 +72,7 @@ export default class Input extends AbstractWidget {
             this.input.setAttribute('value', this.value);
         }
 
-        this.input.setAttribute('id', this.id);
+        this.input.setAttribute('id', `${this.id}`);
         this.input.setAttribute('name', this.name);
 
         if (this.placeholder) {
