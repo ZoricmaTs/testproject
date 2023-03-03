@@ -9,6 +9,24 @@ export enum InputType {
 }
 
 export default class Input extends AbstractWidget {
+    public static validator: {[key in string]: any}  = {
+        email: (value: string): boolean => /^[\w-\.]+@([\w-]+\.)+[\w-]{2,}$/.test(value),
+        minLength: (value: any[], length: number): boolean => value.length >= Math.trunc(length),
+        maxLength: (value: any[], length: number): boolean => value.length <= Math.trunc(length),
+        date:  (value: string): boolean => /\d{2}\.\d{2}\.\d{4}/.test(value),
+        required: (value: any): boolean => (
+            typeof value === 'object'
+                ? Object.keys(value).length > 0 || value instanceof File
+                : !['', 'NaN', 'undefined', 'null'].includes(value.toString())
+        ),
+    }
+
+    public static errors : {[key in string]: any} = {
+        email: 'Некорректное значение',
+        minLength: (value: number) => `Количество символов не должно быть меньше ${value} значений`,
+        maxLength: (value: number) => `Количество символов не должно превышать ${value} значений`,
+    }
+
     public static validateInputs: {[key in InputType]: {[k in keyof ValidityState]?: string}} = {
         [InputType.EMAIL]: {
             'typeMismatch': 'Некорректное значение',
@@ -37,9 +55,10 @@ export default class Input extends AbstractWidget {
     protected placeholder: string;
     protected required: boolean;
     protected onChangeValue: (value: any) => void;
-    protected errors: string[];
+    protected errors: any;
     protected title: string;
     protected titleElement: HTMLDivElement;
+    protected rules: any;
 
     constructor(params: any) {
         super(params);
@@ -49,9 +68,10 @@ export default class Input extends AbstractWidget {
         this.name = params.name;
         this.value = params.value;
         this.title = params.title;
+        this.rules = params.rules;
+
         this.setPlaceholder(params.placeholder);
 
-        this.required = params.required;
         this.errors = [];
 
         this.onChangeValue = params.onChange;
@@ -79,47 +99,60 @@ export default class Input extends AbstractWidget {
             this.input.setAttribute('placeholder', this.placeholder);
         }
 
-        this.validate();
-
         this.input.classList.add(`input-${this.type}__input`);
-    }
-
-    protected validate(): void {
-        if (this.required) {
-            this.input.required = this.required;
-        }
-
-        switch (this.type) {
-            case InputType.EMAIL:
-            case InputType.TEXT:
-                this.input.setAttribute('maxlength', '255');
-                break;
-            case InputType.PASSWORD:
-                this.input.setAttribute('minlength', '4');
-                this.input.setAttribute('maxlength', '255');
-                break;
-        }
     }
 
     public getType(): InputType {
         return this.type;
     }
 
-    protected onChange(e: Event): void {
-        if (this.onChangeValue) {
-            const value = (e.target as HTMLInputElement).value;
-            const valid = (e.target as HTMLInputElement).validity.valid;
-            this.onChangeValue(e);
-            this.input.setAttribute('value', value);
+    protected isValid(value: string,  ruleName: string, ruleValue: any): boolean {
+        if (ruleName === 'maxLength' || ruleName === 'minLength')  {
+            return Input.validator[ruleName](value, ruleValue);
+        }
 
-            if (valid) {
-                this.errors = [];
-            }
+        return Input.validator[ruleName](value);
+    }
+
+    protected setErrors(error: any): void {
+        if (!this.errors.hasOwnProperty(error)) {
+            this.errors = Object.assign(error, this.errors);
         }
     }
 
-    public getErrors(): string[] {
+    public getErrors(): any {
         return this.errors;
+    }
+
+    public hasError(key: string): any {
+        return Object.keys(this.errors).includes(key);
+    }
+
+    protected onChange(e: Event): void {
+        if (this.onChangeValue) {
+            const value = (e.target as HTMLInputElement).value;
+            if (this.rules) {
+                Object.entries(this.rules).map(([ruleName, ruleValue]: [key: string, value: any]) => {
+                    let isValid: boolean = this.isValid(value, ruleName, ruleValue)
+                    let error: any;
+
+
+                    if (!isValid) {
+                        if (ruleName === 'maxLength' || ruleName === 'minLength') {
+                            error = {[ruleName]: Input.errors[ruleName](ruleValue)};
+                        } else {
+                            error = {[ruleName]: Input.errors[ruleName]};
+                        }
+
+                        this.setErrors(error);
+                    } else {
+                        if (this.hasError(ruleName)) {
+                            delete this.errors[ruleName];
+                        }
+                    }
+                });
+            }
+        }
     }
 
     protected isErrorExist(value: string): boolean {
