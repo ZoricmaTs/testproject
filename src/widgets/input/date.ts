@@ -1,4 +1,4 @@
-import Input, {InputType} from './index';
+import Input from './index';
 import './style.styl';
 
 
@@ -13,10 +13,8 @@ export default class DateInput extends Input {
         this.name = params.name;
         this.value = params.value;
         this.title = params.title;
-        this.setPlaceholder(params.placeholder);
 
-        this.required = params.required;
-        this.errors = [];
+        this.setPlaceholder(params.placeholder);
 
         this.onChangeValue = params.onChange;
 
@@ -68,46 +66,8 @@ export default class DateInput extends Input {
         this.datepicker = datepicker(this.input, options);
     }
 
-    public getType(): InputType {
-        return this.type;
-    }
-
-    protected getValidateRules(): any {
-
-    }
-
-    protected onChange(e: Event): void {
-        console.log('e', e.target)
-        if (this.onChangeValue) {
-            const value = (e.target as HTMLInputElement).value;
-            const valid = (e.target as HTMLInputElement).validity.valid;
-            this.onChangeValue(e);
-            this.input.setAttribute('value', value);
-
-            if (valid) {
-                this.errors = [];
-            }
-        }
-    }
-
-    protected onChangeDate(input: any, date: any, instance: any): void {
+    private onChangeDate(input: any, date: any, instance: any): void {
         this.input.value = date.toLocaleDateString();
-    }
-
-    public getErrors(): string[] {
-        return this.errors;
-    }
-
-    protected isErrorExist(value: string): boolean {
-        return Boolean(this.errors.find((error: string) => error === value));
-    }
-
-    public checkValidity(): any {
-        const isValid: boolean = /\d{2}\.\d{2}\.\d{4}/.test(this.input.value);
-
-        // if (!isValid) {
-        //     this.errors.push(Input.validateInputs[this.type].typeMismatch);
-        // }
     }
 
     public init(): void {
@@ -120,17 +80,12 @@ export default class DateInput extends Input {
 
         this.createInput();
         this.rootElement.append(this.input);
+
+        this.createErrorsWrapper();
+        this.rootElement.append(this.errorsElement);
     }
 
     public getRoot(): HTMLDivElement {
         return this.rootElement;
-    }
-
-    protected addEvents():void {
-        this.input.addEventListener('input', this.onChange);
-    }
-
-    protected removeEvents(): void {
-        this.input.removeEventListener('input', this.onChange);
     }
 }

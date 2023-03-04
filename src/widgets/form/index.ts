@@ -57,10 +57,10 @@ export default class AbstractForm extends AbstractWidget {
     protected checkInputValidate(type: InputType, validityState: ValidityState) {
         const input = this.getInput(type);
         // input.checkValidity(validityState);
-        const errors = input.getErrors().join(', ');
+        // const errors = input.getErrors().join(', ');
 
-        this.setError(errors);
-        this.showHideError(true);
+        // this.setError(errors);
+        // this.showHideError(true);
     }
 
     protected getInput(type: InputType): Input {

@@ -12,7 +12,7 @@ export default class RegistrationForm extends AbstractForm {
     protected inputs: Input[];
     protected button: Btn;
     private authButton: Btn;
-    private values: { firstName: string; lastName: string, email: string, password: string };
+    private values: { firstName: string; lastName: string, email: string, password: string, date: string };
     private radioSelector: RadioSelector;
     private birthDate: DateInput;
 
@@ -24,6 +24,7 @@ export default class RegistrationForm extends AbstractForm {
             lastName: '',
             email: '',
             password: '',
+            date: '',
         }
 
         this.openRegistration = this.openRegistration.bind(this);
@@ -183,7 +184,17 @@ export default class RegistrationForm extends AbstractForm {
     }
 
     private initBirthDate(): void {
-        this.birthDate = new DateInput({id: 1, title: 'дата рождения', type: InputType.DATE, name: 'date'});
+        this.birthDate = new DateInput({
+            id: 1,
+            title: 'дата рождения',
+            type: InputType.DATE,
+            name: 'date',
+            rules: {
+                date: true
+            },
+            onChange: this.getInputHandler('date'),
+        });
+
         this.birthDate.init();
         this.rootElement.append(this.birthDate.getRoot());
         this.widgets.push(this.birthDate);
@@ -240,6 +251,7 @@ export default class RegistrationForm extends AbstractForm {
             lastName: '',
             email: '',
             password: '',
+            date: '',
         };
 
         return manager.open(Scenes.REGISTRATION, {name: 'registration', route: 'registration'});

@@ -23,9 +23,10 @@ export default class Input extends AbstractWidget {
 
     public static errors : {[key in string]: any} = {
         email: 'Некорректное значение',
-        minLength: (value: number) => `Количество символов должно быть не меньше ${value} символов`,
-        maxLength: (value: number) => `Количество символов не должно превышать ${value} символов`,
-        required: 'Поле не должно быть пустым'
+        minLength: (value: number) => `Количество символов должно быть не меньше ${value}`,
+        maxLength: (value: number) => `Количество символов не должно превышать ${value}`,
+        required: 'Поле не должно быть пустым',
+        date: 'Некорректное значение',
     }
 
     protected input: HTMLInputElement;
@@ -35,7 +36,6 @@ export default class Input extends AbstractWidget {
     protected value: string;
     protected rootElement: HTMLDivElement;
     protected placeholder: string;
-    protected required: boolean;
     protected onChangeValue: (value: any) => void;
     protected errors: any;
     protected title: string;
@@ -52,10 +52,9 @@ export default class Input extends AbstractWidget {
         this.value = params.value;
         this.title = params.title;
         this.rules = params.rules;
+        this.errors = {};
 
         this.setPlaceholder(params.placeholder);
-
-        this.errors = [];
 
         this.onChangeValue = params.onChange;
 
@@ -103,15 +102,15 @@ export default class Input extends AbstractWidget {
         }
     }
 
-    public getErrors(): any {
+    protected getErrors(): any {
         return this.errors;
     }
 
-    public hasError(key: string): boolean {
+    protected hasError(key: string): boolean {
         return Object.keys(this.errors).includes(key);
     }
 
-    public hasErrors(): boolean {
+    protected hasErrors(): boolean {
         for (let key in this.errors) {
             return true;
         }
@@ -132,10 +131,9 @@ export default class Input extends AbstractWidget {
                         if (ruleName === 'maxLength' || ruleName === 'minLength') {
                             error = {[ruleName]: Input.errors[ruleName](ruleValue)};
                         } else {
-                            console.log('Input.errors[ruleName]', Input.errors[ruleName])
                             error = {[ruleName]: Input.errors[ruleName]};
                         }
-
+                        console.log('error', error)
                         this.setErrors(error);
                     } else {
                         if (this.hasError(ruleName)) {
