@@ -65,7 +65,7 @@ export default class RegistrationForm extends AbstractForm {
                     maxLength: 255,
                     minLength: 4,
                 },
-                onChange: this.getInputHandler('firstName', InputType.TEXT),
+                onChange: this.getInputHandler('firstName'),
             }),
             new Input({
                 id: 'reg_last-name',
@@ -78,24 +78,13 @@ export default class RegistrationForm extends AbstractForm {
                     maxLength: 255,
                     minLength: 4,
                 },
-                onChange: this.getInputHandler('lastName', InputType.TEXT),
+                onChange: this.getInputHandler('lastName'),
             }),
         ];
     }
 
-    private onInput(e: Event, key: keyof typeof this.values, inputType: InputType): void {
+    private onInput(e: Event, key: keyof typeof this.values): void {
         this.values[key] = (e.target as HTMLInputElement).value;
-        console.log('key', key, this.values[key]);
-        // const isValid: boolean = target.validity.valid;
-
-
-        // if (isValid) {
-        //     this.showHideError(false);
-        //     this.values[key] = target.value;
-        // } else {
-        //     const validity: ValidityState = target.validity;
-        //     this.checkInputValidate(inputType, validity);
-        // }
     }
 
     protected initProfileInfoInputs(): void {
@@ -108,8 +97,8 @@ export default class RegistrationForm extends AbstractForm {
         });
     }
 
-    private getInputHandler<T extends keyof typeof this.values>(key: T, inputType: InputType): ((e: Event, key: T) => void) {
-        return (e: Event) => this.onInput(e, key, inputType);
+    private getInputHandler<T extends keyof typeof this.values>(key: T): ((e: Event, key: T) => void) {
+        return (e: Event) => this.onInput(e, key);
     }
 
     private createEmailInputs(): Input[] | DateInput[] {
@@ -124,7 +113,7 @@ export default class RegistrationForm extends AbstractForm {
                     email: true,
                     required: true,
                 },
-                onChange: this.getInputHandler('email', InputType.EMAIL),
+                onChange: this.getInputHandler('email'),
             }),
             new Input({
                 id: 'reg_password',
@@ -137,7 +126,7 @@ export default class RegistrationForm extends AbstractForm {
                     maxLength: 255,
                     minLength: 8,
                 },
-                onChange: this.getInputHandler('password', InputType.PASSWORD),
+                onChange: this.getInputHandler('password'),
             }),
         ];
     }

@@ -105,9 +105,9 @@ export default class DateInput extends Input {
     public checkValidity(): any {
         const isValid: boolean = /\d{2}\.\d{2}\.\d{4}/.test(this.input.value);
 
-        if (!isValid) {
-            this.errors.push(Input.validateInputs[this.type].typeMismatch);
-        }
+        // if (!isValid) {
+        //     this.errors.push(Input.validateInputs[this.type].typeMismatch);
+        // }
     }
 
     public init(): void {

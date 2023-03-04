@@ -23,27 +23,9 @@ export default class Input extends AbstractWidget {
 
     public static errors : {[key in string]: any} = {
         email: 'Некорректное значение',
-        minLength: (value: number) => `Количество символов не должно быть меньше ${value} значений`,
-        maxLength: (value: number) => `Количество символов не должно превышать ${value} значений`,
-    }
-
-    public static validateInputs: {[key in InputType]: {[k in keyof ValidityState]?: string}} = {
-        [InputType.EMAIL]: {
-            'typeMismatch': 'Некорректное значение',
-            'tooLong': 'Количество символов не дожно превышать 255 значений'
-        },
-        [InputType.TEXT]: {
-            'typeMismatch': 'Некорректное значение',
-            'tooLong': 'Количество символов не дожно превышать 255 значений'
-        },
-        [InputType.PASSWORD]: {
-            'typeMismatch': 'Некорректное значение',
-            'tooLong': 'Количество символов не дожно превышать 255 значений',
-            'tooShort': 'Количество символов не дожно превышать 4 значений'
-        },
-        [InputType.DATE]: {
-            'typeMismatch': 'Некорректное значение',
-        },
+        minLength: (value: number) => `Количество символов должно быть не меньше ${value} символов`,
+        maxLength: (value: number) => `Количество символов не должно превышать ${value} символов`,
+        required: 'Поле не должно быть пустым'
     }
 
     protected input: HTMLInputElement;
@@ -59,6 +41,7 @@ export default class Input extends AbstractWidget {
     protected title: string;
     protected titleElement: HTMLDivElement;
     protected rules: any;
+    protected errorsElement: HTMLDivElement;
 
     constructor(params: any) {
         super(params);
@@ -124,23 +107,32 @@ export default class Input extends AbstractWidget {
         return this.errors;
     }
 
-    public hasError(key: string): any {
+    public hasError(key: string): boolean {
         return Object.keys(this.errors).includes(key);
+    }
+
+    public hasErrors(): boolean {
+        for (let key in this.errors) {
+            return true;
+        }
+
+        return false;
     }
 
     protected onChange(e: Event): void {
         if (this.onChangeValue) {
             const value = (e.target as HTMLInputElement).value;
+
             if (this.rules) {
                 Object.entries(this.rules).map(([ruleName, ruleValue]: [key: string, value: any]) => {
                     let isValid: boolean = this.isValid(value, ruleName, ruleValue)
                     let error: any;
 
-
                     if (!isValid) {
                         if (ruleName === 'maxLength' || ruleName === 'minLength') {
                             error = {[ruleName]: Input.errors[ruleName](ruleValue)};
                         } else {
+                            console.log('Input.errors[ruleName]', Input.errors[ruleName])
                             error = {[ruleName]: Input.errors[ruleName]};
                         }
 
@@ -150,24 +142,11 @@ export default class Input extends AbstractWidget {
                             delete this.errors[ruleName];
                         }
                     }
+
+                    this.updateErrorsWrapper();
                 });
             }
         }
-    }
-
-    protected isErrorExist(value: string): boolean {
-        return Boolean(this.errors.find((error: string) => error === value));
-    }
-
-    public checkValidity(validity: ValidityState): any {
-        Object.entries(Input.validateInputs[this.type]).forEach(([key, value]: [keyof ValidityState, string]) => {
-            const isExist = this.isErrorExist(value);
-            if (!isExist) {
-                if (validity[key]) {
-                    this.errors.push(value);
-                }
-            }
-        });
     }
 
     public init(): void {
@@ -180,6 +159,37 @@ export default class Input extends AbstractWidget {
 
         this.createInput();
         this.rootElement.append(this.input);
+
+        this.createErrorsWrapper();
+        this.rootElement.append(this.errorsElement);
+    }
+
+    protected createErrorsWrapper(): void {
+        this.errorsElement = document.createElement('div');
+        this.errorsElement.classList.add('error', `input-${this.type}__error`);
+        this.updateErrorsWrapper();
+    }
+
+    protected getErrorMessage(): string {
+        return Object.values(this.errors).join(', ');
+    }
+
+    protected updateErrorsWrapper():void {
+        if (this.hasErrors()) {
+            this.errorsElement.innerText = this.getErrorMessage();
+
+            this.errorsElement.classList.remove('hide');
+            this.errorsElement.classList.add('show');
+
+            this.input.classList.add('error');
+        } else {
+            this.errorsElement.innerText = '';
+
+            this.errorsElement.classList.remove('show');
+            this.errorsElement.classList.add('hide');
+
+            this.input.classList.remove('error');
+        }
     }
 
     protected initTitle(): void {
