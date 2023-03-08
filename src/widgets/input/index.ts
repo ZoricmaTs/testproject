@@ -121,6 +121,7 @@ export default class Input extends AbstractWidget {
     protected onChange(e: Event): void {
         if (this.onChangeValue) {
             const value = (e.target as HTMLInputElement).value;
+            this.onChangeValue(value);
 
             if (this.rules) {
                 Object.entries(this.rules).map(([ruleName, ruleValue]: [key: string, value: any]) => {
@@ -133,7 +134,7 @@ export default class Input extends AbstractWidget {
                         } else {
                             error = {[ruleName]: Input.errors[ruleName]};
                         }
-                        console.log('error', error)
+
                         this.setErrors(error);
                     } else {
                         if (this.hasError(ruleName)) {

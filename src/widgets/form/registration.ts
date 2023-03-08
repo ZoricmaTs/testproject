@@ -1,20 +1,21 @@
 import Input, {InputType} from '../input';
 import Btn, {ButtonType} from '../btn';
-import {manager} from '../../index';
+import {manager, operator, user} from '../../index';
 import AbstractForm from './index';
 import './style.styl';
 import {Scenes} from '../../scenes/manager';
 import RadioSelector from '../radio-selector';
 import DateInput from '../input/date';
+import UserModel from '../../models/user';
 
 export default class RegistrationForm extends AbstractForm {
     protected rootElement: HTMLFormElement;
     protected inputs: Input[];
     protected button: Btn;
     private authButton: Btn;
-    private values: { firstName: string; lastName: string, email: string, password: string, date: string };
+    private values: { firstName: string; lastName: string, email: string, password: string, birthDate: string };
     private radioSelector: RadioSelector;
-    private birthDate: DateInput;
+    private date: DateInput;
 
     constructor(params: any) {
         super(params);
@@ -24,9 +25,11 @@ export default class RegistrationForm extends AbstractForm {
             lastName: '',
             email: '',
             password: '',
-            date: '',
+            birthDate: '',
         }
 
+        this.getInputHandler = this.getInputHandler.bind(this);
+        this.onInput = this.onInput.bind(this);
         this.openRegistration = this.openRegistration.bind(this);
         this.onChangeRadioBtn = this.onChangeRadioBtn.bind(this);
 
@@ -62,7 +65,7 @@ export default class RegistrationForm extends AbstractForm {
                 type: InputType.TEXT,
                 placeholder: 'имя',
                 rules: {
-                    required: true,
+                    // required: true,
                     maxLength: 255,
                     minLength: 4,
                 },
@@ -75,7 +78,7 @@ export default class RegistrationForm extends AbstractForm {
                 type: InputType.TEXT,
                 placeholder: 'фамилия',
                 rules: {
-                    required: true,
+                    // required: true,
                     maxLength: 255,
                     minLength: 4,
                 },
@@ -84,8 +87,8 @@ export default class RegistrationForm extends AbstractForm {
         ];
     }
 
-    private onInput(e: Event, key: keyof typeof this.values): void {
-        this.values[key] = (e.target as HTMLInputElement).value;
+    private onInput(value: string, key: keyof typeof this.values): void {
+        this.values[key] = value;
     }
 
     protected initProfileInfoInputs(): void {
@@ -98,8 +101,8 @@ export default class RegistrationForm extends AbstractForm {
         });
     }
 
-    private getInputHandler<T extends keyof typeof this.values>(key: T): ((e: Event, key: T) => void) {
-        return (e: Event) => this.onInput(e, key);
+    private getInputHandler<T extends keyof typeof this.values>(key: T): ((value: string, key: T) => void) {
+        return (value: string) => this.onInput(value, key);
     }
 
     private createEmailInputs(): Input[] | DateInput[] {
@@ -144,22 +147,28 @@ export default class RegistrationForm extends AbstractForm {
 
     protected onSubmit(e: Event): void {
         e.preventDefault();
-
-        // return user.getUser({email: this.values.email, password: this.values.password})
-        //     .then((response: UserModel) => {
-        //         this.showHideError(false);
-        //         return response;
-        //     })
-        //     .then((response: UserModel) => operator.isAuthorization())
-        //     .then(() => {
-        //         localStorage.user = JSON.stringify({email: this.values.email, password: this.values.password});
-        //
-        //         return manager.open(Scenes.HOME, {name: 'home', route: 'home'});
-        //     })
-        //     .catch((error: ErrorEvent) => {
-        //         this.setError(error.message);
-        //         this.showHideError(true);
-        //     });
+        console.log('values onSubmit', this.values);
+        return user.addUser({
+            email: this.values.email,
+            password: this.values.password,
+            firstName: this.values.firstName,
+            lastName: this.values.lastName,
+            birthDate: this.values.birthDate,
+        })
+            // .then((response: UserModel) => {
+            //     this.showHideError(false);
+            //     return response;
+            // })
+            // .then((response: UserModel) => operator.isAuthorization())
+            // .then(() => {
+            //     localStorage.user = JSON.stringify({email: this.values.email, password: this.values.password});
+            //
+            //     return manager.open(Scenes.HOME, {name: 'home', route: 'home'});
+            // })
+            .catch((error: ErrorEvent) => {
+                // this.setError(error.message);
+                // this.showHideError(true);
+            });
     }
 
     public init(): void {
@@ -184,7 +193,7 @@ export default class RegistrationForm extends AbstractForm {
     }
 
     private initBirthDate(): void {
-        this.birthDate = new DateInput({
+        this.date = new DateInput({
             id: 1,
             title: 'дата рождения',
             type: InputType.DATE,
@@ -192,12 +201,12 @@ export default class RegistrationForm extends AbstractForm {
             rules: {
                 date: true
             },
-            onChange: this.getInputHandler('date'),
+            onChange: this.getInputHandler('birthDate'),
         });
 
-        this.birthDate.init();
-        this.rootElement.append(this.birthDate.getRoot());
-        this.widgets.push(this.birthDate);
+        this.date.init();
+        this.rootElement.append(this.date.getRoot());
+        this.widgets.push(this.date);
     }
 
     private onChangeRadioBtn(id: string): void {
@@ -251,7 +260,7 @@ export default class RegistrationForm extends AbstractForm {
             lastName: '',
             email: '',
             password: '',
-            date: '',
+            birthDate: '',
         };
 
         return manager.open(Scenes.REGISTRATION, {name: 'registration', route: 'registration'});

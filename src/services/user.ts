@@ -8,6 +8,15 @@ export default class User {
 
     }
 
+    public addUser(data: {email: string, password: string, firstName?: string, lastName?: string, birthDate?: string}): any {
+        this.data = data;
+        console.log('data addUser', data);
+        return api.registration(data)
+            .then((response: any) => {
+                console.log('response', response);
+            })
+    }
+
     public getUser(data?: {email: string, password: string}): any {
         if (this.userModel) {
             return Promise.resolve(this.userModel);
