@@ -253,7 +253,7 @@ export default class Header extends AbstractWidget {
 
     private createProfileButton(): Btn {
         return new Btn({
-            title: this.user.getName(),
+            title: this.user.getFirstName(),
             classes: ['header__button', 'header__item'],
             onPress: () => console.log('open Profile'),
             type: ButtonType.TEXT,

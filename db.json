@@ -50,7 +50,8 @@
   "users": [
     {
       "id": 1,
-      "name": "zori",
+      "firstName": "zori",
+      "lastName": "",
       "email": "zori@ya.ru",
       "password": "1111"
     }

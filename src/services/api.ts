@@ -31,14 +31,14 @@ export default class Api {
         const userUrl = this.middlewareUrl + '/users';
         console.log('data registration', data);
         return fetch(userUrl, {
-            method: 'PATCH',
+            method: 'POST',
             headers: {'Content-Type': 'application/json;charset=utf-8'},
             body: JSON.stringify({
                 email: data.email,
                 password: data.password,
-                // firstName: data.firstName,
-                // lastName: data.lastName,
-                // birthDate: data.birthDate,
+                firstName: data.firstName,
+                lastName: data.lastName,
+                birthDate: data.birthDate,
             })}
         ).then((response) => response.json());
     }

@@ -155,16 +155,12 @@ export default class RegistrationForm extends AbstractForm {
             lastName: this.values.lastName,
             birthDate: this.values.birthDate,
         })
-            // .then((response: UserModel) => {
-            //     this.showHideError(false);
-            //     return response;
-            // })
-            // .then((response: UserModel) => operator.isAuthorization())
-            // .then(() => {
-            //     localStorage.user = JSON.stringify({email: this.values.email, password: this.values.password});
-            //
-            //     return manager.open(Scenes.HOME, {name: 'home', route: 'home'});
-            // })
+            .then((response: UserModel) => operator.isAuthorization())
+            .then(() => {
+                localStorage.user = JSON.stringify(this.values);
+
+                return manager.open(Scenes.HOME, {name: 'home', route: 'home'});
+            })
             .catch((error: ErrorEvent) => {
                 // this.setError(error.message);
                 // this.showHideError(true);
