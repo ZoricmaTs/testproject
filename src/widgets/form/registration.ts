@@ -263,7 +263,7 @@ export default class RegistrationForm extends AbstractForm {
             gender: this.getDefaultGender().value,
         };
 
-        return manager.open(Scenes.REGISTRATION, {name: 'registration', route: 'registration'});
+        return manager.open(Scenes.AUTHORIZATION, {name: 'authorization', route: 'authorization'});
     }
 
     private initAuthorizationButton(): void {
