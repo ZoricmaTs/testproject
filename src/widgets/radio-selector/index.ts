@@ -18,7 +18,7 @@ export type RadioButtonParams = {
     title?: string,
     name: string,
     buttons: ItemParams[],
-    onChange: (checkedId: string) => void;
+    onChange: (id: string) => void;
     buttonsPosition?: Position,
 }
 
@@ -29,7 +29,7 @@ export default class RadioSelector extends AbstractWidget {
     private rootElement: HTMLFieldSetElement;
     private items: HTMLLabelElement[];
     private readonly name: string;
-    private readonly onChangeButton: (checkedId: string) => void;
+    private readonly onChangeButton: (id: string) => void;
     private readonly buttonsPosition: Position;
     private titleElement: HTMLParagraphElement;
 
@@ -112,8 +112,6 @@ export default class RadioSelector extends AbstractWidget {
     private onChange(e: Event): void {
         if (this.onChangeButton) {
             const id = (e.target as HTMLInputElement).id;
-            console.log('onChange', id)
-
             this.onChangeButton(id);
         }
     }

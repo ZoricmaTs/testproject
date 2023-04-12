@@ -8,7 +8,7 @@ export default class User {
 
     }
 
-    public addUser(data: {email: string, password: string, firstName?: string, lastName?: string, birthDate?: string}): any {
+    public addUser(data: {email: string, password: string, firstName?: string, lastName?: string, birthDate?: string, gender?: string}): any {
         return api.registration(data)
             .then((response: any) => {
                 this.data = response;

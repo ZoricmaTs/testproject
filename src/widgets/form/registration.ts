@@ -4,7 +4,7 @@ import {manager, operator, user} from '../../index';
 import AbstractForm from './index';
 import './style.styl';
 import {Scenes} from '../../scenes/manager';
-import RadioSelector from '../radio-selector';
+import RadioSelector, {ItemParams} from '../radio-selector';
 import DateInput from '../input/date';
 import UserModel from '../../models/user';
 
@@ -13,20 +13,12 @@ export default class RegistrationForm extends AbstractForm {
     protected inputs: Input[];
     protected button: Btn;
     private authButton: Btn;
-    private values: { firstName: string; lastName: string, email: string, password: string, birthDate: string };
+    private values: { firstName: string; lastName: string, email: string, password: string, birthDate: string, gender: string};
     private radioSelector: RadioSelector;
     private date: DateInput;
 
     constructor(params: any) {
         super(params);
-
-        this.values = {
-            firstName: '',
-            lastName: '',
-            email: '',
-            password: '',
-            birthDate: '',
-        }
 
         this.getInputHandler = this.getInputHandler.bind(this);
         this.onInput = this.onInput.bind(this);
@@ -154,6 +146,7 @@ export default class RegistrationForm extends AbstractForm {
             firstName: this.values.firstName,
             lastName: this.values.lastName,
             birthDate: this.values.birthDate,
+            gender: this.values.gender,
         })
             .then((response: UserModel) => operator.isAuthorization())
             .then(() => {
@@ -174,6 +167,15 @@ export default class RegistrationForm extends AbstractForm {
         if (this.title) {
             this.initTitle();
         }
+
+        this.values = {
+            firstName: '',
+            lastName: '',
+            email: '',
+            password: '',
+            birthDate: '',
+            gender: this.getCurrentGender().value,
+        };
 
         this.initProfileInfoInputs();
         this.initErrorMessage();
@@ -209,33 +211,41 @@ export default class RegistrationForm extends AbstractForm {
         console.log('id', id);
     }
 
+    private getGenderButtons(): ItemParams[] {
+        return [
+            {
+                id: '111',
+                label: 'мужчина',
+                value: 'мужчина',
+                checked: false,
+            },
+            {
+                id: '222',
+                label: 'ребёнок',
+                value: 'ребёнок',
+                checked: false,
+            },
+            {
+                id: '333',
+                label: 'Зус',
+                value: 'Зус',
+                checked: true,
+            }
+        ];
+    }
+
+    private getCurrentGender(): ItemParams {
+        return this.getGenderButtons().find((item: any) => item.checked);
+    }
+
     private createRadioButton(): RadioSelector {
         return new RadioSelector({
             id: '123',
             title: 'кто ты',
             name: 'sdfsdf',
             onChange: this.onChangeRadioBtn,
-            buttons: [
-                {
-                    id: '111',
-                    label: 'мужчина',
-                    value: 'мужчина',
-                    checked: false,
-                },
-                {
-                    id: '222',
-                    label: 'ребёнок',
-                    value: 'ребёнок',
-                    checked: false,
-                },
-                {
-                    id: '333',
-                    label: 'Зус',
-                    value: 'Зус',
-                    checked: true,
-                }
-            ]
-        });
+            buttons: this.getGenderButtons()
+        })
     }
 
     public initRadioButton(): void {
@@ -257,6 +267,7 @@ export default class RegistrationForm extends AbstractForm {
             email: '',
             password: '',
             birthDate: '',
+            gender: this.getCurrentGender().value,
         };
 
         return manager.open(Scenes.REGISTRATION, {name: 'registration', route: 'registration'});
