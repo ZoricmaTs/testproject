@@ -22,7 +22,7 @@ export default class RegistrationForm extends AbstractForm {
 
         this.getInputHandler = this.getInputHandler.bind(this);
         this.onInput = this.onInput.bind(this);
-        this.openRegistration = this.openRegistration.bind(this);
+        this.onRegistration = this.onRegistration.bind(this);
         this.onChangeRadioBtn = this.onChangeRadioBtn.bind(this);
 
         this.onSubmit = this.onSubmit.bind(this);
@@ -174,7 +174,7 @@ export default class RegistrationForm extends AbstractForm {
             email: '',
             password: '',
             birthDate: '',
-            gender: this.getCurrentGender().value,
+            gender: this.getDefaultGender().value,
         };
 
         this.initProfileInfoInputs();
@@ -208,10 +208,10 @@ export default class RegistrationForm extends AbstractForm {
     }
 
     private onChangeRadioBtn(id: string): void {
-        console.log('id', id);
+        this.values.gender = this.getDataGenderButtons().find(item => item.id === id).value;
     }
 
-    private getGenderButtons(): ItemParams[] {
+    private getDataGenderButtons(): ItemParams[] {
         return [
             {
                 id: '111',
@@ -234,8 +234,8 @@ export default class RegistrationForm extends AbstractForm {
         ];
     }
 
-    private getCurrentGender(): ItemParams {
-        return this.getGenderButtons().find((item: any) => item.checked);
+    private getDefaultGender(): ItemParams {
+        return this.getDataGenderButtons().find((item: any) => item.checked);
     }
 
     private createRadioButton(): RadioSelector {
@@ -244,7 +244,7 @@ export default class RegistrationForm extends AbstractForm {
             title: 'кто ты',
             name: 'sdfsdf',
             onChange: this.onChangeRadioBtn,
-            buttons: this.getGenderButtons()
+            buttons: this.getDataGenderButtons()
         })
     }
 
@@ -260,14 +260,14 @@ export default class RegistrationForm extends AbstractForm {
         return this.rootElement;
     }
 
-    private openRegistration(): Promise<void> {
+    private onRegistration(): Promise<void> {
         this.values = {
             firstName: '',
             lastName: '',
             email: '',
             password: '',
             birthDate: '',
-            gender: this.getCurrentGender().value,
+            gender: this.getDefaultGender().value,
         };
 
         return manager.open(Scenes.REGISTRATION, {name: 'registration', route: 'registration'});
@@ -277,7 +277,7 @@ export default class RegistrationForm extends AbstractForm {
         this.authButton = new Btn({
             title: 'войти',
             classes: ['button__stroke'],
-            onPress: this.openRegistration,
+            onPress: this.onRegistration,
             type: ButtonType.TEXT,
         });
 
