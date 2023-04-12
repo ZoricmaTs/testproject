@@ -1,21 +1,30 @@
 import {api} from '../index';
 import UserModel from '../models/user';
 
+export type UserInfo = {
+    email: string,
+    password: string,
+    firstName?: string,
+    lastName?: string,
+    birthDate?: string,
+    gender?: string,
+}
+
 export default class User {
     private userModel: UserModel;
-    private data: {email: string, password: string};
+    private data: UserInfo;
     constructor() {
 
     }
 
-    public addUser(data: {email: string, password: string, firstName?: string, lastName?: string, birthDate?: string, gender?: string}): any {
+    public addUser(data: UserInfo): any {
         return api.registration(data)
             .then((response: any) => {
                 this.data = response;
             })
     }
 
-    public getUser(data?: {email: string, password: string}): any {
+    public getUser(data?: UserInfo): any {
         if (this.userModel) {
             return Promise.resolve(this.userModel);
         }

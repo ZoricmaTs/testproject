@@ -22,7 +22,7 @@ export default class RegistrationForm extends AbstractForm {
 
         this.getInputHandler = this.getInputHandler.bind(this);
         this.onInput = this.onInput.bind(this);
-        this.onRegistration = this.onRegistration.bind(this);
+        this.openAuthorization = this.openAuthorization.bind(this);
         this.onChangeRadioBtn = this.onChangeRadioBtn.bind(this);
 
         this.onSubmit = this.onSubmit.bind(this);
@@ -139,15 +139,8 @@ export default class RegistrationForm extends AbstractForm {
 
     protected onSubmit(e: Event): void {
         e.preventDefault();
-        console.log('values onSubmit', this.values);
-        return user.addUser({
-            email: this.values.email,
-            password: this.values.password,
-            firstName: this.values.firstName,
-            lastName: this.values.lastName,
-            birthDate: this.values.birthDate,
-            gender: this.values.gender,
-        })
+
+        return user.addUser(this.values)
             .then((response: UserModel) => operator.isAuthorization())
             .then(() => {
                 localStorage.user = JSON.stringify(this.values);
@@ -155,8 +148,8 @@ export default class RegistrationForm extends AbstractForm {
                 return manager.open(Scenes.HOME, {name: 'home', route: 'home'});
             })
             .catch((error: ErrorEvent) => {
-                // this.setError(error.message);
-                // this.showHideError(true);
+                this.setError(error.message);
+                this.showHideError(true);
             });
     }
 
@@ -260,7 +253,7 @@ export default class RegistrationForm extends AbstractForm {
         return this.rootElement;
     }
 
-    private onRegistration(): Promise<void> {
+    private openAuthorization(): Promise<void> {
         this.values = {
             firstName: '',
             lastName: '',
@@ -277,7 +270,7 @@ export default class RegistrationForm extends AbstractForm {
         this.authButton = new Btn({
             title: 'войти',
             classes: ['button__stroke'],
-            onPress: this.onRegistration,
+            onPress: this.openAuthorization,
             type: ButtonType.TEXT,
         });
 

@@ -1,3 +1,5 @@
+import {UserInfo} from './user';
+
 export default class Api {
     private readonly middlewareUrl: string;
 
@@ -23,23 +25,20 @@ export default class Api {
         return fetch(userUrl, {
             method: 'PATCH',
             headers: {'Content-Type': 'application/json;charset=utf-8'},
-            body: JSON.stringify({isDemo: false})}
-        ).then((response) => response.json());
+            body: JSON.stringify({
+                isDemo: false
+            })
+        })
+          .then((response) => response.json());
     }
 
-    public registration(data: {email: string, password: string, firstName?: string, lastName?: string, birthDate?: string}): Promise<any> {
+    public registration(data: UserInfo): Promise<any> {
         const userUrl = this.middlewareUrl + '/users';
-        console.log('data registration', data);
+
         return fetch(userUrl, {
             method: 'POST',
             headers: {'Content-Type': 'application/json;charset=utf-8'},
-            body: JSON.stringify({
-                email: data.email,
-                password: data.password,
-                firstName: data.firstName,
-                lastName: data.lastName,
-                birthDate: data.birthDate,
-            })}
+            body: JSON.stringify(data)}
         ).then((response) => response.json());
     }
 }

@@ -109,7 +109,7 @@ export default class AuthorizationForm extends AbstractForm {
     protected onSubmit(e: Event): void {
         e.preventDefault();
 
-        return user.getUser({email: this.values.email, password: this.values.password})
+        return user.getUser(this.values)
             .then((response: UserModel) => {
                 this.showHideError(false);
                 return response;
