@@ -28,7 +28,7 @@ export default class Slider extends AbstractWidget {
     this.items = [
       {
         id: 0,
-        image: 'sdfds',
+        image: 'http://localhost:1234/image.png',
         title: 'image1',
       },
       {
@@ -77,14 +77,17 @@ export default class Slider extends AbstractWidget {
   private createItems(): void {
     this.items.forEach((item: any) => {
       const container = document.createElement('div');
+      container.style.background = `url(${item.image}) no-repeat center center/cover`;
       container.classList.add('slider__item');
       this.sliderWrapper.append(container);
 
-      const title = document.createElement('div');
-      title.classList.add('slider__item-title');
-      title.innerText = item.title;
+      if (item.title && item.title.length > 0) {
+        const title = document.createElement('div');
+        title.classList.add('slider__item-title');
+        title.innerText = item.title;
 
-      container.append(title);
+        container.append(title);
+      }
     })
   }
 

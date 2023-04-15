@@ -55,5 +55,25 @@
       "email": "zori@ya.ru",
       "password": "1111"
     }
+  ],
+  "rooms": [
+    {
+      "id": 888,
+      "images": ["http://localhost:1234/888/1.png", "http://localhost:1234/888/2.png"],
+      "class": true,
+      "rate": 5,
+      "comments": 10,
+      "price": 9880,
+      "amount": "usd"
+    },
+    {
+      "id": 736,
+      "images": ["http://localhost:1234/736/1.png", "http://localhost:1234/736/2.png"],
+      "class": false,
+      "rate": 4,
+      "comments": 135,
+      "price": 6500,
+      "amount": "usd"
+    }
   ]
 }
