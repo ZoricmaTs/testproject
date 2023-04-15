@@ -7,6 +7,7 @@ import UserModel from '../../models/user';
 import Operator from '../../models/operator';
 import Header from '../../widgets/header';
 import Checkbox from '../../widgets/checkbox';
+import Slider from '../../widgets/slider';
 
 export default class Home extends AbstractScene {
     protected options: any;
@@ -15,6 +16,7 @@ export default class Home extends AbstractScene {
     private header: Header;
     private checkbox: Checkbox;
     private background: HTMLImageElement;
+    private slider: Slider;
 
     constructor(params: any) {
         super(params);
@@ -86,9 +88,16 @@ export default class Home extends AbstractScene {
         this.widgets.push(this.header);
     }
 
+    private initSlider(): void {
+        this.slider = new Slider({});
+        this.slider.init();
+        this.getContainer().append(this.slider.getRoot());
+        this.widgets.push(this.slider);
+    }
+
     protected initWidgets(): void {
         this.initHeader();
-        // this.initCheckbox();
+        this.initSlider();
     }
 
     public open(): Promise<any> {

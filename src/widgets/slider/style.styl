@@ -1,0 +1,72 @@
+@import '../../fonts/style.styl';
+@import '../../scenes/style.styl';
+
+.slider
+  position relative
+  width 100%
+  height 100%
+  overflow hidden
+
+  &__wrapper
+    position absolute
+    top 0
+    bottom 0
+    display flex
+    flex-direction row
+    height 100%
+    transition 0.3s
+
+  &__item
+    display flex
+    height 100%
+    flex-grow 1
+    flex-shrink 1
+    background-color: green;
+    &:last-child
+      background-color: blue;
+
+  &__button
+    z-index 1
+    position absolute
+    top 0
+    bottom 0
+    display flex
+    justify-content center
+
+    height 100%
+    width 15.5%
+
+    &_icon
+      display flex
+      align-self center
+      width 16.3%
+      color $color-white
+    &_left
+      left 0
+      background linear-gradient(90deg, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0) 99.99%, rgba(255, 255, 255, 0) 100%)
+    &_right
+      right 0
+      background linear-gradient(-90deg, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0) 99.99%, rgba(255, 255, 255, 0) 100%)
+  &__indicators
+    z-index 1
+    display flex
+    position absolute
+    flex-direction row
+    align-items flex-end
+    justify-content flex-end
+    bottom 0
+    height 3%
+    width 89%
+    margin 5.5%
+
+    &_item
+      border 1px solid $color-white
+      filter drop-shadow(0px 5px 5px rgba(31, 32, 65, 0.3));
+      width 2.5%
+      height 100%
+      margin-left 1%
+      margin-right 1%
+      border-radius 50%
+      border-color $color-white
+    &_item.active
+      background-color $color-white
