@@ -1,0 +1,46 @@
+@import '../../fonts/style.styl';
+@import '../../scenes/style.styl';
+.cards
+  display flex
+  flex-wrap wrap
+.card
+  width 270px
+  height 257px
+  background-color $color-white
+  &__info
+    &-wrapper
+      margin 20px 16px 20px 20px
+      &-block
+        display flex
+        flex-direction row
+        justify-content space-between
+        align-items flex-end
+        padding-bottom 10px
+        border-bottom 1px solid $color-dark-shade-10
+        &_numb
+          display flex
+          flex-direction row
+          &_number
+            {montserrat-bold}
+            color $color-dark-shade
+          &_status
+            {text-h3}
+            color $color-purple
+            margin-left 8px
+        &_price
+          display flex
+          flex-direction row
+          color $color-dark-shade-50
+          &_numb
+            {montserrat-bold}
+            font-size 12px
+            line-height 18px
+          &_text
+            {montserrat-regular}
+            font-size 14px
+            line-height 18px
+            margin-left 8px
+
+
+
+  //&__info_block:last-child

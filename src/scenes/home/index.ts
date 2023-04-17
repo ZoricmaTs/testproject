@@ -1,30 +1,28 @@
 import {AbstractScene} from '../abstractScene';
 import './style.styl';
 import '../scene.styl';
-import {manager, operator, user} from '../../index';
+import {manager, operator, rooms, user} from '../../index';
 import {Scenes} from '../manager';
 import UserModel from '../../models/user';
 import Operator from '../../models/operator';
 import Header from '../../widgets/header';
-import Checkbox from '../../widgets/checkbox';
-import Slider from '../../widgets/slider';
+import RoomModel from '../../models/room';
+import Card from '../../widgets/card';
 
 export default class Home extends AbstractScene {
     protected options: any;
     private user: UserModel;
     private operator: Operator;
     private header: Header;
-    private checkbox: Checkbox;
     private background: HTMLImageElement;
-    private slider: Slider;
+    private rooms: RoomModel[];
+
 
     constructor(params: any) {
         super(params);
 
         this.openScene = this.openScene.bind(this);
         this.openAuthScene = this.openAuthScene.bind(this);
-        this.onChangeCheck = this.onChangeCheck.bind(this);
-        this.onChangeText = this.onChangeText.bind(this);
     }
 
     afterDOMShow() {
@@ -56,31 +54,6 @@ export default class Home extends AbstractScene {
         console.log('openScene');
     }
 
-    public onChangeCheck(checked: boolean): void {
-        console.log('onChangeCheck', checked);
-    }
-
-    public createCheckbox(): Checkbox {
-        return new Checkbox({
-            id: 'ssdfdsf',
-            title: 'dfsdf',
-            text: 'text',
-            onChange: this.onChangeCheck,
-        });
-    }
-
-    public initCheckbox(): void {
-        this.checkbox = this.createCheckbox();
-        this.checkbox.init();
-
-        this.getContainer().append(this.checkbox.getRoot());
-        this.widgets.push(this.checkbox);
-    }
-
-    public onChangeText(value: string): void {
-
-    }
-
     private initHeader(): void {
         this.header = new Header({items: this.operator.getHeaderItems(), user: this.user, isDemo: this.operator.isDemo});
         this.header.init();
@@ -88,16 +61,23 @@ export default class Home extends AbstractScene {
         this.widgets.push(this.header);
     }
 
-    private initSlider(): void {
-        this.slider = new Slider({});
-        this.slider.init();
-        this.getContainer().append(this.slider.getRoot());
-        this.widgets.push(this.slider);
+    private initRooms(): void {
+        const roomsWrapper = document.createElement('div');
+        roomsWrapper.classList.add('cards');
+        this.rooms.forEach((room: RoomModel) => {
+            const card = new Card(room);
+            card.init();
+
+            roomsWrapper.append(card.getRoot());
+            this.widgets.push(card);
+        });
+
+        this.getContainer().append(roomsWrapper);
     }
 
     protected initWidgets(): void {
         this.initHeader();
-        this.initSlider();
+        this.initRooms();
     }
 
     public open(): Promise<any> {
@@ -116,6 +96,13 @@ export default class Home extends AbstractScene {
                 }
             })
             .then(() => {
+                return rooms.getRooms()
+                  .then((response: RoomModel[]) => {
+                      this.rooms = response;
+                        this.setOptions({rooms: this.rooms});
+                    });
+            })
+            .then(() => {
                 this.initWidgets();
                 if (!this.operator.isDemo && this.user) {
                     this.header.setData({user: this.user, isDemo: this.operator.isDemo});
@@ -124,7 +111,7 @@ export default class Home extends AbstractScene {
             .catch((error: ErrorEvent) => console.log(`open ${this.name}`, error));
     }
 
-    protected setOptions(param: { user?: UserModel, operator?: Operator }) {
+    protected setOptions(param: { user?: UserModel, operator?: Operator, rooms?: RoomModel[]}) {
         if (this.options) {
             Object.assign(this.options, param);
         } else {

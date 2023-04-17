@@ -41,4 +41,10 @@ export default class Api {
             body: JSON.stringify(data)}
         ).then((response) => response.json());
     }
+
+    public getRooms(): Promise<any> {
+        const roomsUrl = this.middlewareUrl + '/rooms';
+
+        return fetch(roomsUrl).then((response) => response.json());
+    }
 }

@@ -59,8 +59,8 @@
   "rooms": [
     {
       "id": 888,
-      "images": ["http://localhost:1234/888/1.png", "http://localhost:1234/888/2.png"],
-      "class": true,
+      "images": ["http://localhost:1234/rooms/888/1.png", "http://localhost:1234/rooms/888/2.png"],
+      "lux": true,
       "rate": 5,
       "comments": 10,
       "price": 9880,
@@ -68,8 +68,8 @@
     },
     {
       "id": 736,
-      "images": ["http://localhost:1234/736/1.png", "http://localhost:1234/736/2.png"],
-      "class": false,
+      "images": ["http://localhost:1234/rooms/736/1.png", "http://localhost:1234/rooms/736/2.png"],
+      "lux": false,
       "rate": 4,
       "comments": 135,
       "price": 6500,

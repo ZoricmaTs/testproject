@@ -5,13 +5,11 @@ import Screen from '../../services/screen';
 import Btn, {ButtonType} from '../btn';
 
 export type SliderItem = {
-  id: number,
   image: string,
-  title: string,
+  title?: string,
 }
 
 export default class Slider extends AbstractWidget {
-  private id: string;
   private items: SliderItem[];
   private rootElement: HTMLDivElement;
   private sliderWrapper: HTMLDivElement;
@@ -21,27 +19,10 @@ export default class Slider extends AbstractWidget {
   private indicatorsWrapper: HTMLDivElement;
   private indicators: HTMLDivElement[];
 
-  constructor(params: any) {
+  constructor(params: SliderItem[]) {
     super(params);
 
-    this.id = params.id;
-    this.items = [
-      {
-        id: 0,
-        image: 'http://localhost:1234/image.png',
-        title: 'image1',
-      },
-      {
-        id: 1,
-        image: 'sdfds',
-        title: 'image2',
-      },
-      {
-        id: 2,
-        image: 'sdfds',
-        title: 'image3',
-      }
-    ];
+    this.items = params;
 
     this.updateWrapperWidth = this.updateWrapperWidth.bind(this);
     this.onPressLeftButton = this.onPressLeftButton.bind(this);
@@ -75,7 +56,7 @@ export default class Slider extends AbstractWidget {
   }
 
   private createItems(): void {
-    this.items.forEach((item: any) => {
+    this.items.forEach((item: SliderItem) => {
       const container = document.createElement('div');
       container.style.background = `url(${item.image}) no-repeat center center/cover`;
       container.classList.add('slider__item');
@@ -138,30 +119,32 @@ export default class Slider extends AbstractWidget {
   }
 
   private createButtons(): void {
-    this.leftButton = new Btn({
-      title: '',
-      onPress: this.onPressLeftButton,
-      type: ButtonType.TEXT_WITH_ICON,
-      classes: ['slider__button', 'slider__button_left'],
-      icon: 'navigate_before',
-      iconClasses: ['slider__button_icon']
-    });
+    if (this.items.length >= 1) {
+      this.leftButton = new Btn({
+        title: '',
+        onPress: this.onPressLeftButton,
+        type: ButtonType.TEXT_WITH_ICON,
+        classes: ['slider__button', 'slider__button_left'],
+        icon: 'navigate_before',
+        iconClasses: ['slider__button_icon']
+      });
 
-    this.rightButton = new Btn({
-      title: '',
-      onPress: this.onPressRightButton,
-      type: ButtonType.TEXT_WITH_ICON,
-      classes: ['slider__button', 'slider__button_right'],
-      icon: 'navigate_next',
-      iconClasses: ['slider__button_icon']
-    });
+      this.rightButton = new Btn({
+        title: '',
+        onPress: this.onPressRightButton,
+        type: ButtonType.TEXT_WITH_ICON,
+        classes: ['slider__button', 'slider__button_right'],
+        icon: 'navigate_next',
+        iconClasses: ['slider__button_icon']
+      });
 
-    this.leftButton.init();
-    this.rightButton.init();
-    this.widgets.push(this.leftButton);
-    this.widgets.push(this.rightButton);
-    this.rootElement.append(this.leftButton.getRoot());
-    this.rootElement.append(this.rightButton.getRoot());
+      this.leftButton.init();
+      this.rightButton.init();
+      this.widgets.push(this.leftButton);
+      this.widgets.push(this.rightButton);
+      this.rootElement.append(this.leftButton.getRoot());
+      this.rootElement.append(this.rightButton.getRoot());
+    }
   }
 
   protected initIndicators(): void {
