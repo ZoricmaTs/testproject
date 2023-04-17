@@ -147,7 +147,7 @@
     },
     {
       "id": 16,
-      "images": ["http://localhost:1234/rooms/70/1.png"],
+      "images": ["http://localhost:1234/rooms/16/1.png"],
       "lux": true,
       "rate": 2,
       "price": 1500,
