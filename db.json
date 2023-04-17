@@ -74,6 +74,85 @@
       "comments": 135,
       "price": 6500,
       "amount": "usd"
+    },
+    {
+      "id": 15,
+      "images": ["http://localhost:1234/rooms/15/1.png"],
+      "lux": false,
+      "rate": 3,
+      "price": 6500,
+      "amount": "ru"
+    },
+    {
+      "id": 10,
+      "images": [],
+      "lux": false,
+      "rate": 2,
+      "price": 1500,
+      "amount": "ru"
+    },
+    {
+      "id": 563,
+      "images": ["http://localhost:1234/rooms/563/1.png", "http://localhost:1234/rooms/563/2.png", "http://localhost:1234/rooms/563/3.png"],
+      "lux": false,
+      "rate": 2,
+      "price": 1500,
+      "comments": 1,
+      "amount": "ru"
+    },
+    {
+      "id": 400,
+      "images": ["http://localhost:1234/rooms/400/1.png"],
+      "lux": true,
+      "rate": 2,
+      "price": 1500,
+      "comments": 1,
+      "amount": "ru"
+    },
+    {
+      "id": 214,
+      "images": ["http://localhost:1234/rooms/214/1.png"],
+      "lux": true,
+      "rate": 2,
+      "price": 1500,
+      "comments": 1,
+      "amount": "ru"
+    },
+    {
+      "id": 93,
+      "images": ["http://localhost:1234/rooms/93/1.png"],
+      "lux": true,
+      "rate": 2,
+      "price": 1500,
+      "comments": 1,
+      "amount": "ru"
+    },
+    {
+      "id": 150,
+      "images": ["http://localhost:1234/rooms/150/1.png"],
+      "lux": true,
+      "rate": 2,
+      "price": 1500,
+      "comments": 1,
+      "amount": "ru"
+    },
+    {
+      "id": 70,
+      "images": ["http://localhost:1234/rooms/70/1.png", "http://localhost:1234/rooms/70/2.png"],
+      "lux": true,
+      "rate": 2,
+      "price": 1500,
+      "comments": 1,
+      "amount": "ru"
+    },
+    {
+      "id": 16,
+      "images": ["http://localhost:1234/rooms/70/1.png"],
+      "lux": true,
+      "rate": 2,
+      "price": 1500,
+      "comments": 1,
+      "amount": "ru"
     }
   ]
 }
