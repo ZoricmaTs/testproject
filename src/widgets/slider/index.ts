@@ -18,11 +18,13 @@ export default class Slider extends AbstractWidget {
   private activeIndex: number;
   private indicatorsWrapper: HTMLDivElement;
   private indicators: HTMLDivElement[];
+  private id: string;
 
-  constructor(params: SliderItem[]) {
+  constructor(params: SliderItem[], id: string) {
     super(params);
 
     this.items = params;
+    this.id = id;
 
     this.updateWrapperWidth = this.updateWrapperWidth.bind(this);
     this.onPressLeftButton = this.onPressLeftButton.bind(this);
@@ -60,7 +62,6 @@ export default class Slider extends AbstractWidget {
       const container = document.createElement('div');
       container.style.background = `url(${item.image}) no-repeat center center/cover`;
       container.classList.add('slider__item');
-      this.sliderWrapper.append(container);
 
       if (item.title && item.title.length > 0) {
         const title = document.createElement('div');
@@ -69,6 +70,8 @@ export default class Slider extends AbstractWidget {
 
         container.append(title);
       }
+
+      this.sliderWrapper.append(container);
     })
   }
 
@@ -119,7 +122,7 @@ export default class Slider extends AbstractWidget {
   }
 
   private createButtons(): void {
-    if (this.items.length >= 1) {
+    if (this.items.length > 1) {
       this.leftButton = new Btn({
         title: '',
         onPress: this.onPressLeftButton,
@@ -148,21 +151,23 @@ export default class Slider extends AbstractWidget {
   }
 
   protected initIndicators(): void {
-    this.indicators = [];
-    this.indicatorsWrapper = document.createElement('div');
-    this.indicatorsWrapper.classList.add('slider__indicators');
+    if (this.items.length > 1) {
+      this.indicators = [];
+      this.indicatorsWrapper = document.createElement('div');
+      this.indicatorsWrapper.classList.add('slider__indicators');
 
-    this.items.forEach((item: SliderItem, index: number) => {
-      const indicator = document.createElement('div');
+      this.items.forEach((item: SliderItem, index: number) => {
+        const indicator = document.createElement('div');
 
-      indicator.classList.add('slider__indicators_item');
-      this.updateActiveIndicator();
+        indicator.classList.add('slider__indicators_item');
+        this.updateActiveIndicator();
 
-      this.indicators.push(indicator);
-      this.indicatorsWrapper.append(indicator);
-    })
+        this.indicators.push(indicator);
+        this.indicatorsWrapper.append(indicator);
+      })
 
-    this.rootElement.append(this.indicatorsWrapper);
+      this.rootElement.append(this.indicatorsWrapper);
+    }
   }
 
   public afterDOMShow() {

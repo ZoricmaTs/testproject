@@ -22,10 +22,12 @@ export default class Card extends AbstractWidget {
   private rootElement: HTMLDivElement;
   private slider: Slider;
   private readonly room: RoomModel;
+  private id: string;
 
-  constructor(params: RoomModel) {
+  constructor(params: RoomModel, id: string) {
     super(params);
     this.room = params;
+    this.id = id
   }
 
   public getRoot(): HTMLDivElement {
@@ -36,7 +38,7 @@ export default class Card extends AbstractWidget {
     this.rootElement = document.createElement('div');
     this.rootElement.classList.add('card');
 
-    this.slider = new Slider(this.room.getCardData());
+    this.slider = new Slider(this.room.getCardData(), this.id);
     this.slider.init();
 
     this.rootElement.append(this.slider.getRoot());

@@ -16,7 +16,8 @@ export default class Home extends AbstractScene {
     private header: Header;
     private background: HTMLImageElement;
     private rooms: RoomModel[];
-
+    private page: number;
+    private roomsWrapper: HTMLDivElement;
 
     constructor(params: any) {
         super(params);
@@ -25,18 +26,30 @@ export default class Home extends AbstractScene {
         this.openAuthScene = this.openAuthScene.bind(this);
     }
 
-    afterDOMShow() {
+    public afterDOMShow() {
         super.afterDOMShow();
     }
 
-    beforeDOMHide() {
+    public beforeDOMHide() {
         super.beforeDOMHide();
     }
 
-    beforeDOMShow() {
+    public beforeDOMShow() {
         super.beforeDOMShow();
 
         this.initBackground();
+    }
+
+
+    protected onScrollScene(ev: Event): void {
+        super.onScrollScene(ev);
+
+        if (this.isEndPositionScroll) {
+            this.page += 1;
+            this.loadRooms(this.page)
+              .then((rooms: RoomModel[]) => this.updateRooms(rooms))
+              .catch((error) => console.log(error));
+        }
     }
 
     private initBackground(): void {
@@ -62,17 +75,32 @@ export default class Home extends AbstractScene {
     }
 
     private initRooms(): void {
-        const roomsWrapper = document.createElement('div');
-        roomsWrapper.classList.add('cards');
-        this.rooms.forEach((room: RoomModel) => {
-            const card = new Card(room);
+        this.roomsWrapper = document.createElement('div');
+        this.roomsWrapper.classList.add('cards');
+
+        this.rooms.forEach((room: RoomModel, index: number) => {
+            const card = new Card(room, `card-room-${index + 1}`);
             card.init();
 
-            roomsWrapper.append(card.getRoot());
+            this.roomsWrapper.append(card.getRoot());
             this.widgets.push(card);
         });
 
-        this.getContainer().append(roomsWrapper);
+        this.getContainer().append(this.roomsWrapper);
+    }
+
+    private updateRooms(rooms: RoomModel[]): void {
+        const lastRoomIndex = this.rooms.length;
+        if (rooms) {
+            rooms.forEach((room: RoomModel, index) => {
+                const id = 'card-room-' + lastRoomIndex + index + 1;
+                const card = new Card(room, id);
+                card.init();
+
+                this.roomsWrapper.append(card.getRoot());
+                this.widgets.push(card);
+            });
+        }
     }
 
     protected initWidgets(): void {
@@ -96,11 +124,8 @@ export default class Home extends AbstractScene {
                 }
             })
             .then(() => {
-                return rooms.getRooms()
-                  .then((response: RoomModel[]) => {
-                      this.rooms = response;
-                        this.setOptions({rooms: this.rooms});
-                    });
+                this.page = 1;
+                return this.loadRooms(this.page)
             })
             .then(() => {
                 this.initWidgets();
@@ -109,6 +134,19 @@ export default class Home extends AbstractScene {
                 }
             })
             .catch((error: ErrorEvent) => console.log(`open ${this.name}`, error));
+    }
+
+    private loadRooms(page: number): Promise<RoomModel[]> {
+        return rooms.getRooms(this.page, 5)
+          .then((response: RoomModel[]) => {
+              if (!this.rooms) {
+                  this.rooms = response;
+              }
+
+              this.setOptions({rooms: this.rooms});
+
+              return response;
+          });
     }
 
     protected setOptions(param: { user?: UserModel, operator?: Operator, rooms?: RoomModel[]}) {

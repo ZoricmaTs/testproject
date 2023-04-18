@@ -7,13 +7,14 @@ export default class Rooms {
 
     }
 
-    public getRooms(data?: any): any {
-        if (this.roomModels && this.roomModels.length > 0) {
-            return Promise.resolve(this.roomModels);
-        }
+    public getRooms(page: number, pageSize: number): any {
+        // if (this.roomModels && this.roomModels.length > 0) {
+        //     return Promise.resolve(this.roomModels);
+        // }
 
-        return api.getRooms()
+        return api.getRooms(page, pageSize)
             .then((response: any) => {
+              console.log('response', response)
                 if (response.length === 0) {
                     return Promise.reject(new Error('комнаты не найдены'));
                 }

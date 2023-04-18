@@ -6,6 +6,7 @@ export class AbstractScene {
     private readonly route: string;
     protected widgets: AbstractWidget[];
     protected options: any;
+    protected isEndPositionScroll: boolean;
 
     constructor(params: any) {
         this.name = params.name;
@@ -13,6 +14,12 @@ export class AbstractScene {
         this.widgets = [];
 
         this.create();
+        this.onScrollScene = this.onScrollScene.bind(this);
+    }
+
+    protected onScrollScene(ev: Event): void {
+        const element = ev.target as HTMLDivElement;
+        this.isEndPositionScroll = element.scrollHeight - element.scrollTop === element.clientHeight;
     }
 
     public getRoute(): string {
@@ -35,12 +42,16 @@ export class AbstractScene {
         this.widgets.forEach((widget: AbstractWidget) => {
             widget.afterDOMHide();
         })
+
+        this.getContainer().removeEventListener("scroll", this.onScrollScene);
     }
 
     public afterDOMShow(): void {
         this.widgets.forEach((widget: AbstractWidget) => {
             widget.afterDOMShow();
         })
+
+        this.getContainer().addEventListener("scroll", this.onScrollScene);
     }
 
     public getContainer(): HTMLElement {

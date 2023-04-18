@@ -42,8 +42,8 @@ export default class Api {
         ).then((response) => response.json());
     }
 
-    public getRooms(): Promise<any> {
-        const roomsUrl = this.middlewareUrl + '/rooms';
+    public getRooms(page: number, pageSize: number): Promise<any> {
+        const roomsUrl = this.middlewareUrl + `/rooms?_page=${page}&_limit=${pageSize}`;
 
         return fetch(roomsUrl).then((response) => response.json());
     }
