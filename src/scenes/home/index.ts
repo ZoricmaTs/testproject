@@ -97,7 +97,10 @@ export default class Home extends AbstractScene {
                 const card = new Card(room, id);
                 card.init();
 
+                card.beforeDOMShow();
                 this.roomsWrapper.append(card.getRoot());
+                card.afterDOMShow();
+
                 this.widgets.push(card);
             });
         }

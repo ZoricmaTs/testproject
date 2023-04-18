@@ -10,7 +10,7 @@ export type SliderItem = {
 }
 
 export default class Slider extends AbstractWidget {
-  private items: SliderItem[];
+  private readonly items: SliderItem[];
   private rootElement: HTMLDivElement;
   private sliderWrapper: HTMLDivElement;
   private leftButton: Btn;
@@ -80,8 +80,10 @@ export default class Slider extends AbstractWidget {
   }
 
   private updateWrapperWidth(): void {
-    const width = this.sliderWrapper.parentElement.clientWidth * this.items.length;
-    this.sliderWrapper.style.width = `${width}px`;
+    if (this.sliderWrapper) {
+      const width = this.sliderWrapper.parentElement.clientWidth * this.items.length;
+      this.sliderWrapper.style.width = `${width}px`;
+    }
   }
   
   private onPressLeftButton(): void {
@@ -172,6 +174,12 @@ export default class Slider extends AbstractWidget {
 
   public afterDOMShow() {
     super.afterDOMShow();
+
+    this.updateWrapperWidth();
+  }
+
+  public beforeDOMShow() {
+    super.beforeDOMShow();
 
     this.updateWrapperWidth();
   }
