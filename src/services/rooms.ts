@@ -14,7 +14,6 @@ export default class Rooms {
 
         return api.getRooms(page, pageSize)
             .then((response: any) => {
-              console.log('response', response)
                 if (response.length === 0) {
                     return Promise.reject(new Error('комнаты не найдены'));
                 }

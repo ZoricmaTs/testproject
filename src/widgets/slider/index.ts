@@ -10,15 +10,14 @@ export type SliderItem = {
 }
 
 export default class Slider extends AbstractWidget {
-  private readonly items: SliderItem[];
-  private rootElement: HTMLDivElement;
-  private sliderWrapper: HTMLDivElement;
-  private leftButton: Btn;
-  private rightButton: Btn;
-  private activeIndex: number;
-  private indicatorsWrapper: HTMLDivElement;
-  private indicators: HTMLDivElement[];
-  private id: string;
+  protected readonly items: SliderItem[];
+  protected rootElement: HTMLDivElement;
+  protected sliderWrapper: HTMLDivElement;
+  protected activeIndex: number;
+  protected indicatorsWrapper: HTMLDivElement;
+  protected indicators: HTMLDivElement[];
+  protected id: string;
+  private buttons: Btn[];
 
   constructor(params: SliderItem[], id: string) {
     super(params);
@@ -29,14 +28,16 @@ export default class Slider extends AbstractWidget {
     this.updateWrapperWidth = this.updateWrapperWidth.bind(this);
     this.onPressLeftButton = this.onPressLeftButton.bind(this);
     this.onPressRightButton = this.onPressRightButton.bind(this);
+    this.onHover = this.onHover.bind(this);
+    this.onLeave = this.onLeave.bind(this);
     this.setActiveIndex(0);
   }
 
-  private getMaxIndex(): number {
+  protected getMaxIndex(): number {
     return this.items.length - 1;
   }
 
-  private setActiveIndex(index: number): any {
+  protected setActiveIndex(index: number): any {
     this.activeIndex = index;
   }
 
@@ -44,10 +45,10 @@ export default class Slider extends AbstractWidget {
     this.initWrapper();
     this.createItems();
     this.initIndicators();
-    this.createButtons();
+    this.initButtons();
   }
 
-  private initWrapper(): void {
+  protected initWrapper(): void {
     this.rootElement = document.createElement('div');
     this.rootElement.classList.add('slider');
 
@@ -57,7 +58,7 @@ export default class Slider extends AbstractWidget {
     this.rootElement.append(this.sliderWrapper);
   }
 
-  private createItems(): void {
+  protected createItems(): void {
     this.items.forEach((item: SliderItem) => {
       const container = document.createElement('div');
       container.style.background = `url(${item.image}) no-repeat center center/cover`;
@@ -79,14 +80,14 @@ export default class Slider extends AbstractWidget {
     return this.rootElement;
   }
 
-  private updateWrapperWidth(): void {
+  protected updateWrapperWidth(): void {
     if (this.sliderWrapper) {
       const width = this.sliderWrapper.parentElement.clientWidth * this.items.length;
       this.sliderWrapper.style.width = `${width}px`;
     }
   }
-  
-  private onPressLeftButton(): void {
+
+  protected onPressLeftButton(): void {
     if (this.activeIndex - 1 >= 0) {
       this.setActiveIndex(this.activeIndex - 1);
     } else {
@@ -97,12 +98,12 @@ export default class Slider extends AbstractWidget {
     this.updateActiveIndicator();
   }
 
-  private updatePosition(): void {
+  protected updatePosition(): void {
     const position = this.sliderWrapper.parentElement.clientWidth * this.activeIndex;
     this.sliderWrapper.style.transform = `translateX(-${position}px)`;
   }
 
-  private onPressRightButton(): void {
+  protected onPressRightButton(): void {
     if (this.activeIndex + 1 <= this.getMaxIndex()) {
       this.setActiveIndex(this.activeIndex + 1);
     } else {
@@ -113,7 +114,7 @@ export default class Slider extends AbstractWidget {
     this.updateActiveIndicator();
   }
 
-  private updateActiveIndicator(): void {
+  protected updateActiveIndicator(): void {
     this.indicators.forEach((indicator, index) => {
       if (index === this.activeIndex) {
         indicator.classList.add('active');
@@ -123,32 +124,35 @@ export default class Slider extends AbstractWidget {
     });
   }
 
-  private createButtons(): void {
-    if (this.items.length > 1) {
-      this.leftButton = new Btn({
+  protected createButtons(): void {
+    this.buttons = [
+      new Btn({
         title: '',
         onPress: this.onPressLeftButton,
         type: ButtonType.TEXT_WITH_ICON,
         classes: ['slider__button', 'slider__button_left'],
         icon: 'navigate_before',
         iconClasses: ['slider__button_icon']
-      });
-
-      this.rightButton = new Btn({
+      }),
+      new Btn({
         title: '',
         onPress: this.onPressRightButton,
         type: ButtonType.TEXT_WITH_ICON,
         classes: ['slider__button', 'slider__button_right'],
         icon: 'navigate_next',
         iconClasses: ['slider__button_icon']
-      });
+      })
+    ];
+  }
 
-      this.leftButton.init();
-      this.rightButton.init();
-      this.widgets.push(this.leftButton);
-      this.widgets.push(this.rightButton);
-      this.rootElement.append(this.leftButton.getRoot());
-      this.rootElement.append(this.rightButton.getRoot());
+  protected initButtons(): void {
+    if (this.items.length > 1) {
+      this.createButtons();
+      this.buttons.forEach((button: Btn) => {
+        button.init();
+        this.rootElement.append(button.getRoot());
+        this.widgets.push(button);
+      })
     }
   }
 
@@ -184,15 +188,45 @@ export default class Slider extends AbstractWidget {
     this.updateWrapperWidth();
   }
 
+  protected onHover(): void {
+    this.updateVisibleButtons(true);
+  }
+
+  protected onLeave(): void {
+    this.updateVisibleButtons(false);
+  }
+
+  protected updateVisibleButtons(isVisible: boolean): void {
+    if (this.buttons) {
+      if (isVisible) {
+        this.buttons.forEach((button: Btn) => {
+          button.getRoot().classList.add('show');
+          button.getRoot().classList.remove('hide');
+        })
+      } else {
+        this.buttons.forEach((button: Btn) => {
+          button.getRoot().classList.add('hide');
+          button.getRoot().classList.remove('show');
+        })
+      }
+    }
+  }
+
   protected addEvents():void {
     super.addEvents();
 
     screen.on(Screen.EVENT_RESIZE, [this.updateWrapperWidth]);
+
+    this.rootElement.addEventListener('mouseover', this.onHover);
+    this.rootElement.addEventListener('mouseout', this.onLeave);
   }
 
   protected removeEvents() {
     super.removeEvents();
 
     screen.off(Screen.EVENT_RESIZE, this.updateWrapperWidth);
+
+    this.rootElement.removeEventListener('mouseover', this.onHover);
+    this.rootElement.removeEventListener('mouseout', this.onLeave);
   }
 }
