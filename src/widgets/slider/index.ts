@@ -59,21 +59,32 @@ export default class Slider extends AbstractWidget {
   }
 
   protected createItems(): void {
-    this.items.forEach((item: SliderItem) => {
+    if (this.items.length > 0) {
+      this.items.forEach((item: SliderItem) => {
+        const container = document.createElement('div');
+        container.style.background = `url(${item.image}) no-repeat center center/cover`;
+        container.classList.add('slider__item');
+
+        if (item.title && item.title.length > 0) {
+          const title = document.createElement('div');
+          title.classList.add('slider__item-title');
+          title.innerText = item.title;
+
+          container.append(title);
+        }
+
+        this.sliderWrapper.append(container);
+      })
+    } else {
       const container = document.createElement('div');
-      container.style.background = `url(${item.image}) no-repeat center center/cover`;
-      container.classList.add('slider__item');
+      container.classList.add('slider__item-not-image');
 
-      if (item.title && item.title.length > 0) {
-        const title = document.createElement('div');
-        title.classList.add('slider__item-title');
-        title.innerText = item.title;
-
-        container.append(title);
-      }
+      const text = document.createElement('p');
+      text.innerText = 'no image';
+      container.append(text);
 
       this.sliderWrapper.append(container);
-    })
+    }
   }
 
   public getRoot(): HTMLDivElement {
@@ -82,7 +93,8 @@ export default class Slider extends AbstractWidget {
 
   protected updateWrapperWidth(): void {
     if (this.sliderWrapper) {
-      const width = this.sliderWrapper.parentElement.clientWidth * this.items.length;
+      const itemsLength = this.items.length > 0 ? this.items.length : 1;
+      const width = this.sliderWrapper.parentElement.clientWidth * itemsLength;
       this.sliderWrapper.style.width = `${width}px`;
     }
   }
