@@ -9,11 +9,11 @@
   &_toggle
     {text-link}
     width 100%
-    color: $color-dark-shade-50
+    color $color-dark-shade-50
     background-color transparent
     &:hover
     &:focus
-      color: $color-dark-shade-75
+      color $color-dark-shade-75
 
   &_list
     position absolute
@@ -25,14 +25,52 @@
 
     &__item
       background-color transparent
-      color: $color-dark-shade-50
+      color $color-dark-shade-50
       padding-top 5px
       padding-bottom 5px
 
       &:hover
       &:focus
-        color: $color-dark-shade-75
+        color $color-dark-shade-75
 
 .active
-  color: $color-dark-shade-75
+  color $color-dark-shade-75
+
+.multiply
+  width 100%
+  display flex
+  position relative
+
+  &_name
+    {text-h3}
+    color $color-dark-shade
+    margin-bottom 5px
+  &_toggle
+    justify-content space-between
+    width 100%
+    padding 12px 0 8px 15px
+    color $color-dark-shade-75
+    background-color $color-white
+    border 1px solid $color-dark-shade-25
+    border-radius 4px
+    &__icon
+      width 44px
+      line-height 44px
+  &_list
+    position absolute
+    z-index 2
+    //top 30px
+    width 100%
+    background-color white
+    padding 10px
+
+    &__item
+      background-color transparent
+      color $color-dark-shade-50
+      padding-top 5px
+      padding-bottom 5px
+
+      &:hover
+      &:focus
+        color $color-dark-shade-75
 

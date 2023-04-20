@@ -8,6 +8,7 @@ import Operator from '../../models/operator';
 import Header from '../../widgets/header';
 import RoomModel from '../../models/room';
 import Card from '../../widgets/card';
+import MultipleDropdown from '../../widgets/dropdown/multiple';
 
 export default class Home extends AbstractScene {
     protected options: any;
@@ -18,6 +19,7 @@ export default class Home extends AbstractScene {
     private rooms: RoomModel[];
     private page: number;
     private roomsWrapper: HTMLDivElement;
+    private dropdown: MultipleDropdown;
 
     constructor(params: any) {
         super(params);
@@ -74,6 +76,33 @@ export default class Home extends AbstractScene {
         this.widgets.push(this.header);
     }
 
+    private initDropdown(): void {
+        const items = [
+            {
+                title: 'взрослые',
+                value: 0,
+            },
+            {
+                title: 'дети',
+                value: 0,
+            },
+            {
+                title: 'младенцы',
+                value: 0,
+            }
+        ];
+        const data = {
+            id: 125,
+            name: 'гости',
+            buttonTitle: '3 гостя, 1 младенец',
+            items,
+        }
+
+        this.dropdown = new MultipleDropdown(data);
+        this.getContainer().append(this.dropdown.getRoot());
+        this.widgets.push(this.dropdown);
+    }
+
     private initRooms(): void {
         this.roomsWrapper = document.createElement('div');
         this.roomsWrapper.classList.add('cards');
@@ -108,7 +137,8 @@ export default class Home extends AbstractScene {
 
     protected initWidgets(): void {
         this.initHeader();
-        this.initRooms();
+        this.initDropdown();
+        // this.initRooms();
     }
 
     public open(): Promise<any> {

@@ -18,24 +18,27 @@ export type DropdownType = {
     styles?: string[],
 }
 
-export default class Dropdown extends AbstractWidget {
+export default class MultipleDropdown extends AbstractWidget {
     protected rootElement: Element;
-    protected items: DropdownItem[];
+    protected items: any;
     protected readonly buttonTitle: string;
     protected buttons: Btn[];
     protected isOpen: boolean;
     protected toggle: Btn;
     protected list: Element;
     protected icon: string;
-    public id: number;
+    protected id: number;
     protected readonly styles: string[];
+    protected name: string;
 
-    constructor(params: DropdownType) {
+    constructor(params: any) {
         super(params);
+
+        this.name = params.name;
         this.id = params.id;
         this.items = params.items;
         this.buttonTitle = params.buttonTitle;
-        this.styles = params.styles;
+        // this.styles = params.styles;
 
         this.isOpen = false;
 
@@ -46,9 +49,15 @@ export default class Dropdown extends AbstractWidget {
 
 
         this.initRootElement(this.styles);
+        this.initToggle();
+
         this.initList();
         this.initItems();
-        this.initToggle();
+    }
+
+    protected initName(): void {
+        const name = document.createElement('div');
+        name.classList.add('multiply_name');
     }
 
     public beforeDOMHide() {
@@ -74,25 +83,28 @@ export default class Dropdown extends AbstractWidget {
     }
 
     protected changeToggleStyle(): void {
-        const isActive: boolean = this.hasActiveIndex();
-        const toggleElement: Element = this.toggle.getRoot();
+        if (this.buttons) {
+            const isActive: boolean = this.hasActiveIndex();
+            const toggleElement: Element = this.toggle.getRoot();
 
-        if (isActive) {
-            toggleElement.classList.add('active');
-        } else {
-            toggleElement.classList.remove('active');
+            if (isActive) {
+                toggleElement.classList.add('active');
+            } else {
+                toggleElement.classList.remove('active');
+            }
         }
     }
 
     protected initList(): void {
-        this.list = Helper.DOM('<div class="dropdown_list"></div>');
+        this.list = Helper.DOM('<div class="multiply_list"></div>');
         this.list.classList.add('hide');
         this.rootElement.append(this.list);
+        console.log('this.rootElement', this.rootElement.clientHeight)
     }
 
     protected initItems(): void {
         this.buttons = this.items.map(({title, onPress, isActive, data, id}: DropdownItem) => {
-            const classes = ['dropdown_list__item'];
+            const classes = ['multiply_list__item'];
 
             const button = new Btn({title, onPress, type: ButtonType.TEXT, classes, isActive, data, id})
             button.init();
@@ -144,8 +156,9 @@ export default class Dropdown extends AbstractWidget {
             title: this.buttonTitle,
             onPress: this.onPressToggle,
             type: ButtonType.TEXT_WITH_ICON,
-            classes: ['dropdown_toggle'],
+            classes: ['multiply_toggle'],
             icon: this.icon,
+            iconClasses: ['multiply_toggle__icon'],
         });
 
         this.toggle.init();
@@ -155,7 +168,7 @@ export default class Dropdown extends AbstractWidget {
     }
 
     protected initRootElement(stylesClass: string[]): void {
-        const styles = stylesClass ? ['dropdown'].concat(stylesClass) : ['dropdown'];
+        const styles = stylesClass ? ['multiply'].concat(stylesClass) : ['multiply'];
         const classes = styles.join(' ');
 
         this.rootElement = Helper.DOM(`<div class="${classes}"/>`);

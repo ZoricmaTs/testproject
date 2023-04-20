@@ -189,7 +189,7 @@ export default class Header extends AbstractWidget {
             if (item.type === HeaderType.DROPDOWN) {
                 return new Dropdown({
                     id: item.id,
-                    title: item.title,
+                    buttonTitle: item.title,
                     items: item.items,
                     styles: item.styles,
                 });
