@@ -3,7 +3,7 @@ import * as Helper from '../../helper';
 import './style.styl';
 
 export type ButtonParams = {
-    id?: number,
+    id?: number | string,
     title?: string,
     classes: string[],
     onPress?: (params: any) => void,

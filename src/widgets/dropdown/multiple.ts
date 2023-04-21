@@ -25,11 +25,12 @@ export default class MultipleDropdown extends AbstractWidget {
     protected buttons: Btn[];
     protected isOpen: boolean;
     protected toggle: Btn;
-    protected list: Element;
+    protected list: HTMLDivElement;
     protected icon: string;
     protected id: number;
     protected readonly styles: string[];
     protected name: string;
+    private aa: any;
 
     constructor(params: any) {
         super(params);
@@ -44,20 +45,17 @@ export default class MultipleDropdown extends AbstractWidget {
 
         this.icon = 'keyboard_arrow_down';
 
-        this.onPressToggle = this.onPressToggle.bind(this);
         this.onBlur = this.onBlur.bind(this);
-
-
+        this.onPressToggle = this.onPressToggle.bind(this);
         this.initRootElement(this.styles);
-        this.initToggle();
-
-        this.initList();
-        this.initItems();
     }
 
     protected initName(): void {
         const name = document.createElement('div');
         name.classList.add('multiply_name');
+        name.innerText = this.name;
+
+        this.rootElement.append(name);
     }
 
     public beforeDOMHide() {
@@ -66,6 +64,18 @@ export default class MultipleDropdown extends AbstractWidget {
 
     public beforeDOMShow() {
         super.beforeDOMShow();
+    }
+
+    public afterDOMShow() {
+        super.afterDOMShow();
+
+        if (this.name && this.name.length > 0) {
+            this.initName();
+        }
+
+        this.initToggle();
+        this.initList();
+        this.initItems();
     }
 
     public getRoot(): any {
@@ -96,25 +106,81 @@ export default class MultipleDropdown extends AbstractWidget {
     }
 
     protected initList(): void {
-        this.list = Helper.DOM('<div class="multiply_list"></div>');
-        this.list.classList.add('hide');
+        this.list = document.createElement('div');
+        this.list.classList.add('hide', 'multiply_list');
         this.rootElement.append(this.list);
-        console.log('this.rootElement', this.rootElement.clientHeight)
+        this.list.style.top = `${this.rootElement.clientHeight}px`;
     }
 
     protected initItems(): void {
-        this.buttons = this.items.map(({title, onPress, isActive, data, id}: DropdownItem) => {
-            const classes = ['multiply_list__item'];
+        this.items.forEach((item: any, index: number) => {
+            const itemWrapper = document.createElement('div');
+            itemWrapper.classList.add('multiply_list__item');
 
-            const button = new Btn({title, onPress, type: ButtonType.TEXT, classes, isActive, data, id})
-            button.init();
-            this.widgets.push(button);
+            const title = document.createElement('div');
+            title.classList.add('multiply_list__item_title');
+            title.innerText = item.title;
+            itemWrapper.append(title);
 
-            const buttonContainer = button.getRoot();
-            this.list.append(buttonContainer);
+            const buttonsWrapper = document.createElement('div');
+            buttonsWrapper.classList.add('multiply_list__item_buttons-wrapper');
 
-            return button;
-        });
+            const subtractButton = new Btn({
+                title: '-',
+                type: ButtonType.TEXT,
+                id: `minus-${index}`,
+                onPress: () => console.log('minus'),
+                data: [],
+                classes: ['multiply_list__item_button'],
+            });
+
+            const augmentButton = new Btn({
+                title: '+',
+                type: ButtonType.TEXT,
+                id: `plus-${index}`,
+                onPress: () => console.log('plus'),
+                data: [],
+                classes: ['multiply_list__item_button'],
+            });
+
+            subtractButton.init();
+            augmentButton.init();
+
+            subtractButton.beforeDOMShow();
+            augmentButton.beforeDOMShow();
+
+            this.widgets.push(subtractButton);
+            this.widgets.push(augmentButton);
+
+            subtractButton.afterDOMShow();
+            augmentButton.afterDOMShow();
+
+            const value = document.createElement('div');
+            value.classList.add('multiply_list__item_value');
+            value.innerText = item.value;
+
+            buttonsWrapper.append(subtractButton.getRoot());
+            buttonsWrapper.append(value);
+            buttonsWrapper.append(augmentButton.getRoot());
+
+            itemWrapper.append(buttonsWrapper);
+
+            this.list.append(itemWrapper);
+        })
+
+
+        // this.buttons = this.items.map(({title, onPress, isActive, data, id}: DropdownItem) => {
+        //     const classes = ['multiply_list__item'];
+        //
+        //     const button = new Btn({title, onPress, type: ButtonType.TEXT, classes, isActive, data, id})
+        //     button.init();
+        //     this.widgets.push(button);
+        //
+        //     const buttonContainer = button.getRoot();
+        //     this.list.append(buttonContainer);
+        //
+        //     return button;
+        // });
     }
 
     protected showList(): void {
@@ -137,7 +203,7 @@ export default class MultipleDropdown extends AbstractWidget {
         this.isOpen = !this.isOpen;
 
         if (this.isOpen) {
-            this.showList()
+            this.showList();
         } else {
             this.hideList();
         }
@@ -159,28 +225,35 @@ export default class MultipleDropdown extends AbstractWidget {
             classes: ['multiply_toggle'],
             icon: this.icon,
             iconClasses: ['multiply_toggle__icon'],
-        });
-
+        })
         this.toggle.init();
+        this.toggle.beforeDOMShow();
+
         this.changeToggleStyle();
+
         this.rootElement.append(this.toggle.getRoot());
         this.widgets.push(this.toggle);
+
+        this.toggle.afterDOMShow();
     }
 
     protected initRootElement(stylesClass: string[]): void {
         const styles = stylesClass ? ['multiply'].concat(stylesClass) : ['multiply'];
         const classes = styles.join(' ');
 
-        this.rootElement = Helper.DOM(`<div class="${classes}"/>`);
+        this.rootElement = document.createElement('div');
+        this.rootElement.classList.add(classes);
     }
 
     protected addEvents() {
         super.addEvents();
+
         window.addEventListener('click', this.onBlur);
     }
 
     protected removeEvents() {
         super.removeEvents();
+
         window.removeEventListener('click', this.onBlur);
     }
 }
