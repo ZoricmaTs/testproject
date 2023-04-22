@@ -1,5 +1,4 @@
 import AbstractWidget from '../abstractWidget';
-import * as Helper from '../../helper';
 import './style.styl';
 
 export type ButtonParams = {
@@ -21,18 +20,19 @@ export enum ButtonType {
 }
 
 export default class Btn extends AbstractWidget {
-    private classes: string[];
-    private title: string;
-    private rootElement: Element;
-    private readonly onPressButton: (data: any) => void;
+    protected classes: string[];
+    protected title: string;
+    protected rootElement: Element;
+    protected readonly onPressButton: (data: any) => void;
     public data?: any
-    private readonly type: ButtonType;
-    private icon: string;
-    private readonly iconClasses: string[];
-    private readonly onBlurButton: () => void;
-    private readonly isActive: boolean;
+    protected readonly type: ButtonType;
+    protected icon: string;
+    protected readonly iconClasses: string[];
+    protected readonly onBlurButton: () => void;
+    protected readonly isActive: boolean;
     public id: number;
-    private iconElement: Element;
+    protected iconElement: Element;
+    protected titleElement: HTMLDivElement;
 
     constructor(params: ButtonParams) {
         super(params);
@@ -70,7 +70,7 @@ export default class Btn extends AbstractWidget {
     public setTitle(title: string): void {
         this.title = title;
 
-        this.rootElement.innerHTML = this.getTitle();
+        this.titleElement.innerText = this.title;
     }
 
     public getIcon(): string {
@@ -123,13 +123,24 @@ export default class Btn extends AbstractWidget {
     }
 
     public init(): void {
-        const buttonMarkup = `<button class="${this.classes.join(' ')}"><div class="content">${this.getTitle()}</div></button>`;
+        this.rootElement = document.createElement('button');
+        this.classes.forEach((className: string) => {
+            this.rootElement.classList.add(className);
+        })
 
-        this.rootElement = Helper.DOM(buttonMarkup);
+        this.initTitleElement();
 
         if (this.type === ButtonType.TEXT_WITH_ICON) {
             this.initIconElement();
         }
+    }
+    
+    protected initTitleElement(): void {
+        this.titleElement = document.createElement('div');
+        this.titleElement.classList.add('title');
+        this.titleElement.innerText = this.getTitle();
+
+        this.rootElement.append(this.titleElement);
     }
 
     protected addEvents():void {
