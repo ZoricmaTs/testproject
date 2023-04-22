@@ -117,6 +117,12 @@ gradient-border = @block  {
 $grid-gutter = 16px
 $grid-color = rgba(255, 0, 0, 0.2)
 
+text-ellipsis = @block {
+  overflow hidden
+  white-space nowrap
+  text-overflow ellipsis
+}
+
 grid(sides, columns)
   column-width = "calc((100% - %s * %s) / %s)" % ($grid-gutter columns columns)
   border-width 0 (sides - $grid-gutter / 2)

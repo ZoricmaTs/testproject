@@ -26,8 +26,8 @@
     &__item
       background-color transparent
       color $color-dark-shade-50
-      padding-top 5px
-      padding-bottom 5px
+      padding-top 3px
+      padding-bottom 3px
 
       &:hover
       &:focus
@@ -57,10 +57,11 @@
     &__icon
       width 44px
       line-height 44px
+  &_toggle > .title
+    {text-ellipsis}
   &_list
     position absolute
     z-index 2
-    //top 30px
     width 100%
     background-color white
     padding 10px
@@ -75,6 +76,8 @@
       padding-bottom 5px
       background-color transparent
       color $color-dark-shade
+      &_title
+        {text-ellipsis}
       &_buttons-wrapper
         display flex
         flex-direction row
@@ -92,8 +95,26 @@
         &:hover
         &:focus
           color $color-dark-shade-75
-
+        &:disabled
+          color $color-dark-shade-25
+          border 1px solid $color-dark-shade-25
       &_value
+        width 20px
+        text-align center
         margin-left 10px
         margin-right 10px
+
+    &__control
+      &_wrapper
+        display flex
+        flex-direction row
+        justify-content space-between
+        align-items center
+        padding-bottom 3px
+        padding-top 3px
+        margin-top 16px
+      &_button
+        {text-h3}
+        color $color-purple
+        background-color transparent
 

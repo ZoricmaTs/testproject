@@ -8,7 +8,7 @@ import Operator from '../../models/operator';
 import Header from '../../widgets/header';
 import RoomModel from '../../models/room';
 import Card from '../../widgets/card';
-import MultipleDropdown from '../../widgets/dropdown/multiple';
+import MultipleDropdown, {MultiplyItem, MultiplyType} from '../../widgets/dropdown/multiple';
 
 export default class Home extends AbstractScene {
     protected options: any;
@@ -26,6 +26,8 @@ export default class Home extends AbstractScene {
 
         this.openScene = this.openScene.bind(this);
         this.openAuthScene = this.openAuthScene.bind(this);
+
+        this.onChangeDropdownValues = this.onChangeDropdownValues.bind(this);
     }
 
     public afterDOMShow() {
@@ -77,30 +79,39 @@ export default class Home extends AbstractScene {
     }
 
     private initDropdown(): void {
-        const items = [
+        const items: MultiplyItem[] = [
             {
                 title: 'взрослые',
                 value: 0,
+                id: 'dropdown-125_0',
             },
             {
                 title: 'дети',
                 value: 0,
+                id: 'dropdown-125_1',
             },
             {
                 title: 'младенцы',
                 value: 0,
+                id: 'dropdown-125_2',
             }
         ];
-        const data = {
+        const data: MultiplyType = {
             id: 125,
             name: 'гости',
-            buttonTitle: '3 гостя, 1 младенец',
+            buttonTitle: '',
             items,
+            onChange: this.onChangeDropdownValues,
+            availabilityControlButtons: true,
         }
 
         this.dropdown = new MultipleDropdown(data);
         this.getContainer().append(this.dropdown.getRoot());
         this.widgets.push(this.dropdown);
+    }
+
+    private onChangeDropdownValues(data: any): void {
+        console.log('onChangeDropdownValues', data);
     }
 
     private initRooms(): void {

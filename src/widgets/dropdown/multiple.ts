@@ -1,21 +1,21 @@
 import AbstractWidget from '../abstractWidget';
 import './style.styl';
-import * as Helper from '../../helper';
-import Btn, {ButtonType} from '../btn';
+import Btn, {ButtonParams, ButtonType} from '../btn';
 
-export type DropdownItem = {
+export type MultiplyItem = {
+    id: string,
     title: string,
-    onPress: (data: number) => void,
-    isActive: boolean,
-    data?: any,
-    id: number,
+    value: number,
 }
 
-export type DropdownType = {
+export type MultiplyType = {
     id: number,
     buttonTitle: string,
-    items: DropdownItem[],
+    name?: string,
+    items: MultiplyItem[],
     styles?: string[],
+    onChange?: (items: any) => void,
+    availabilityControlButtons?: boolean,
 }
 
 export default class MultipleDropdown extends AbstractWidget {
@@ -30,9 +30,10 @@ export default class MultipleDropdown extends AbstractWidget {
     protected id: number;
     protected readonly styles: string[];
     protected name: string;
-    private aa: any;
+    protected onChange: any;
+    protected availabilityControlButtons: boolean;
 
-    constructor(params: any) {
+    constructor(params: MultiplyType) {
         super(params);
 
         this.name = params.name;
@@ -44,10 +45,18 @@ export default class MultipleDropdown extends AbstractWidget {
         this.isOpen = false;
 
         this.icon = 'keyboard_arrow_down';
+        this.onChange = params.onChange;
+        this.availabilityControlButtons = params.availabilityControlButtons;
 
         this.onBlur = this.onBlur.bind(this);
         this.onPressToggle = this.onPressToggle.bind(this);
+        this.onPressClearButton = this.onPressClearButton.bind(this);
+        this.onPressApplyButton = this.onPressApplyButton.bind(this);
+
         this.initRootElement(this.styles);
+        this.onChangeValueAugment = this.onChangeValueAugment.bind(this);
+        this.onChangeValueSubtract = this.onChangeValueSubtract.bind(this);
+        this.onChangeValues = this.onChangeValues.bind(this);
     }
 
     protected initName(): void {
@@ -76,6 +85,34 @@ export default class MultipleDropdown extends AbstractWidget {
         this.initToggle();
         this.initList();
         this.initItems();
+
+        if (this.availabilityControlButtons) {
+            const wrapper = this.createControlWrapper();
+            const clearButtonData = {
+                wrapper,
+                data: {
+                    title: 'очистить',
+                    onPress: this.onPressClearButton,
+                    type: ButtonType.TEXT,
+                    classes: ['multiply_list__control_button']
+                },
+                parentElement: this.list
+            };
+
+            const applyButtonData = {
+                wrapper,
+                data: {
+                    title: 'применить',
+                    onPress: this.onPressApplyButton,
+                    type: ButtonType.TEXT,
+                    classes: ['multiply_list__control_button']
+                },
+                parentElement: this.list
+            };
+
+            this.initButton(clearButtonData);
+            this.initButton(applyButtonData);
+        }
     }
 
     public getRoot(): any {
@@ -112,8 +149,59 @@ export default class MultipleDropdown extends AbstractWidget {
         this.list.style.top = `${this.rootElement.clientHeight}px`;
     }
 
+    protected onChangeValueAugment(data: any): void {
+        const newValue = this.items.find((item: any) => item.id === data.id).value + 1;
+        this.setValue(data.id, newValue);
+    }
+
+    protected setValue(id: string, newValue: number) {
+        const wrapper = document.getElementById(id);
+        const currentValue = this.items.find((item: any) => item.id === id);
+        currentValue.value = newValue;
+        wrapper.innerText = `${newValue}`;
+
+        this.items.forEach((item: any) => {
+            if (item.id === id) {
+                item.value = newValue;
+            }
+        });
+
+        const button = document.getElementById(`minus-${id}`) as HTMLButtonElement;
+        button.disabled = newValue === 0 ;
+
+        if (!this.availabilityControlButtons) {
+            this.onChangeValues(this.items);
+        }
+    }
+
+    protected onChangeValueSubtract(data: any): void {
+        const currentItem = this.items.find((item: any) => item.id === data.id)
+        const currentValue = currentItem.value;
+
+        if (currentValue > 0) {
+            const newValue = currentValue - 1;
+            this.setValue(data.id, newValue);
+        }
+    }
+
+    protected onChangeValues(data: any): void {
+        if (this.onChange) {
+            this.onChange(data);
+        }
+
+        const text: string[] = [];
+
+        data.forEach((item: any) => {
+            if (item.value > 0) {
+                text.push(`${item.value} ${item.title}`);
+            }
+        });
+
+        this.toggle.setTitle(text.join(', '));
+    }
+
     protected initItems(): void {
-        this.items.forEach((item: any, index: number) => {
+        this.items.forEach((item: any) => {
             const itemWrapper = document.createElement('div');
             itemWrapper.classList.add('multiply_list__item');
 
@@ -125,11 +213,16 @@ export default class MultipleDropdown extends AbstractWidget {
             const buttonsWrapper = document.createElement('div');
             buttonsWrapper.classList.add('multiply_list__item_buttons-wrapper');
 
+            const value = document.createElement('div');
+            value.classList.add('multiply_list__item_value');
+            value.setAttribute('id', item.id);
+            value.innerText = item.value;
+
             const subtractButton = new Btn({
                 title: '-',
                 type: ButtonType.TEXT,
-                id: `minus-${index}`,
-                onPress: () => console.log('minus'),
+                id: `minus-${item.id}`,
+                onPress: () => this.onChangeValueSubtract(item),
                 data: [],
                 classes: ['multiply_list__item_button'],
             });
@@ -137,14 +230,18 @@ export default class MultipleDropdown extends AbstractWidget {
             const augmentButton = new Btn({
                 title: '+',
                 type: ButtonType.TEXT,
-                id: `plus-${index}`,
-                onPress: () => console.log('plus'),
+                id: `plus-${item.id}`,
+                onPress: () => this.onChangeValueAugment(item),
                 data: [],
                 classes: ['multiply_list__item_button'],
             });
 
             subtractButton.init();
             augmentButton.init();
+            subtractButton.getRoot().setAttribute('id', `minus-${item.id}`);
+            augmentButton.getRoot().setAttribute('id', `plus-${item.id}`);
+
+            subtractButton.getRoot().disabled = true;
 
             subtractButton.beforeDOMShow();
             augmentButton.beforeDOMShow();
@@ -155,10 +252,6 @@ export default class MultipleDropdown extends AbstractWidget {
             subtractButton.afterDOMShow();
             augmentButton.afterDOMShow();
 
-            const value = document.createElement('div');
-            value.classList.add('multiply_list__item_value');
-            value.innerText = item.value;
-
             buttonsWrapper.append(subtractButton.getRoot());
             buttonsWrapper.append(value);
             buttonsWrapper.append(augmentButton.getRoot());
@@ -167,20 +260,6 @@ export default class MultipleDropdown extends AbstractWidget {
 
             this.list.append(itemWrapper);
         })
-
-
-        // this.buttons = this.items.map(({title, onPress, isActive, data, id}: DropdownItem) => {
-        //     const classes = ['multiply_list__item'];
-        //
-        //     const button = new Btn({title, onPress, type: ButtonType.TEXT, classes, isActive, data, id})
-        //     button.init();
-        //     this.widgets.push(button);
-        //
-        //     const buttonContainer = button.getRoot();
-        //     this.list.append(buttonContainer);
-        //
-        //     return button;
-        // });
     }
 
     protected showList(): void {
@@ -225,7 +304,8 @@ export default class MultipleDropdown extends AbstractWidget {
             classes: ['multiply_toggle'],
             icon: this.icon,
             iconClasses: ['multiply_toggle__icon'],
-        })
+        });
+
         this.toggle.init();
         this.toggle.beforeDOMShow();
 
@@ -235,6 +315,38 @@ export default class MultipleDropdown extends AbstractWidget {
         this.widgets.push(this.toggle);
 
         this.toggle.afterDOMShow();
+    }
+
+    protected onPressClearButton(): void {
+        this.items.forEach((item: any) => {
+            this.setValue(item.id, 0);
+        });
+
+        this.onChangeValues(this.items);
+    }
+
+    protected onPressApplyButton(): void {
+        this.onChangeValues(this.items);
+    }
+
+    protected createControlWrapper(): HTMLDivElement {
+        const controlButtonsWrapper = document.createElement('div');
+        controlButtonsWrapper.classList.add('multiply_list__control_wrapper');
+
+        return controlButtonsWrapper;
+    }
+
+    protected initButton({wrapper, data, parentElement}: {wrapper: HTMLDivElement, data: ButtonParams, parentElement: HTMLDivElement}): void {
+        const button = new Btn(data);
+
+        button.init();
+        button.beforeDOMShow();
+
+        wrapper.append(button.getRoot());
+
+        button.afterDOMShow();
+
+        parentElement.append(wrapper);
     }
 
     protected initRootElement(stylesClass: string[]): void {
