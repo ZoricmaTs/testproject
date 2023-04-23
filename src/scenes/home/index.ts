@@ -9,6 +9,7 @@ import Header from '../../widgets/header';
 import RoomModel from '../../models/room';
 import Card from '../../widgets/card';
 import MultipleDropdown, {MultiplyItem, MultiplyType} from '../../widgets/dropdown/multiple';
+import SearchForm from '../../widgets/form/search';
 
 export default class Home extends AbstractScene {
     protected options: any;
@@ -20,6 +21,8 @@ export default class Home extends AbstractScene {
     private page: number;
     private roomsWrapper: HTMLDivElement;
     private dropdown: MultipleDropdown;
+    private formWidget: SearchForm;
+    private contentWrapper: HTMLDivElement;
 
     constructor(params: any) {
         super(params);
@@ -114,6 +117,23 @@ export default class Home extends AbstractScene {
         console.log('onChangeDropdownValues', data);
     }
 
+    protected getTitle(): string {
+        return 'Найдём номера под ваши пожелания';
+    }
+
+    private initFormWidget(): void {
+        this.formWidget = new SearchForm({title: this.getTitle()});
+        this.formWidget.init();
+        this.contentWrapper.append(this.formWidget.getRoot());
+        this.widgets.push(this.formWidget);
+    }
+
+    private initContentWrapper(): void {
+        this.contentWrapper = document.createElement('div');
+        this.contentWrapper.classList.add(`scene__${this.name}_content-wrapper`);
+        this.getContainer().append(this.contentWrapper);
+    }
+
     private initRooms(): void {
         this.roomsWrapper = document.createElement('div');
         this.roomsWrapper.classList.add('cards');
@@ -148,6 +168,8 @@ export default class Home extends AbstractScene {
 
     protected initWidgets(): void {
         this.initHeader();
+        this.initContentWrapper();
+        this.initFormWidget();
         this.initDropdown();
         // this.initRooms();
     }
