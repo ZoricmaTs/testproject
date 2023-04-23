@@ -30,13 +30,13 @@ export default class Btn extends AbstractWidget {
     protected readonly iconClasses: string[];
     protected readonly onBlurButton: () => void;
     protected readonly isActive: boolean;
-    public id: number;
+    public id: number | string;
     protected iconElement: Element;
     protected titleElement: HTMLDivElement;
 
     constructor(params: ButtonParams) {
         super(params);
-        this.id = params.data;
+        this.id = params.id;
         this.data = params.data;
         this.isActive = params.isActive;
         this.title = params.title;

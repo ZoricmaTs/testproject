@@ -16,6 +16,7 @@ export type MultiplyType = {
     styles?: string[],
     onChange?: (items: any) => void,
     availabilityControlButtons?: boolean,
+    placeholder?: string,
 }
 
 export default class MultipleDropdown extends AbstractWidget {
@@ -167,6 +168,7 @@ export default class MultipleDropdown extends AbstractWidget {
         });
 
         const button = document.getElementById(`minus-${id}`) as HTMLButtonElement;
+        console.log(button, id);
         button.disabled = newValue === 0 ;
 
         if (!this.availabilityControlButtons) {
@@ -200,6 +202,55 @@ export default class MultipleDropdown extends AbstractWidget {
         this.toggle.setTitle(text.join(', '));
     }
 
+    protected initItemButtons(item: any, itemWrapper: HTMLDivElement): void {
+        const buttonsWrapper = document.createElement('div');
+        buttonsWrapper.classList.add('multiply_list__item_buttons-wrapper');
+
+        const value = document.createElement('div');
+        value.classList.add('multiply_list__item_value');
+        value.setAttribute('id', item.id);
+        value.innerText = item.value;
+
+        const buttons = [
+            new Btn ({
+                title: '-',
+                type: ButtonType.TEXT,
+                id: `minus-${item.id}`,
+                onPress: () => this.onChangeValueSubtract(item),
+                data: [],
+                classes: ['multiply_list__item_button'],
+            }),
+            new Btn ({
+                title: '+',
+                type: ButtonType.TEXT,
+                id: `plus-${item.id}`,
+                onPress: () => this.onChangeValueAugment(item),
+                data: [],
+                classes: ['multiply_list__item_button'],
+            })
+        ];
+
+        buttons.forEach((button: Btn, index: number) => {
+            button.init();
+            button.getRoot().setAttribute('id', String(button.id));
+            console.log('String(button.id)', String(button.id))
+            if (index === 0) {
+                button.getRoot().disabled = true;
+            }
+
+            button.beforeDOMShow();
+            this.widgets.push(button);
+
+            button.afterDOMShow();
+        });
+
+        buttonsWrapper.append(buttons[0].getRoot());
+        buttonsWrapper.append(value);
+        buttonsWrapper.append(buttons[1].getRoot());
+
+        itemWrapper.append(buttonsWrapper);
+    }
+
     protected initItems(): void {
         this.items.forEach((item: any) => {
             const itemWrapper = document.createElement('div');
@@ -210,53 +261,7 @@ export default class MultipleDropdown extends AbstractWidget {
             title.innerText = item.title;
             itemWrapper.append(title);
 
-            const buttonsWrapper = document.createElement('div');
-            buttonsWrapper.classList.add('multiply_list__item_buttons-wrapper');
-
-            const value = document.createElement('div');
-            value.classList.add('multiply_list__item_value');
-            value.setAttribute('id', item.id);
-            value.innerText = item.value;
-
-            const subtractButton = new Btn({
-                title: '-',
-                type: ButtonType.TEXT,
-                id: `minus-${item.id}`,
-                onPress: () => this.onChangeValueSubtract(item),
-                data: [],
-                classes: ['multiply_list__item_button'],
-            });
-
-            const augmentButton = new Btn({
-                title: '+',
-                type: ButtonType.TEXT,
-                id: `plus-${item.id}`,
-                onPress: () => this.onChangeValueAugment(item),
-                data: [],
-                classes: ['multiply_list__item_button'],
-            });
-
-            subtractButton.init();
-            augmentButton.init();
-            subtractButton.getRoot().setAttribute('id', `minus-${item.id}`);
-            augmentButton.getRoot().setAttribute('id', `plus-${item.id}`);
-
-            subtractButton.getRoot().disabled = true;
-
-            subtractButton.beforeDOMShow();
-            augmentButton.beforeDOMShow();
-
-            this.widgets.push(subtractButton);
-            this.widgets.push(augmentButton);
-
-            subtractButton.afterDOMShow();
-            augmentButton.afterDOMShow();
-
-            buttonsWrapper.append(subtractButton.getRoot());
-            buttonsWrapper.append(value);
-            buttonsWrapper.append(augmentButton.getRoot());
-
-            itemWrapper.append(buttonsWrapper);
+            this.initItemButtons(item, itemWrapper);
 
             this.list.append(itemWrapper);
         })
