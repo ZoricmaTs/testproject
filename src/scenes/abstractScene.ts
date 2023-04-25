@@ -64,7 +64,7 @@ export class AbstractScene {
         this.root.classList.add(`scene__${this.name}`);
     }
 
-    public open(): Promise<any> {
+    public open(params?: any): Promise<any> {
         return;
     }
 

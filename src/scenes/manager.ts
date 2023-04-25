@@ -7,6 +7,7 @@ import Agreements from './agreements';
 import ServicesBreakfast from './services-breakfast';
 import ServicesBooking from './services-booking';
 import Registration from './registration';
+import Search from './search';
 
 export enum Scenes {
     AGREEMENTS ='agreements',
@@ -14,6 +15,7 @@ export enum Scenes {
     REGISTRATION = 'registration',
     COMPANY = 'company',
     HOME = 'home',
+    SEARCH = 'search',
     SERVICES_BOOKING = 'services-booking',
     SERVICES_BREAKFAST = 'services-breakfast',
     VACATION = 'vacation',
@@ -22,6 +24,7 @@ export enum Scenes {
 export type SceneParams = {
     route: string,
     name: string,
+    params?: any,
 }
 
 export type RouteParam = {
@@ -50,6 +53,8 @@ export default class Manager {
                 return new Authorization(params);
             case Scenes.REGISTRATION:
                 return new Registration(params);
+            case Scenes.SEARCH:
+                return new Search(params);
         }
     }
 
@@ -82,7 +87,7 @@ export default class Manager {
 
         this.scene = this.getSceneClass(nextScene, params);
 
-        return this.scene.open().then((data: any) => {
+        return this.scene.open(params).then((data: any) => {
             this.scene.beforeDOMShow();
             this.show(this.scene);
 

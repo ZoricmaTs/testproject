@@ -44,6 +44,6 @@ export default class Agreements extends AbstractScene {
                 this.setOptions({user, operator});
 
             })
-            .catch((err) => console.log('err open HOME', err));
+            .catch((err) => console.log('err open Agreements', err));
     }
 }

@@ -4,8 +4,18 @@ import './style.styl';
 import DateInput from '../input/date';
 import {InputType} from '../input';
 import MultipleDropdown, {MultiplyItem, MultiplyType} from '../dropdown/multiple';
-import RoomModel from '../../models/room';
-import {rooms} from '../../index';
+import {manager, rooms} from '../../index';
+import {Scenes} from '../../scenes/manager';
+
+export type SearchParams = {
+    from: Date,
+    to: Date,
+    guests?: {
+        adults?: number,
+        children?: number,
+        babies?: number,
+    }
+}
 
 export default class SearchForm extends AbstractForm {
     protected rootElement: HTMLFormElement;
@@ -90,34 +100,10 @@ export default class SearchForm extends AbstractForm {
         this.rootElement.append(this.datesWrapper);
     }
 
-    protected onSubmit(e: Event): void {
+    protected onSubmit(e: Event): Promise<void> {
         e.preventDefault();
 
-        return rooms.getSearchRooms(1, 5, {from: this.values.arrivalDate, to: this.values.departureDate})
-          .then((response: RoomModel[]) => {
-              // if (!this.rooms) {
-              //     this.rooms = response;
-              // }
-              //
-              // this.setOptions({rooms: this.rooms});
-              //
-              // return response;
-          });
-        // return user.getUser(this.values)
-        //     .then((response: UserModel) => {
-        //         this.showHideError(false);
-        //         return response;
-        //     })
-        //     .then((response: UserModel) => operator.isAuthorization())
-        //     .then(() => {
-        //         localStorage.user = JSON.stringify({email: this.values.email, password: this.values.password});
-        //
-        //         return manager.open(Scenes.HOME, {name: 'home', route: 'home'});
-        //     })
-        //     .catch((error: ErrorEvent) => {
-        //         this.setError(error.message);
-        //         this.showHideError(true);
-        //     });
+        return manager.open(Scenes.SEARCH, {name: 'search', route: 'search', params: {from: this.values.arrivalDate, to: this.values.departureDate}}).catch(null);
     }
 
     public init(): void {

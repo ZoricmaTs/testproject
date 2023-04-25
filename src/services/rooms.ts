@@ -1,5 +1,6 @@
 import {api} from '../index';
 import RoomModel from '../models/room';
+import {SearchParams} from '../widgets/form/search';
 
 export default class Rooms {
   private roomModels: RoomModel[];
@@ -27,8 +28,8 @@ export default class Rooms {
             })
     }
 
-  public getSearchRooms(page: number, pageSize: number, dates?: any): any {
-    return api.getSearchRooms(page, pageSize, dates)
+  public getSearchRooms({page, pageSize, searchParams}: {page: number, pageSize: number, searchParams?: SearchParams}): any {
+    return api.getSearchRooms(page, pageSize, searchParams)
       .then((response: any) => {
         if (response.length === 0) {
           return Promise.reject(new Error('комнаты не найдены'));

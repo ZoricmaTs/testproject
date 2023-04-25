@@ -1,4 +1,5 @@
 import {UserInfo} from './user';
+import {SearchParams} from '../widgets/form/search';
 
 export default class Api {
     private readonly middlewareUrl: string;
@@ -48,8 +49,8 @@ export default class Api {
         return fetch(roomsUrl).then((response) => response.json());
     }
 
-    public getSearchRooms(page: number, pageSize: number, dates?: {from: number, to: number}): Promise<any> {
-        const roomsUrl = this.middlewareUrl + `/search_rooms?_page=${page}&_limit=${pageSize}&from=${dates.from}&to=${dates.to}`;
+    public getSearchRooms(page: number, pageSize: number, searchParams?: SearchParams): Promise<any> {
+        const roomsUrl = this.middlewareUrl + `/search_rooms?_page=${page}&_limit=${pageSize}&from=${searchParams.from}&to=${searchParams.to}`;
 
         return fetch(roomsUrl).then((response) => response.json());
     }
