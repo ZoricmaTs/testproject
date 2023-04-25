@@ -47,4 +47,10 @@ export default class Api {
 
         return fetch(roomsUrl).then((response) => response.json());
     }
+
+    public getSearchRooms(page: number, pageSize: number, dates?: {from: number, to: number}): Promise<any> {
+        const roomsUrl = this.middlewareUrl + `/search_rooms?_page=${page}&_limit=${pageSize}&from=${dates.from}&to=${dates.to}`;
+
+        return fetch(roomsUrl).then((response) => response.json());
+    }
 }

@@ -1,22 +1,29 @@
-import Btn from '../btn';
+import Btn, {ButtonType} from '../btn';
 import AbstractForm from './index';
 import './style.styl';
 import DateInput from '../input/date';
 import {InputType} from '../input';
+import MultipleDropdown, {MultiplyItem, MultiplyType} from '../dropdown/multiple';
+import RoomModel from '../../models/room';
+import {rooms} from '../../index';
 
 export default class SearchForm extends AbstractForm {
     protected rootElement: HTMLFormElement;
     protected button: Btn;
-    private readonly values: { arrivalDate: string; departureDate: string };
+    private readonly values: { arrivalDate: Date; departureDate: Date, guests: any};
     private datesWrapper: HTMLDivElement;
+    private dropdown: MultipleDropdown;
 
     constructor(params: any) {
         super(params);
 
         this.values = {
-            arrivalDate: '',
-            departureDate: '',
+            arrivalDate: undefined,
+            departureDate: undefined,
+            guests: '',
         }
+
+        this.onChangeDropdownValues = this.onChangeDropdownValues.bind(this);
 
         this.onSubmit = this.onSubmit.bind(this);
     }
@@ -59,7 +66,7 @@ export default class SearchForm extends AbstractForm {
                 title: 'прибытие',
                 type: InputType.DATE,
                 name: 'date',
-                rules: {date: true},
+                rules: {date: true, required: true},
                 onChange: this.getInputHandler('arrivalDate'),
             },
             {
@@ -67,7 +74,7 @@ export default class SearchForm extends AbstractForm {
                 title: 'выезд',
                 type: InputType.DATE,
                 name: 'date',
-                rules: {date: true},
+                rules: {date: true, required: true},
                 onChange: this.getInputHandler('departureDate'),
             },
         ]
@@ -86,6 +93,16 @@ export default class SearchForm extends AbstractForm {
     protected onSubmit(e: Event): void {
         e.preventDefault();
 
+        return rooms.getSearchRooms(1, 5, {from: this.values.arrivalDate, to: this.values.departureDate})
+          .then((response: RoomModel[]) => {
+              // if (!this.rooms) {
+              //     this.rooms = response;
+              // }
+              //
+              // this.setOptions({rooms: this.rooms});
+              //
+              // return response;
+          });
         // return user.getUser(this.values)
         //     .then((response: UserModel) => {
         //         this.showHideError(false);
@@ -112,10 +129,79 @@ export default class SearchForm extends AbstractForm {
         }
 
         this.initDates();
+        this.initDropdown();
+        this.initSubmitButton();
+    }
+
+    private getGuestsValue(data: MultiplyItem[]): string {
+        const text: string[] = [];
+
+        data.forEach((item: any) => {
+            if (item.value > 0) {
+                text.push(`${item.value} ${item.title}`);
+            }
+        });
+
+        return text.join(', ');
+    }
+
+    private initDropdown(): void {
+        const items: MultiplyItem[] = [
+            {
+                title: 'взрослые',
+                value: 0,
+                id: 'dropdown-125_0',
+            },
+            {
+                title: 'дети',
+                value: 0,
+                id: 'dropdown-125_1',
+            },
+            {
+                title: 'младенцы',
+                value: 0,
+                id: 'dropdown-125_2',
+            }
+        ];
+
+        const data: MultiplyType = {
+            id: `search-room`,
+            name: 'гости',
+            buttonTitle: 'Сколько гостей',
+            existPlaceholder: true,
+            items,
+            onChange: this.onChangeDropdownValues,
+            availabilityControlButtons: true,
+        }
+
+        this.dropdown = new MultipleDropdown(data);
+
+        this.rootElement.append(this.dropdown.getRoot());
+        this.widgets.push(this.dropdown);
+    }
+
+    private onChangeDropdownValues(data: MultiplyItem[]): void {
+        console.log('onChangeDropdownValues', data);
+        this.values.guests = data;
     }
 
     public getRoot() {
         return this.rootElement;
+    }
+
+    protected initSubmitButton(): void {
+        this.button = new Btn({
+            title: 'Подобрать номер',
+            classes: ['button__fill', 'button__with-icon'],
+            type: ButtonType.TEXT_WITH_ICON,
+            icon: 'arrow_forward',
+            iconClasses: ['button__fill-icon']
+        });
+
+        this.button.init();
+        this.button.getRoot().setAttribute('type', 'submit');
+        this.rootElement.append(this.button.getRoot());
+        this.widgets.push(this.button);
     }
 
     protected addEvents():void {

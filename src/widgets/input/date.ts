@@ -68,8 +68,9 @@ export default class DateInput extends Input {
 
     private onChangeDate(input: any, date: any, instance: any): void {
         this.input.value = date.toLocaleDateString();
+
         if (this.onChangeValue) {
-            this.onChangeValue(this.input.value);
+            this.onChangeValue(date.getTime());
         }
     }
 

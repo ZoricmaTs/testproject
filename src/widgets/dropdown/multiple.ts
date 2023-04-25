@@ -9,14 +9,14 @@ export type MultiplyItem = {
 }
 
 export type MultiplyType = {
-    id: number,
+    id: number | string,
     buttonTitle: string,
     name?: string,
     items: MultiplyItem[],
     styles?: string[],
     onChange?: (items: any) => void,
     availabilityControlButtons?: boolean,
-    placeholder?: string,
+    existPlaceholder?: boolean,
 }
 
 export default class MultipleDropdown extends AbstractWidget {
@@ -28,7 +28,7 @@ export default class MultipleDropdown extends AbstractWidget {
     protected toggle: Btn;
     protected list: HTMLDivElement;
     protected icon: string;
-    protected id: number;
+    protected id: number | string;
     protected readonly styles: string[];
     protected name: string;
     protected onChange: any;
@@ -168,7 +168,6 @@ export default class MultipleDropdown extends AbstractWidget {
         });
 
         const button = document.getElementById(`minus-${id}`) as HTMLButtonElement;
-        console.log(button, id);
         button.disabled = newValue === 0 ;
 
         if (!this.availabilityControlButtons) {
@@ -233,11 +232,12 @@ export default class MultipleDropdown extends AbstractWidget {
         buttons.forEach((button: Btn, index: number) => {
             button.init();
             button.getRoot().setAttribute('id', String(button.id));
-            console.log('String(button.id)', String(button.id))
+
             if (index === 0) {
                 button.getRoot().disabled = true;
             }
 
+            button.getRoot().setAttribute('type', 'button');
             button.beforeDOMShow();
             this.widgets.push(button);
 
@@ -313,7 +313,7 @@ export default class MultipleDropdown extends AbstractWidget {
 
         this.toggle.init();
         this.toggle.beforeDOMShow();
-
+        this.toggle.getRoot().setAttribute('type', 'button');
         this.changeToggleStyle();
 
         this.rootElement.append(this.toggle.getRoot());
@@ -346,6 +346,7 @@ export default class MultipleDropdown extends AbstractWidget {
 
         button.init();
         button.beforeDOMShow();
+        button.getRoot().setAttribute('type', 'button');
 
         wrapper.append(button.getRoot());
 

@@ -100,9 +100,10 @@ export default class Home extends AbstractScene {
             }
         ];
         const data: MultiplyType = {
-            id: 125,
+            id: `${this.name}-guests`,
             name: 'гости',
-            buttonTitle: '',
+            buttonTitle: 'Сколько гостей',
+            existPlaceholder: true,
             items,
             onChange: this.onChangeDropdownValues,
             availabilityControlButtons: true,
@@ -170,7 +171,7 @@ export default class Home extends AbstractScene {
         this.initHeader();
         this.initContentWrapper();
         this.initFormWidget();
-        this.initDropdown();
+        // this.initDropdown();
         // this.initRooms();
     }
 
