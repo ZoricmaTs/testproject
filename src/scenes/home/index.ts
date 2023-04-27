@@ -5,7 +5,6 @@ import {manager, operator, rooms, user} from '../../index';
 import {Scenes} from '../manager';
 import UserModel from '../../models/user';
 import Operator from '../../models/operator';
-import Header from '../../widgets/header';
 import RoomModel from '../../models/room';
 import Card from '../../widgets/card';
 import MultipleDropdown, {MultiplyItem, MultiplyType} from '../../widgets/dropdown/multiple';
@@ -13,9 +12,6 @@ import SearchForm from '../../widgets/form/search';
 
 export default class Home extends AbstractScene {
     protected options: any;
-    private user: UserModel;
-    private operator: Operator;
-    private header: Header;
     private background: HTMLImageElement;
     private rooms: RoomModel[];
     private page: number;
@@ -52,10 +48,10 @@ export default class Home extends AbstractScene {
         super.onScrollScene(ev);
 
         if (this.isEndPositionScroll) {
-            this.page += 1;
-            this.loadRooms(this.page)
-              .then((rooms: RoomModel[]) => this.updateRooms(rooms))
-              .catch((error) => console.log(error));
+            // this.page += 1;
+            // this.loadRooms(this.page)
+            //   .then((rooms: RoomModel[]) => this.updateRooms(rooms))
+            //   .catch((error) => console.log(error));
         }
     }
 
@@ -72,13 +68,6 @@ export default class Home extends AbstractScene {
 
     public openScene(): void {
         console.log('openScene');
-    }
-
-    private initHeader(): void {
-        this.header = new Header({items: this.operator.getHeaderItems(), user: this.user, isDemo: this.operator.isDemo});
-        this.header.init();
-        this.getContainer().append(this.header.getRoot());
-        this.widgets.push(this.header);
     }
 
     private initDropdown(): void {
@@ -168,7 +157,8 @@ export default class Home extends AbstractScene {
     }
 
     protected initWidgets(): void {
-        this.initHeader();
+        super.initWidgets();
+
         this.initContentWrapper();
         this.initFormWidget();
         // this.initDropdown();
@@ -191,10 +181,6 @@ export default class Home extends AbstractScene {
                 }
             })
             .then(() => {
-                this.page = 1;
-                return this.loadRooms(this.page)
-            })
-            .then(() => {
                 this.initWidgets();
                 if (!this.operator.isDemo && this.user) {
                     this.header.setData({user: this.user, isDemo: this.operator.isDemo});
@@ -202,29 +188,17 @@ export default class Home extends AbstractScene {
             })
             .catch((error: ErrorEvent) => console.log(`open ${this.name}`, error));
     }
-
-    private loadRooms(page: number): Promise<RoomModel[]> {
-        return rooms.getRooms(this.page, 5)
-          .then((response: RoomModel[]) => {
-              if (!this.rooms) {
-                  this.rooms = response;
-              }
-
-              this.setOptions({rooms: this.rooms});
-
-              return response;
-          });
-    }
-
-    protected setOptions(param: { user?: UserModel, operator?: Operator, rooms?: RoomModel[]}) {
-        if (this.options) {
-            Object.assign(this.options, param);
-        } else {
-            this.options = param;
-        }
-    }
-
-    protected getOptions(): any {
-        return this.options;
-    }
+    //
+    // private loadRooms(page: number): Promise<RoomModel[]> {
+    //     return rooms.getRooms(this.page, 5)
+    //       .then((response: RoomModel[]) => {
+    //           if (!this.rooms) {
+    //               this.rooms = response;
+    //           }
+    //
+    //           this.setOptions({rooms: this.rooms});
+    //
+    //           return response;
+    //       });
+    // }
 }

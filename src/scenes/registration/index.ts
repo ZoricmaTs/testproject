@@ -8,9 +8,6 @@ import '../scene.styl';
 import RegistrationForm from '../../widgets/form/registration';
 
 export default class Registration extends AbstractScene {
-    private header: Header;
-    private user: UserModel;
-    private operator: Operator;
     private background: HTMLImageElement;
     private contentWrapper: HTMLDivElement;
     private formWidget: RegistrationForm;
@@ -53,7 +50,7 @@ export default class Registration extends AbstractScene {
     }
 
     protected initWidgets(): void {
-        this.initHeader();
+        super.initWidgets();
         this.initContentWrapper();
         this.initBackground();
         this.initFormWidget();

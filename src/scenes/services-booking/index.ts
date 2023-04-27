@@ -7,9 +7,6 @@ import Header from '../../widgets/header';
 
 export default class ServicesBooking extends AbstractScene {
     private button: Index;
-    private header: Header;
-    private operator: Operator;
-    private user: UserModel;
     constructor(params: any) {
         super(params);
 
@@ -40,16 +37,8 @@ export default class ServicesBooking extends AbstractScene {
         this.widgets.push(this.button);
     }
 
-    private initHeader(): void {
-        this.header = new Header({items: this.operator.getHeaderItems()});
-        this.header.init();
-        this.getContainer().append(this.header.getRoot());
-        this.widgets.push(this.header);
-    }
-
-
     protected initWidgets(): void {
-        this.initHeader();
+        super.initWidgets();
         this.initButton();
     }
 

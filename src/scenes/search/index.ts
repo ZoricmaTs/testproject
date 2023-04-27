@@ -8,9 +8,6 @@ import RoomModel from '../../models/room';
 
 export default class Search extends AbstractScene {
     private button: Index;
-    protected options: any;
-    protected user: UserModel;
-    protected operator: Operator;
     private rooms: RoomModel[];
 
     constructor(params: any) {
@@ -74,7 +71,7 @@ export default class Search extends AbstractScene {
                 this.user = response[1];
                 this.rooms = response[2];
 
-                this.setOptions({user, operator, rooms});
+                this.setOptions({user: this.user, operator: this.operator, rooms: this.rooms});
 
             })
             .catch((err) => console.log('err open SEARCH', err));

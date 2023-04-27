@@ -3,13 +3,9 @@ import Index, {ButtonType} from '../../widgets/btn';
 import {manager, operator, user} from '../../index';
 import UserModel from '../../models/user';
 import Operator from '../../models/operator';
-import Header from '../../widgets/header';
 
 export default class ServicesBreakfast extends AbstractScene {
     private button: Index;
-    private header: Header;
-    private operator: Operator;
-    private user: UserModel;
     constructor(params: any) {
         super(params);
 
@@ -40,16 +36,9 @@ export default class ServicesBreakfast extends AbstractScene {
         this.widgets.push(this.button);
     }
 
-    private initHeader(): void {
-        this.header = new Header({items: this.operator.getHeaderItems()});
-        this.header.init();
-        this.getContainer().append(this.header.getRoot());
-        this.widgets.push(this.header);
-    }
-
-
     protected initWidgets(): void {
-        this.initHeader();
+        super.initWidgets();
+
         this.initButton();
     }
 

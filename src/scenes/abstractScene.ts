@@ -1,4 +1,9 @@
 import AbstractWidget from '../widgets/abstractWidget';
+import Header from '../widgets/header';
+import UserModel from '../models/user';
+import Operator from '../models/operator';
+import {operator, user} from '../index';
+import RoomModel from '../models/room';
 
 export class AbstractScene {
     public name: string;
@@ -7,6 +12,9 @@ export class AbstractScene {
     protected widgets: AbstractWidget[];
     protected options: any;
     protected isEndPositionScroll: boolean;
+    protected header: Header;
+    protected user: UserModel;
+    protected operator: Operator;
 
     constructor(params: any) {
         this.name = params.name;
@@ -58,21 +66,50 @@ export class AbstractScene {
         return this.root;
     }
 
-    public create(): void {
+    protected create(): void {
         this.root = document.createElement('div');
         this.root.classList.add(`scene`);
         this.root.classList.add(`scene__${this.name}`);
     }
 
     public open(params?: any): Promise<any> {
-        return;
+        return operator.getOperator()
+          .then((response: Operator) => {
+              this.operator = response;
+              this.setOptions({operator: this.operator});
+              this.initWidgets();
+
+              if (!response.isDemo) {
+                  return user.getUser()
+                    .then((response: UserModel) => {
+                        this.user = response;
+                    })
+                    .catch((error: ErrorEvent) => console.log(`open ${this.name}`, error));
+              }
+          })
+          .catch((error: ErrorEvent) => console.log(`open ${this.name}`, error));
     }
 
-    protected setOptions(param: any) {
-        this.options = param;
+    protected setOptions(param: { user?: UserModel, operator?: Operator, rooms?: RoomModel[]}) {
+        if (this.options) {
+            Object.assign(this.options, param);
+        } else {
+            this.options = param;
+        }
     }
 
     protected getOptions(): any {
         return this.options;
+    }
+
+    protected initWidgets(): void {
+        this.initHeader();
+    }
+
+    protected initHeader(): void {
+        this.header = new Header({items: this.operator.getHeaderItems(), user: this.user, isDemo: this.operator.isDemo});
+        this.header.init();
+        this.getContainer().append(this.header.getRoot());
+        this.widgets.push(this.header);
     }
 }

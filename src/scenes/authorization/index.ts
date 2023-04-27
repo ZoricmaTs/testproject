@@ -1,16 +1,12 @@
 import {AbstractScene} from '../abstractScene';
-import {manager, operator, user} from '../../index';
+import {manager} from '../../index';
 import UserModel from '../../models/user';
 import Operator from '../../models/operator';
-import Header from '../../widgets/header';
 import './style.styl';
 import '../scene.styl';
 import AuthorizationForm from '../../widgets/form/authorization';
 
 export default class Authorization extends AbstractScene {
-    private header: Header;
-    private user: UserModel;
-    private operator: Operator;
     private background: HTMLImageElement;
     private contentWrapper: HTMLDivElement;
     private formWidget: AuthorizationForm;
@@ -38,13 +34,6 @@ export default class Authorization extends AbstractScene {
         return manager.goBack();
     }
 
-    protected initHeader(): void {
-        this.header = new Header({items: this.operator.getHeaderItems(), user: this.user, isDemo: this.operator.isDemo});
-        this.header.init();
-        this.getContainer().append(this.header.getRoot());
-        this.widgets.push(this.header);
-    }
-
     protected initBackground(): void {
         this.background = document.createElement('img');
         this.background.classList.add('scene__background');
@@ -53,7 +42,8 @@ export default class Authorization extends AbstractScene {
     }
 
     protected initWidgets(): void {
-        this.initHeader();
+        super.initWidgets();
+
         this.initContentWrapper();
         this.initBackground();
         this.initFormWidget();
@@ -79,25 +69,6 @@ export default class Authorization extends AbstractScene {
         this.contentWrapper.classList.add(`scene__${this.name}_content-wrapper`);
         this.getContainer().append(this.contentWrapper);
     }
-
-    public open(): Promise<any> {
-        return operator.getOperator()
-            .then((response: Operator) => {
-                this.operator = response;
-                this.setOptions({operator: this.operator});
-                this.initWidgets();
-
-                if (!response.isDemo) {
-                    return user.getUser()
-                        .then((response: UserModel) => {
-                            this.user = response;
-                        })
-                        .catch((error: ErrorEvent) => console.log(`open ${this.name}`, error));
-                }
-            })
-            .catch((error: ErrorEvent) => console.log(`open ${this.name}`, error));
-    }
-
 
     protected setOptions(param: { user?: UserModel, operator?: Operator }) {
         if (this.options) {
