@@ -1,9 +1,8 @@
 import {AbstractScene} from '../abstractScene';
 import Index, {ButtonType} from '../../widgets/btn';
-import {manager, operator, user} from '../../index';
+import {manager} from '../../index';
 import UserModel from '../../models/user';
 import Operator from '../../models/operator';
-import Header from '../../widgets/header';
 
 export default class ServicesBooking extends AbstractScene {
     private button: Index;
@@ -40,23 +39,6 @@ export default class ServicesBooking extends AbstractScene {
     protected initWidgets(): void {
         super.initWidgets();
         this.initButton();
-    }
-
-    public open(): Promise<any> {
-        return Promise.all([operator.getOperator(), user.getUser()])
-            .then((response) => {
-                const operator = response[0];
-                const user = response[1];
-
-                this.setOptions({user, operator});
-
-                const options = this.getOptions();
-                this.user = options.user;
-                this.operator = options.operator;
-
-                this.initWidgets();
-            })
-            .catch((err) => console.log('err open SERVICES_BOOKING', err));
     }
 
     protected setOptions(param: { user: UserModel, operator: Operator }) {

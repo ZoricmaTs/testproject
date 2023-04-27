@@ -39,24 +39,8 @@ export default class Company extends AbstractScene {
 
     protected initWidgets(): void {
         super.initWidgets();
+
         this.initButton();
-    }
-
-    public open(): Promise<any> {
-        return Promise.all([operator.getOperator(), user.getUser()])
-            .then((response) => {
-                const operator = response[0];
-                const user = response[1];
-
-                this.setOptions({user, operator});
-
-                const options = this.getOptions();
-                this.user = options.user;
-                this.operator = options.operator;
-
-                this.initWidgets();
-            })
-            .catch((err) => console.log('err open COMPANY', err));
     }
 
     protected setOptions(param: { user: UserModel, operator: Operator }) {

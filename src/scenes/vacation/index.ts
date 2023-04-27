@@ -1,6 +1,6 @@
 import {AbstractScene} from '../abstractScene';
 import Index, {ButtonType} from '../../widgets/btn';
-import {manager, operator, user} from '../../index';
+import {manager} from '../../index';
 
 export default class Vacation extends AbstractScene {
     private button: Index;
@@ -33,16 +33,5 @@ export default class Vacation extends AbstractScene {
         this.button.init();
         this.getContainer().append(this.button.getRoot());
         this.widgets.push(this.button);
-    }
-
-    public open(): Promise<any> {
-        return Promise.all([operator.getOperator(), user.getUser()])
-            .then((response) => {
-                const operator = response[0];
-                const user = response[1];
-
-                this.setOptions({user, operator});
-            })
-            .catch((err) => console.log('err open HOME', err));
     }
 }

@@ -72,7 +72,7 @@ export class AbstractScene {
         this.root.classList.add(`scene__${this.name}`);
     }
 
-    public open(params?: any): Promise<any> {
+    protected loadOperatorData(): Promise<any> {
         return operator.getOperator()
           .then((response: Operator) => {
               this.operator = response;
@@ -86,7 +86,11 @@ export class AbstractScene {
                     })
                     .catch((error: ErrorEvent) => console.log(`open ${this.name}`, error));
               }
-          })
+          });
+    }
+
+    public open(params?: any): Promise<any> {
+        return this.loadOperatorData()
           .catch((error: ErrorEvent) => console.log(`open ${this.name}`, error));
     }
 
