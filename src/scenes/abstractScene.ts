@@ -77,7 +77,7 @@ export class AbstractScene {
           .then((response: Operator) => {
               this.operator = response;
               this.setOptions({operator: this.operator});
-              this.initWidgets();
+
 
               if (!response.isDemo) {
                   return user.getUser()
@@ -91,6 +91,7 @@ export class AbstractScene {
 
     public open(params?: any): Promise<any> {
         return this.loadOperatorData()
+          .then(() => this.initWidgets())
           .catch((error: ErrorEvent) => console.log(`open ${this.name}`, error));
     }
 

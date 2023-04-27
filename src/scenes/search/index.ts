@@ -42,20 +42,8 @@ export default class Search extends AbstractScene {
     }
 
     public open(searchParams?: SearchParams): Promise<any> {
-        return operator.getOperator()
-          .then((response: Operator) => {
-              this.operator = response;
-              this.setOptions({operator: this.operator});
-          })
-          .then(() => {
-              if (!this.operator.isDemo) {
-                  return user.getUser()
-                    .then((response: UserModel) => {
-                        this.user = response;
-                        this.setOptions({user: this.user});
-                    });
-              }
-          })
+        return this.loadOperatorData()
+          .then(() => this.initWidgets())
           .then(() => {
               return rooms.getSearchRooms({page: 0, pageSize: 5, searchParams})
                 .then((response: RoomModel[]) => {
