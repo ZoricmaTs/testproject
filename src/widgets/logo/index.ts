@@ -1,5 +1,4 @@
 import AbstractWidget from '../abstractWidget';
-import './style.styl';
 import * as Helper from '../../helper';
 
 export default class Logo extends AbstractWidget {

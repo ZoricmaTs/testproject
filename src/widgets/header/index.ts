@@ -1,6 +1,5 @@
 import AbstractWidget from '../abstractWidget';
 import * as Helper from '../../helper';
-import './style.styl';
 import Dropdown, {DropdownItem} from '../dropdown';
 import {SceneParams, Scenes} from '../../scenes/manager';
 import {manager, screen} from '../../index';

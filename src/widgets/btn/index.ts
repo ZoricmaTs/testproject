@@ -1,5 +1,4 @@
 import AbstractWidget from '../abstractWidget';
-import './style.styl';
 
 export type ButtonParams = {
     id?: number | string,
@@ -158,5 +157,4 @@ export default class Btn extends AbstractWidget {
             this.rootElement.removeEventListener('blur', this.onBlur);
         }
     }
-
 }

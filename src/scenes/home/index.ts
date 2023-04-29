@@ -1,7 +1,5 @@
 import {AbstractScene} from '../abstractScene';
-import './style.styl';
-import '../scene.styl';
-import {manager, operator, rooms, user} from '../../index';
+import {manager, operator, user} from '../../index';
 import {Scenes} from '../manager';
 import UserModel from '../../models/user';
 import Operator from '../../models/operator';
@@ -9,16 +7,17 @@ import RoomModel from '../../models/room';
 import Card from '../../widgets/card';
 import MultipleDropdown, {MultiplyItem, MultiplyType} from '../../widgets/dropdown/multiple';
 import SearchForm from '../../widgets/form/search';
+import Footer from '../../widgets/footer';
 
 export default class Home extends AbstractScene {
     protected options: any;
     private background: HTMLImageElement;
     private rooms: RoomModel[];
-    private page: number;
     private roomsWrapper: HTMLDivElement;
     private dropdown: MultipleDropdown;
     private formWidget: SearchForm;
     private contentWrapper: HTMLDivElement;
+    private footer: Footer;
 
     constructor(params: any) {
         super(params);
@@ -161,8 +160,17 @@ export default class Home extends AbstractScene {
 
         this.initContentWrapper();
         this.initFormWidget();
+        this.initFooter();
         // this.initDropdown();
         // this.initRooms();
+    }
+
+    protected initFooter(): void {
+        this.footer = new Footer({});
+
+        this.footer.init();
+        this.getContainer().append(this.footer.getRoot());
+        this.widgets.push(this.footer);
     }
 
     public open(): Promise<any> {

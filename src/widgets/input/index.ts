@@ -1,5 +1,4 @@
 import AbstractWidget from '../abstractWidget';
-import './style.styl';
 
 export enum InputType {
     TEXT = 'text',

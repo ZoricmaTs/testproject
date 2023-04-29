@@ -1,2 +1,49 @@
-@import '../../fonts/style.styl';
-@import '../../scenes/style.styl';
+.footer
+  display flex
+  flex-direction column
+
+  &__columns-wrapper
+    display flex
+    flex-direction row
+    justify-content space-between
+    padding-left 16px
+    padding-right 16px
+    padding-top 50px
+    padding-bottom 50px
+
+  &__column
+    display flex
+    flex-direction column
+    align-items flex-start
+  &__column_item
+    align-self flex-start
+    max-width 260px
+    margin-bottom 20px
+
+.footer__column_item.text
+  {text-body}
+  color $color-dark-shade-75
+
+.footer__column_item.title
+  {text-h3}
+  color $color-dark-shade
+
+.footer__column_item.button
+  {text-link}
+  color $color-dark-shade-50
+  background-color transparent
+  text-align start
+
+
+@media screen and (min-width 736px)
+  .footer__columns-wrapper
+    padding-right 100px
+    padding-left 100px
+    padding-top 80px
+    padding-bottom 80px
+@media screen and (min-width 1008px)
+  .footer__columns-wrapper
+    padding-right 140px
+    padding-left 140px
+    padding-top 100px
+    padding-bottom 100px

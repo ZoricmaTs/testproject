@@ -1,10 +1,9 @@
 import Btn, {ButtonType} from '../btn';
 import AbstractForm from './index';
-import './style.styl';
 import DateInput from '../input/date';
 import {InputType} from '../input';
 import MultipleDropdown, {MultiplyItem, MultiplyType} from '../dropdown/multiple';
-import {manager, rooms} from '../../index';
+import {manager} from '../../index';
 import {Scenes} from '../../scenes/manager';
 
 export type SearchParams = {

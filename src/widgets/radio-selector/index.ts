@@ -1,5 +1,4 @@
 import AbstractWidget from '../abstractWidget';
-import './style.styl';
 
 export type ItemParams = {
     id: string,

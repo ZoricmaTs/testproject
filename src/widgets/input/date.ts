@@ -1,6 +1,4 @@
 import Input from './index';
-import './style.styl';
-
 
 export default class DateInput extends Input {
     private datepicker: any;

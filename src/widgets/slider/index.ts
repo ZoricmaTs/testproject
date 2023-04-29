@@ -1,5 +1,4 @@
 import AbstractWidget from '../abstractWidget';
-import './style.styl';
 import {screen} from '../../index';
 import Screen from '../../services/screen';
 import Btn, {ButtonType} from '../btn';

@@ -1,5 +1,4 @@
 import AbstractWidget from '../abstractWidget';
-import './style.styl';
 import Slider from '../slider';
 import RoomModel from '../../models/room';
 

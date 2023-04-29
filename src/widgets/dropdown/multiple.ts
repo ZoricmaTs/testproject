@@ -1,5 +1,4 @@
 import AbstractWidget from '../abstractWidget';
-import './style.styl';
 import Btn, {ButtonParams, ButtonType} from '../btn';
 
 export type MultiplyItem = {

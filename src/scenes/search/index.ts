@@ -2,8 +2,6 @@ import {AbstractScene} from '../abstractScene';
 import Index, {ButtonType} from '../../widgets/btn';
 import {manager, operator, rooms, user} from '../../index';
 import {SearchParams} from '../../widgets/form/search';
-import UserModel from '../../models/user';
-import Operator from '../../models/operator';
 import RoomModel from '../../models/room';
 
 export default class Search extends AbstractScene {
