@@ -326,7 +326,7 @@ export default class Header extends AbstractWidget {
     private initMobileMenuButton(): void {
         this.menuButton = new Btn({
             title: 'menu',
-            classes: ['header__menu-button', 'material-icons', 'icon'],
+            classes: ['header__menu-button', 'material-icons'],
             onPress: () => this.onPressMenu(),
             type: ButtonType.TEXT,
         });
