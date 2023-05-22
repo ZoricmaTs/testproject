@@ -15,7 +15,6 @@ export default class Home extends AbstractScene {
 	private roomsWrapper: HTMLDivElement;
 	private dropdown: MultipleDropdown;
 	private formWidget: SearchForm;
-	private contentWrapper: HTMLDivElement;
 
 	constructor(params: any) {
 		super(params);
@@ -115,12 +114,6 @@ export default class Home extends AbstractScene {
 		this.widgets.push(this.formWidget);
 	}
 
-	private initContentWrapper(): void {
-		this.contentWrapper = document.createElement('div');
-		this.contentWrapper.classList.add(`scene__${this.name}_content-wrapper`);
-		this.getContainer().append(this.contentWrapper);
-	}
-
 	private initRooms(): void {
 		this.roomsWrapper = document.createElement('div');
 		this.roomsWrapper.classList.add('cards');
@@ -157,7 +150,6 @@ export default class Home extends AbstractScene {
 	protected initWidgets(): void {
 		super.initWidgets();
 
-		this.initContentWrapper();
 		this.initFormWidget();
 
 		this.initFooter();

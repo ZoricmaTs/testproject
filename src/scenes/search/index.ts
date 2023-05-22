@@ -42,7 +42,7 @@ export default class Search extends AbstractScene {
 			});
 
 			this.button.init();
-			this.getContainer().append(this.button.getRoot());
+			this.contentWrapper.append(this.button.getRoot());
 			this.widgets.push(this.button);
     }
 

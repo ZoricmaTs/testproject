@@ -17,6 +17,7 @@ export class AbstractScene {
 	protected user: UserModel;
 	protected operator: Operator;
 	protected footer: Footer;
+	protected contentWrapper: HTMLDivElement;
 
 	constructor(params: any) {
 		this.name = params.name;
@@ -111,6 +112,8 @@ export class AbstractScene {
 
 	protected initWidgets(): void {
 		this.initHeader();
+
+		this.initContentWrapper();
 	}
 
 	protected initHeader(): void {
@@ -126,5 +129,11 @@ export class AbstractScene {
 		this.footer.init();
 		this.getContainer().append(this.footer.getRoot());
 		this.widgets.push(this.footer);
+	}
+
+	protected initContentWrapper(): void {
+		this.contentWrapper = document.createElement('div');
+		this.contentWrapper.classList.add(`scene__${this.name}_content-wrapper`);
+		this.getContainer().append(this.contentWrapper);
 	}
 }

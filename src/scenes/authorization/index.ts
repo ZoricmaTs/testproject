@@ -8,7 +8,6 @@ import AuthorizationForm from '../../widgets/form/authorization';
 
 export default class Authorization extends AbstractScene {
 	private background: HTMLImageElement;
-	private contentWrapper: HTMLDivElement;
 	private formWidget: AuthorizationForm;
 
 	constructor(params: any) {
@@ -44,7 +43,6 @@ export default class Authorization extends AbstractScene {
 	protected initWidgets(): void {
 		super.initWidgets();
 
-		this.initContentWrapper();
 		this.initBackground();
 		this.initFormWidget();
 
@@ -64,12 +62,6 @@ export default class Authorization extends AbstractScene {
 		this.formWidget.init();
 		this.contentWrapper.append(this.formWidget.getRoot());
 		this.widgets.push(this.formWidget);
-	}
-
-	private initContentWrapper(): void {
-		this.contentWrapper = document.createElement('div');
-		this.contentWrapper.classList.add(`scene__${this.name}_content-wrapper`);
-		this.getContainer().append(this.contentWrapper);
 	}
 
 	protected setOptions(param: { user?: UserModel, operator?: Operator }) {
