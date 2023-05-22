@@ -1,9 +1,8 @@
 import {AbstractScene} from '../abstractScene';
 import Index, {ButtonType} from '../../widgets/btn';
-import {manager, operator, user} from '../../index';
+import {manager} from '../../index';
 import UserModel from '../../models/user';
 import Operator from '../../models/operator';
-import Header from '../../widgets/header';
 
 export default class Company extends AbstractScene {
     private button: Index;
