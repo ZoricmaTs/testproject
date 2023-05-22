@@ -7,7 +7,6 @@ import RoomModel from '../../models/room';
 import Card from '../../widgets/card';
 import MultipleDropdown, {MultiplyItem, MultiplyType} from '../../widgets/dropdown/multiple';
 import SearchForm from '../../widgets/form/search';
-import Footer from '../../widgets/footer';
 
 export default class Home extends AbstractScene {
     protected options: any;
@@ -17,7 +16,6 @@ export default class Home extends AbstractScene {
     private dropdown: MultipleDropdown;
     private formWidget: SearchForm;
     private contentWrapper: HTMLDivElement;
-    private footer: Footer;
 
     constructor(params: any) {
         super(params);
@@ -160,17 +158,10 @@ export default class Home extends AbstractScene {
 
         this.initContentWrapper();
         this.initFormWidget();
+
         this.initFooter();
         // this.initDropdown();
         // this.initRooms();
-    }
-
-    protected initFooter(): void {
-        this.footer = new Footer({});
-
-        this.footer.init();
-        this.getContainer().append(this.footer.getRoot());
-        this.widgets.push(this.footer);
     }
 
     public open(): Promise<any> {
