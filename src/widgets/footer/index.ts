@@ -1,6 +1,7 @@
 import AbstractWidget from '../abstractWidget';
 import './style.styl';
 import Btn, {ButtonType} from '../btn';
+import Logo from '../logo';
 
 export enum ColumnItemType {
   TITLE = 'title',
@@ -13,7 +14,6 @@ export enum ColumnItemType {
 export default class Footer extends AbstractWidget {
   private rootElement: HTMLElement;
   private itemsData: any;
-
 
   constructor(params: any) {
     super(params);
@@ -34,6 +34,7 @@ export default class Footer extends AbstractWidget {
     this.rootElement.classList.add('footer');
 
     this.initColumns(this.getColumnsData());
+    this.initColumns(this.getColumnsSocialData());
   }
 
   protected addEvents():void {
@@ -61,14 +62,14 @@ export default class Footer extends AbstractWidget {
         break;
 
       case ColumnItemType.IMAGE:
-        const image = document.createElement('img');
-        image.classList.add('footer__column_item', 'image');
-        image.src = item.src;
-        parentElement.append(image);
+        const logo = new Logo({});
+        logo.init();
+        logo.getRoot().classList.add('footer__column_item')
+        parentElement.append(logo.getRoot());
         break;
 
       case ColumnItemType.LINK:
-        const button = new Btn({
+        const link = new Btn({
           title: item.text,
           onPress: () => console.log('open SCENE'),
           type: ButtonType.TEXT,
@@ -76,7 +77,29 @@ export default class Footer extends AbstractWidget {
           id: item.id
         });
 
+        link.init();
+        parentElement.append(link.getRoot());
+
+        this.widgets.push(link);
+        break;
+
+      case ColumnItemType.BUTTON:
+        const button = new Btn({
+          title: item.text,
+          onPress: () => console.log('open SCENE'),
+          type: ButtonType.TEXT,
+          classes: ['footer__column_item', 'icon'],
+          id: item.id
+        });
+
+        const i = document.createElement('i');
+
+        item.classes.forEach((className: string) => {
+          i.classList.add(className);
+        });
+
         button.init();
+        button.getRoot().append(i);
         parentElement.append(button.getRoot());
 
         this.widgets.push(button);
@@ -108,7 +131,6 @@ export default class Footer extends AbstractWidget {
         {
           type: ColumnItemType.IMAGE,
           id: 0,
-          src: 'sdfsdf',
         },
         {
           type: ColumnItemType.TEXT,
@@ -201,25 +223,27 @@ export default class Footer extends AbstractWidget {
         {
           type: ColumnItemType.TEXT,
           id: 0,
-          src: 'Copyright © 2018 Toxin отель. Все права защищены.',
+          text: 'Copyright © 2018 Toxin отель. Все права защищены.',
         },
       ],
       [
         {
-          type: ColumnItemType.TITLE,
+          type: ColumnItemType.BUTTON,
           id: 0,
-          text: 'навигация',
+          text: '',
+          classes: ['fa-brands', 'fa-twitter'],
         },
         {
           type: ColumnItemType.BUTTON,
-
           id: 1,
-          text: 'О нас',
+          text: '',
+          classes: ['fa-brands','fa-facebook'],
         },
         {
           type: ColumnItemType.BUTTON,
           id: 2,
-          text: 'Новости',
+          text: '',
+          classes: ['fa-brands', 'fa-instagram'],
         },
       ],
     ];
