@@ -1,0 +1,47 @@
+.scene
+  &__search
+    &_title
+      {text-h1}
+      margin-bottom 20px
+    &_content-wrapper
+      display flex
+      justify-content center
+      width 100%
+      min-height calc(100vh - 70px)
+      justify-content space-between
+      padding-left 16px
+      padding-right 16px
+      padding-top 30px
+      padding-bottom 70px
+    &_filter-wrapper
+      flex-basis 266px
+    &_rooms-wrapper
+      flex 1
+      padding-left 60px
+    &_empty-list
+      display flex
+      align-items center
+      justify-content center
+      flex-direction column
+      &-icon
+        width 100px
+        height 100px
+      &-icon.material-icons
+        font-size 100px
+      &-text
+        {text-body}
+
+
+@media screen and (min-width 736px)
+  .scene
+    &__search
+      &_content-wrapper
+        padding-right 100px
+        padding-left 100px
+@media screen and (min-width 1008px)
+  .scene
+    &__search
+      &_content-wrapper
+        padding-right 140px
+        padding-left 140px
+

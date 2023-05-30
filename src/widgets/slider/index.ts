@@ -2,6 +2,7 @@ import AbstractWidget from '../abstractWidget';
 import {screen} from '../../index';
 import Screen from '../../services/screen';
 import Btn, {ButtonType} from '../btn';
+import Observer from '../../services/observer';
 
 export type SliderItem = {
   image: string,
@@ -17,6 +18,7 @@ export default class Slider extends AbstractWidget {
   protected indicators: HTMLDivElement[];
   protected id: string;
   private buttons: Btn[];
+	private removeObserver: () => void;
 
   constructor(params: SliderItem[], id: string) {
     super(params);
@@ -189,8 +191,10 @@ export default class Slider extends AbstractWidget {
 
   public afterDOMShow() {
     super.afterDOMShow();
+		console.log('afterDOMShow slider');
 
-    this.updateWrapperWidth();
+
+		this.removeObserver = Observer.add(this.rootElement, this.updateWrapperWidth);
   }
 
   public beforeDOMShow() {
@@ -199,7 +203,13 @@ export default class Slider extends AbstractWidget {
     this.updateWrapperWidth();
   }
 
-  protected onHover(): void {
+	public beforeDOMHide() {
+		super.beforeDOMHide();
+
+		this.removeObserver();
+	}
+
+	protected onHover(): void {
     this.updateVisibleButtons(true);
   }
 

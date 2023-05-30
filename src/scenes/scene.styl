@@ -1,11 +1,13 @@
 @import '../fonts/style.styl';
 @import './style.styl';
+@import '../scenes/search/style.styl';
 @import '../widgets/btn/style.styl';
 @import '../widgets/card/style.styl';
 @import '../widgets/checkbox/style.styl';
 @import '../widgets/dropdown/style.styl';
 @import '../widgets/header/style.styl';
 @import '../widgets/input/style.styl';
+@import '../widgets/list/style.styl';
 @import '../widgets/logo/style.styl';
 @import '../widgets/radio-selector/style.styl';
 @import '../widgets/form/style.styl';
@@ -22,14 +24,14 @@
   &__authorization
   &__registration
   &__home
-  &__search
     &_content-wrapper
       display flex
       justify-content center
       align-items center
       width 100%
       min-height calc(100vh - 70px)
-
+    &_title
+      {text-h1}
   &__background
     z-index -1
     position absolute

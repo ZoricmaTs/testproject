@@ -171,6 +171,52 @@
       "dates": []
     },
     {
+      "id": 403,
+      "images": ["http://localhost:1234/rooms/403/1.png"],
+      "lux": true,
+      "rate": 4,
+      "price": 4000,
+      "comments": 1,
+      "amount": "ru",
+      "bedroom": 2,
+      "dates": []
+    },
+    {
+      "id": 401,
+      "images": ["http://localhost:1234/rooms/401/1.png"],
+      "lux": true,
+      "rate": 2,
+      "price": 1500,
+      "comments": 1,
+      "amount": "ru",
+      "bedroom": 2,
+      "dates": []
+    },
+    {
+      "id": 888,
+      "images": ["http://localhost:1234/rooms/404/1.png", "http://localhost:1234/rooms/404/2.png"],
+      "lux": true,
+      "rate": 5,
+      "comments": 10,
+      "price": 9880,
+      "amount": "usd",
+      "bedroom": 4,
+      "dates": [
+        {
+          "from": 1682272800000,
+          "to": 1682791200000
+        },
+        {
+          "from": 1683136800000,
+          "to": 1683136800000
+        },
+        {
+          "from": 1683482400000,
+          "to": 1684000800000
+        }
+      ]
+    },
+    {
       "id": 214,
       "images": ["http://localhost:1234/rooms/214/1.png"],
       "lux": true,
@@ -281,6 +327,50 @@
           "to": 1684000800000
         }
       ]
+    },
+    {
+      "id": 405,
+      "images": ["http://localhost:1234/rooms/405/1.png", "http://localhost:1234/rooms/405/2.png"],
+      "lux": true,
+      "rate": 2,
+      "price": 1500,
+      "comments": 1,
+      "amount": "ru",
+      "bedroom": 4,
+      "dates": []
+    },
+    {
+      "id": 406,
+      "images": ["http://localhost:1234/rooms/406/1.png", "http://localhost:1234/rooms/406/2.png"],
+      "lux": true,
+      "rate": 2,
+      "price": 1500,
+      "comments": 1,
+      "amount": "ru",
+      "bedroom": 4,
+      "dates": []
+    },
+    {
+      "id": 407,
+      "images": ["http://localhost:1234/rooms/407/1.png", "http://localhost:1234/rooms/407/2.png"],
+      "lux": true,
+      "rate": 2,
+      "price": 1500,
+      "comments": 1,
+      "amount": "ru",
+      "bedroom": 4,
+      "dates": []
+    },
+    {
+      "id": 408,
+      "images": ["http://localhost:1234/rooms/408/1.png", "http://localhost:1234/rooms/408/2.png"],
+      "lux": true,
+      "rate": 2,
+      "price": 1500,
+      "comments": 1,
+      "amount": "ru",
+      "bedroom": 4,
+      "dates": []
     }
   ]
 }

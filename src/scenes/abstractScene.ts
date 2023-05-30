@@ -18,6 +18,7 @@ export class AbstractScene {
 	protected operator: Operator;
 	protected footer: Footer;
 	protected contentWrapper: HTMLDivElement;
+	protected titleElement: HTMLDivElement;
 
 	constructor(params: any) {
 		this.name = params.name;
@@ -135,5 +136,20 @@ export class AbstractScene {
 		this.contentWrapper = document.createElement('div');
 		this.contentWrapper.classList.add(`scene__${this.name}_content-wrapper`);
 		this.getContainer().append(this.contentWrapper);
+	}
+
+	protected getTitle(): string {
+		return;
+	}
+
+	protected initTitle(wrapper: HTMLDivElement): void {
+		const title: string = this.getTitle();
+
+		if (title) {
+			this.titleElement = document.createElement('div');
+			this.titleElement.classList.add(`scene__${this.name}_title`);
+			this.titleElement.innerText = title;
+			wrapper.append(this.titleElement);
+		}
 	}
 }
