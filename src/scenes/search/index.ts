@@ -25,7 +25,6 @@ export default class Search extends AbstractScene {
 
 	afterDOMShow() {
 		super.afterDOMShow();
-		console.log('afterDOMShow scene');
 	}
 
 	beforeDOMHide() {
@@ -54,19 +53,6 @@ export default class Search extends AbstractScene {
 
 		this.initFooter();
 	}
-	//
-	// public initButton(): void {
-	// 	this.button = new Index({
-	// 		title: 'back',
-	// 		classes: ['back-button'],
-	// 		onPress: this.onBack,
-	// 		type: ButtonType.TEXT,
-	// 	});
-	//
-	// 	this.button.init();
-	// 	this.contentWrapper.append(this.button.getRoot());
-	// 	this.widgets.push(this.button);
-	// }
 
 	private initFilterWrapper(): void {
 		this.filterWrapper = document.createElement('div');
@@ -113,14 +99,6 @@ export default class Search extends AbstractScene {
 		this.widgets.push(this.list);
 
 		this.roomsWrapper.append(this.list.getRoot());
-		// this.list.afterDOMShow();
-		// this.rooms.forEach((room: RoomModel, index: number) => {
-		// 	const card = new Card(room, `card-room-${index + 1}`);
-		// 	card.init();
-		//
-		// 	this.roomsWrapper.append(card.getRoot());
-		// 	this.widgets.push(card);
-		// });
 	}
 
 	private initEmptyList(): void {

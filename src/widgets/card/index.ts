@@ -35,7 +35,6 @@ export default class Card extends AbstractWidget {
 
 	public afterDOMShow() {
 		super.afterDOMShow();
-		console.log('card afterDOMShow');
 	}
 
 	public init(): void {

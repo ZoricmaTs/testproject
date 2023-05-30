@@ -31,6 +31,7 @@ export default class Slider extends AbstractWidget {
     this.onPressRightButton = this.onPressRightButton.bind(this);
     this.onHover = this.onHover.bind(this);
     this.onLeave = this.onLeave.bind(this);
+
     this.setActiveIndex(0);
   }
 
@@ -191,8 +192,6 @@ export default class Slider extends AbstractWidget {
 
   public afterDOMShow() {
     super.afterDOMShow();
-		console.log('afterDOMShow slider');
-
 
 		this.removeObserver = Observer.add(this.rootElement, this.updateWrapperWidth);
   }

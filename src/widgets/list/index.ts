@@ -49,7 +49,7 @@ export default class List extends AbstractWidget {
 	public afterDOMShow(): void {
 		super.afterDOMShow();
 
-		this.sizeCalculated();
+		this.update();
 	}
 
 	public init(): void {
@@ -68,17 +68,8 @@ export default class List extends AbstractWidget {
 		return this.rootElement;
 	}
 
-	protected getItemSize(): ItemParams {
-		return this.itemSize;
-	}
-
-	protected setItemSize(itemSize: ItemParams): void {
-		this.itemSize = itemSize;
-	}
-
-	protected sizeCalculated(): void {
+	protected update(): void {
 		const parentWidth = this.rootElement.getBoundingClientRect().width;
-
 		const itemsCount = Math.floor((parentWidth - this.itemSize.columnGap) / (this.itemSize.width + this.itemSize.columnGap));
 		const itemsWidth = itemsCount * this.itemSize.width;
 		const itemsVerticalGap = (itemsCount - 1) * this.itemSize.columnGap;
@@ -93,21 +84,13 @@ export default class List extends AbstractWidget {
 			const adjustmentPercent = Math.round(newItemWidth * 100 / this.itemSize.width);
 			const newItemHeight = adjustmentPercent * this.itemSize.height / 100;
 
-			this.setItemSize({width: newItemWidth, height: newItemHeight});
 			const items = this.rootElement.querySelectorAll('.list__item');
-
 
 			items.forEach((item: HTMLDivElement) => {
 				item.style.width = `${newItemWidth}px`;
 				item.style.height = `${newItemHeight}px`;
 			});
 		}
-	}
-
-	protected update(): void {
-		const items = this.rootElement.querySelectorAll('.list__item');
-		// items
-		// this.rootElement.childNodes.forEach((childNode: Node))
 	}
 
 	protected loadPage(): void {
@@ -133,7 +116,7 @@ export default class List extends AbstractWidget {
 	// }
 
 	protected onResize(): void {
-		this.sizeCalculated();
+		this.update();
 	}
 
 	protected addEvents():void {
