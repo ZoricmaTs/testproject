@@ -54,12 +54,33 @@
       "lastName": "",
       "email": "zori@ya.ru",
       "password": "1111"
+    },
+    {
+      "firstName": "",
+      "lastName": "",
+      "email": "",
+      "password": "",
+      "birthDate": "",
+      "gender": "Зус",
+      "id": 2
+    },
+    {
+      "firstName": "",
+      "lastName": "",
+      "email": "",
+      "password": "",
+      "birthDate": "",
+      "gender": "Зус",
+      "id": 3
     }
   ],
   "rooms": [
     {
       "id": 888,
-      "images": ["http://localhost:1234/rooms/888/1.png", "http://localhost:1234/rooms/888/2.png"],
+      "images": [
+        "http://localhost:1234/rooms/888/1.png",
+        "http://localhost:1234/rooms/888/2.png"
+      ],
       "lux": true,
       "rate": 5,
       "comments": 10,
@@ -83,7 +104,10 @@
     },
     {
       "id": 736,
-      "images": ["http://localhost:1234/rooms/736/1.png", "http://localhost:1234/rooms/736/2.png"],
+      "images": [
+        "http://localhost:1234/rooms/736/1.png",
+        "http://localhost:1234/rooms/736/2.png"
+      ],
       "lux": false,
       "rate": 4,
       "comments": 135,
@@ -107,7 +131,9 @@
     },
     {
       "id": 15,
-      "images": ["http://localhost:1234/rooms/15/1.png"],
+      "images": [
+        "http://localhost:1234/rooms/15/1.png"
+      ],
       "lux": false,
       "rate": 3,
       "price": 6500,
@@ -145,7 +171,11 @@
     },
     {
       "id": 563,
-      "images": ["http://localhost:1234/rooms/563/1.png", "http://localhost:1234/rooms/563/2.png", "http://localhost:1234/rooms/563/3.png"],
+      "images": [
+        "http://localhost:1234/rooms/563/1.png",
+        "http://localhost:1234/rooms/563/2.png",
+        "http://localhost:1234/rooms/563/3.png"
+      ],
       "lux": false,
       "rate": 2,
       "price": 1500,
@@ -161,7 +191,9 @@
     },
     {
       "id": 400,
-      "images": ["http://localhost:1234/rooms/400/1.png"],
+      "images": [
+        "http://localhost:1234/rooms/400/1.png"
+      ],
       "lux": true,
       "rate": 2,
       "price": 1500,
@@ -172,7 +204,9 @@
     },
     {
       "id": 403,
-      "images": ["http://localhost:1234/rooms/403/1.png"],
+      "images": [
+        "http://localhost:1234/rooms/403/1.png"
+      ],
       "lux": true,
       "rate": 4,
       "price": 4000,
@@ -183,7 +217,9 @@
     },
     {
       "id": 401,
-      "images": ["http://localhost:1234/rooms/401/1.png"],
+      "images": [
+        "http://localhost:1234/rooms/401/1.png"
+      ],
       "lux": true,
       "rate": 2,
       "price": 1500,
@@ -194,7 +230,10 @@
     },
     {
       "id": 888,
-      "images": ["http://localhost:1234/rooms/404/1.png", "http://localhost:1234/rooms/404/2.png"],
+      "images": [
+        "http://localhost:1234/rooms/404/1.png",
+        "http://localhost:1234/rooms/404/2.png"
+      ],
       "lux": true,
       "rate": 5,
       "comments": 10,
@@ -218,7 +257,9 @@
     },
     {
       "id": 214,
-      "images": ["http://localhost:1234/rooms/214/1.png"],
+      "images": [
+        "http://localhost:1234/rooms/214/1.png"
+      ],
       "lux": true,
       "rate": 2,
       "price": 1500,
@@ -242,7 +283,9 @@
     },
     {
       "id": 93,
-      "images": ["http://localhost:1234/rooms/93/1.png"],
+      "images": [
+        "http://localhost:1234/rooms/93/1.png"
+      ],
       "lux": true,
       "rate": 2,
       "price": 1500,
@@ -266,7 +309,9 @@
     },
     {
       "id": 150,
-      "images": ["http://localhost:1234/rooms/150/1.png"],
+      "images": [
+        "http://localhost:1234/rooms/150/1.png"
+      ],
       "lux": true,
       "rate": 2,
       "price": 1500,
@@ -290,7 +335,10 @@
     },
     {
       "id": 70,
-      "images": ["http://localhost:1234/rooms/70/1.png", "http://localhost:1234/rooms/70/2.png"],
+      "images": [
+        "http://localhost:1234/rooms/70/1.png",
+        "http://localhost:1234/rooms/70/2.png"
+      ],
       "lux": true,
       "rate": 2,
       "price": 1500,
@@ -314,7 +362,9 @@
     },
     {
       "id": 16,
-      "images": ["http://localhost:1234/rooms/16/1.png"],
+      "images": [
+        "http://localhost:1234/rooms/16/1.png"
+      ],
       "lux": true,
       "rate": 2,
       "price": 1500,
@@ -330,7 +380,10 @@
     },
     {
       "id": 405,
-      "images": ["http://localhost:1234/rooms/405/1.png", "http://localhost:1234/rooms/405/2.png"],
+      "images": [
+        "http://localhost:1234/rooms/405/1.png",
+        "http://localhost:1234/rooms/405/2.png"
+      ],
       "lux": true,
       "rate": 2,
       "price": 1500,
@@ -341,7 +394,10 @@
     },
     {
       "id": 406,
-      "images": ["http://localhost:1234/rooms/406/1.png", "http://localhost:1234/rooms/406/2.png"],
+      "images": [
+        "http://localhost:1234/rooms/406/1.png",
+        "http://localhost:1234/rooms/406/2.png"
+      ],
       "lux": true,
       "rate": 2,
       "price": 1500,
@@ -352,7 +408,10 @@
     },
     {
       "id": 407,
-      "images": ["http://localhost:1234/rooms/407/1.png", "http://localhost:1234/rooms/407/2.png"],
+      "images": [
+        "http://localhost:1234/rooms/407/1.png",
+        "http://localhost:1234/rooms/407/2.png"
+      ],
       "lux": true,
       "rate": 2,
       "price": 1500,
@@ -363,7 +422,10 @@
     },
     {
       "id": 408,
-      "images": ["http://localhost:1234/rooms/408/1.png", "http://localhost:1234/rooms/408/2.png"],
+      "images": [
+        "http://localhost:1234/rooms/408/1.png",
+        "http://localhost:1234/rooms/408/2.png"
+      ],
       "lux": true,
       "rate": 2,
       "price": 1500,

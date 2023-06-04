@@ -1,13 +1,13 @@
 import {AbstractScene} from '../abstractScene';
-import Index, {ButtonType} from '../../widgets/btn';
-import {manager, operator, rooms, user} from '../../index';
-import {SearchParams} from '../../widgets/form/search';
+import Index from '../../widgets/btn';
+import {manager, operator, rooms, user} from '../../index'
 import RoomModel from '../../models/room';
 import List from '../../widgets/list';
 import Card from '../../widgets/card';
+import {SceneParams, Scenes} from '../manager';
+import {SearchParams} from '../../widgets/form/search';
 
 export default class Search extends AbstractScene {
-	private button: Index;
 	private rooms: RoomModel[];
 	private filterWrapper: HTMLDivElement;
 	private roomsWrapper: HTMLDivElement;
@@ -15,9 +15,14 @@ export default class Search extends AbstractScene {
 	private emptyText: HTMLDivElement;
 	private emptyIcon: HTMLDivElement;
 	private list: List;
+	private roomsCount: number;
+	private from: any;
+	private to: any;
 
-	constructor(params: any) {
+	constructor(params: SceneParams) {
 		super(params);
+		this.from = params.params.from;
+		this.to = params.params.to;
 
 		this.onBack =  this.onBack.bind(this);
 		this.roomRender = this.roomRender.bind(this);
@@ -118,27 +123,37 @@ export default class Search extends AbstractScene {
 		this.roomsWrapper.append(this.emptyList);
 	}
 
-	public open(searchParams?: SearchParams): Promise<any> {
+	public open(params: SceneParams): Promise<any> {
+		const searchParams: SearchParams = params.params;
+
 		return this.loadOperatorData()
 			.then(() => {
-				return rooms.getSearchRooms({page: 0, pageSize: 5, searchParams})
-					.then((response: RoomModel[]) => {
-						this.rooms = response;
-						console.log('response', response);
-						this.setOptions({rooms: this.rooms});
+				return rooms.getSearchRoomsCounts(searchParams)
+					.then((response: number) => {
+						this.roomsCount = response;
+
+						this.setOptions({roomsCount: this.roomsCount});
+					})
+					.then(() => {
+						return rooms.getSearchRooms({page: 0, pageSize: 5, searchParams})
+							.then((response: RoomModel[]) => {
+								this.rooms = response;
+
+								this.setOptions({rooms: this.rooms});
+							})
 					});
 			})
 			.then(() => this.initWidgets())
 
-		return Promise.all([operator.getOperator(), user.getUser(), rooms.getSearchRooms({page: 0, pageSize: 5, searchParams})])
-			.then((response) => {
-				this.operator = response[0];
-				this.setOptions({operator: this.operator});
-				this.user = response[1];
-				this.rooms = response[2];
-
-				this.setOptions({user: this.user, operator: this.operator, rooms: this.rooms});
-			})
-			.catch((err) => console.log('err open SEARCH', err));
+		// return Promise.all([operator.getOperator(), user.getUser(), rooms.getSearchRooms({page: 0, pageSize: 5, searchParams})])
+		// 	.then((response) => {
+		// 		this.operator = response[0];
+		// 		this.setOptions({operator: this.operator});
+		// 		this.user = response[1];
+		// 		this.rooms = response[2];
+		//
+		// 		this.setOptions({user: this.user, operator: this.operator, rooms: this.rooms});
+		// 	})
+		// 	.catch((err) => console.log('err open SEARCH', err));
 	}
 }

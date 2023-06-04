@@ -70,27 +70,29 @@ export default class List extends AbstractWidget {
 
 	protected update(): void {
 		const parentWidth = this.rootElement.getBoundingClientRect().width;
-		const itemsCount = Math.floor((parentWidth - this.itemSize.columnGap) / (this.itemSize.width + this.itemSize.columnGap));
-		const itemsWidth = itemsCount * this.itemSize.width;
-		const itemsVerticalGap = (itemsCount - 1) * this.itemSize.columnGap;
-		const restWidth = parentWidth - itemsWidth - itemsVerticalGap;
+		let itemsCount = Math.round((parentWidth + this.itemSize.columnGap) / (this.itemSize.width + this.itemSize.columnGap));
+
+		const itemsColumnGap = (itemsCount - 1) * this.itemSize.columnGap;
+		let newItemWidth = (parentWidth - itemsColumnGap) / itemsCount;
 		const minWidth = (this.itemSize.width + this.itemSize.columnGap) * 0.9;
 
 		this.rootElement.style.columnGap = `${this.itemSize.columnGap}px`;
 		this.rootElement.style.rowGap = `${this.itemSize.rowGap}px`;
 
-		if (restWidth < minWidth) {
-			const newItemWidth = (parentWidth - itemsVerticalGap) / itemsCount;
-			const adjustmentPercent = Math.round(newItemWidth * 100 / this.itemSize.width);
-			const newItemHeight = adjustmentPercent * this.itemSize.height / 100;
-
-			const items = this.rootElement.querySelectorAll('.list__item');
-
-			items.forEach((item: HTMLDivElement) => {
-				item.style.width = `${newItemWidth}px`;
-				item.style.height = `${newItemHeight}px`;
-			});
+		if (newItemWidth + itemsColumnGap < minWidth && itemsCount > 1) {
+			itemsCount -= 1;
 		}
+
+		newItemWidth = (parentWidth - itemsColumnGap) / itemsCount;
+		const adjustmentPercent = Math.round(newItemWidth * 100 / this.itemSize.width);
+		const newItemHeight = adjustmentPercent * this.itemSize.height / 100;
+
+		const items = this.rootElement.querySelectorAll('.list__item');
+
+		items.forEach((item: HTMLDivElement) => {
+			item.style.width = `${newItemWidth}px`;
+			item.style.height = `${newItemHeight}px`;
+		});
 	}
 
 	protected loadPage(): void {

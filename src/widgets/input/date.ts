@@ -6,12 +6,6 @@ export default class DateInput extends Input {
     constructor(params: any) {
         super(params);
 
-        this.type = params.type;
-        this.id = params.id;
-        this.name = params.name;
-        this.value = params.value;
-        this.title = params.title;
-
         this.setPlaceholder(params.placeholder);
 
         this.onChangeValue = params.onChange;
@@ -64,13 +58,40 @@ export default class DateInput extends Input {
         this.datepicker = datepicker(this.input, options);
     }
 
-    private onChangeDate(input: any, date: any, instance: any): void {
+    private onChangeDate(input: any, date: Date, instance: any): void {
         this.input.value = date.toLocaleDateString();
-
+			console.log('onChangeDate')
         if (this.onChangeValue) {
             this.onChangeValue(date.getTime());
         }
+
+			// if (this.rules) {
+			// 	Object.entries(this.rules).map(([ruleName, ruleValue]: [key: string, value: any]) => {
+			// 		let isValid: boolean = this.isValid(this.input.value, ruleName, ruleValue)
+			// 		let error: any;
+			//
+			// 		if (!isValid) {
+			// 			if (ruleName === 'maxLength' || ruleName === 'minLength') {
+			// 				error = {[ruleName]: Input.errors[ruleName](ruleValue)};
+			// 			} else {
+			// 				error = {[ruleName]: Input.errors[ruleName]};
+			// 			}
+			//
+			// 			this.setErrors(error);
+			// 		} else {
+			// 			if (this.hasError(ruleName)) {
+			// 				delete this.errors[ruleName];
+			// 			}
+			// 		}
+			//
+			// 		this.updateErrorsWrapper();
+			// 	});
+			// }
     }
+
+		public getValue(): string {
+			return this.input.value;
+		}
 
     public init(): void {
         this.rootElement = document.createElement('div');

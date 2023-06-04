@@ -6,18 +6,14 @@
     &_content-wrapper
       display flex
       justify-content center
+      flex-direction column
       width 100%
-      min-height calc(100vh - 70px)
-      justify-content space-between
       padding-left 16px
       padding-right 16px
       padding-top 30px
       padding-bottom 70px
-    &_filter-wrapper
-      flex-basis 266px
     &_rooms-wrapper
       flex 1
-      padding-left 60px
     &_empty-list
       display flex
       align-items center
@@ -31,17 +27,31 @@
       &-text
         {text-body}
 
-
 @media screen and (min-width 736px)
   .scene
     &__search
       &_content-wrapper
+        flex-direction row
+        justify-content space-between
         padding-right 100px
         padding-left 100px
+        min-height calc(100vh - 70px)
+      &_rooms-wrapper
+        padding-left 60px
+      &_filter-wrapper
+        flex-basis 266px
+
 @media screen and (min-width 1008px)
   .scene
     &__search
       &_content-wrapper
+        flex-direction row
+        justify-content space-between
         padding-right 140px
         padding-left 140px
+        min-height calc(100vh - 70px)
+      &_rooms-wrapper
+        padding-left 60px
+      &_filter-wrapper
+        flex-basis 266px
 

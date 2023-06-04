@@ -99,7 +99,7 @@ export class AbstractScene {
 			.catch((error: ErrorEvent) => console.log(`open ${this.name}`, error));
 	}
 
-	protected setOptions(param: { user?: UserModel, operator?: Operator, rooms?: RoomModel[]}) {
+	protected setOptions(param: { user?: UserModel, operator?: Operator, rooms?: RoomModel[], roomsCount?: number}) {
 		if (this.options) {
 			Object.assign(this.options, param);
 		} else {

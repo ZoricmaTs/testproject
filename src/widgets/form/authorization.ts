@@ -11,19 +11,18 @@ export default class AuthorizationForm extends AbstractForm {
 	protected inputs: Input[];
 	protected button: Btn;
 	private regButton: Btn;
-	private values: { password: string; email: string };
+	protected values: { password: string; email: string };
 
 	constructor(params: any) {
 		super(params);
 
     this.values = {
-        email: '',
-        password: '',
+			email: '',
+			password: '',
     }
 
     this.openRegistration = this.openRegistration.bind(this);
-    this.onChangeEmail = this.onChangeEmail.bind(this);
-    this.onChangePassword = this.onChangePassword.bind(this);
+
     this.onSubmit = this.onSubmit.bind(this);
 	}
 
@@ -55,8 +54,10 @@ export default class AuthorizationForm extends AbstractForm {
 				value: this.values.email,
 				type: InputType.EMAIL,
 				placeholder: 'email',
-				required: true,
-				onChange: this.onChangeEmail,
+				rules: {
+					required: true,
+				},
+				onChange: this.getInputHandler('email'),
 			}),
 			new Input({
 				id: 'auth_password',
@@ -64,36 +65,12 @@ export default class AuthorizationForm extends AbstractForm {
 				value: this.values.password,
 				type: InputType.PASSWORD,
 				placeholder: 'password',
-				required: true,
-				onChange: this.onChangePassword,
+				rules: {
+					required: true,
+				},
+				onChange: this.getInputHandler('password'),
 			}),
     ];
-	}
-
-	private onChangeEmail(e: Event): void {
-    const target = (e.target as HTMLInputElement);
-    const isValid: boolean = target.validity.valid;
-
-    if (isValid) {
-			this.showHideError(false);
-			this.values.email = target.value;
-    } else {
-			const validity: ValidityState = target.validity;
-			this.checkInputValidate(InputType.EMAIL, validity);
-    }
-	}
-
-	private onChangePassword(e: Event): void {
-    const target = (e.target as HTMLInputElement);
-    const isValid: boolean = target.validity.valid;
-
-    if (isValid) {
-			this.showHideError(false);
-			this.values.password = target.value;
-    } else {
-			const validity: ValidityState = target.validity;
-			this.checkInputValidate(InputType.PASSWORD, validity);
-    }
 	}
 
 	protected initInputs(): void {
@@ -106,12 +83,15 @@ export default class AuthorizationForm extends AbstractForm {
     });
 	}
 
-	protected onSubmit(e: Event): void {
+
+	protected onSubmit(e: Event): Promise<void> {
     e.preventDefault();
 
-    return user.getUser(this.values)
+		return this.checkInputsErrors()
+			.then(() => user.getUser(this.values))
 			.then((response: UserModel) => {
 				this.showHideError(false);
+
 				return response;
 			})
 			.then((response: UserModel) => operator.isAuthorization())
@@ -122,12 +102,12 @@ export default class AuthorizationForm extends AbstractForm {
 			.catch((error: ErrorEvent) => {
 				this.setError(error.message);
 				this.showHideError(true);
-			});
+			})
 	}
 
 	public init(): void {
     this.rootElement = document.createElement('form');
-    this.rootElement.classList.add('form');
+    this.rootElement.classList.add('form', 'form-authorization');
 
     if (this.title) {
 			this.initTitle();

@@ -54,4 +54,10 @@ export default class Api {
 
         return fetch(roomsUrl).then((response) => response.json());
     }
+
+	public getSearchRoomsCounts(searchParams?: SearchParams): Promise<any> {
+		const roomsUrl = this.middlewareUrl + `/search_rooms_count?from=${searchParams.from}&to=${searchParams.to}`;
+
+		return fetch(roomsUrl).then((response) => response.json());
+	}
 }
