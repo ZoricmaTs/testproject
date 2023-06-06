@@ -1,10 +1,9 @@
 import {AbstractScene} from '../abstractScene';
-import Index from '../../widgets/btn';
-import {manager, operator, rooms, user} from '../../index'
+import {manager, rooms} from '../../index'
 import RoomModel from '../../models/room';
-import List from '../../widgets/list';
+import List from '../../widgets/list/list';
 import Card from '../../widgets/card';
-import {SceneParams, Scenes} from '../manager';
+import {SceneParams} from '../manager';
 import {SearchParams} from '../../widgets/form/search';
 
 export default class Search extends AbstractScene {
@@ -50,7 +49,6 @@ export default class Search extends AbstractScene {
 		this.initTitle(this.roomsWrapper);
 
 		if (this.rooms && this.rooms.length > 0) {
-			console.log('initList');
 			this.initList(this.rooms);
 		} else {
 			this.initEmptyList();
