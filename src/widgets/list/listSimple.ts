@@ -14,7 +14,7 @@ export type ListParams = {
 	page: number,
 	size: number,
 	items: any,
-	itemRender: (item: any, index: number, wrapper: HTMLDivElement) => void,
+	item: any,
 	itemSize: ItemParams,
 }
 
@@ -23,7 +23,7 @@ export default class ListSimple extends AbstractWidget {
 	protected page: number;
 	protected size: number;
 	protected items: any;
-	protected itemRender: (item: any, index: number, wrapper: HTMLDivElement) => void;
+	protected item: any;
 	protected rootElement: HTMLDivElement;
 	protected itemSize: ItemParams
 
@@ -33,17 +33,21 @@ export default class ListSimple extends AbstractWidget {
 		this.page = params.page;
 		this.size = params.size;
 		this.items = params.items;
+		this.item = params.item;
 		this.id = params.id;
-		this.itemRender = params.itemRender;
 		this.itemSize = params.itemSize;
 
 		this.onResize = this.onResize.bind(this);
 	}
 
-	protected item(item: any, index: number, wrapper: HTMLDivElement): void {
-		if (this.itemRender) {
-			return this.itemRender(item, index, wrapper);
-		}
+	protected itemRender(item: any, index: number, wrapper: HTMLDivElement): void {
+		const card = this.item(item);
+		card.init();
+
+		wrapper.append(card.getRoot());
+		this.rootElement.append(wrapper)
+
+		this.widgets.push(card);
 	}
 
 	public afterDOMShow(): void {
@@ -60,7 +64,7 @@ export default class ListSimple extends AbstractWidget {
 			const itemWrapper = document.createElement('div');
 			itemWrapper.classList.add('list__item');
 
-			this.item(item, index, itemWrapper);
+			this.itemRender(item, index, itemWrapper);
 		});
 	}
 
@@ -98,24 +102,6 @@ export default class ListSimple extends AbstractWidget {
 	protected loadPage(): void {
 
 	}
-
-	// private updateRooms(rooms: RoomModel[]): void {
-	// 	const lastRoomIndex = this.rooms.length;
-	//
-	// 	if (rooms) {
-	// 		rooms.forEach((room: RoomModel, index) => {
-	// 			const id = 'card-room-' + lastRoomIndex + index + 1;
-	// 			const card = new Card(room, id);
-	// 			card.init();
-	//
-	// 			card.beforeDOMShow();
-	// 			this.roomsWrapper.append(card.getRoot());
-	// 			card.afterDOMShow();
-	//
-	// 			this.widgets.push(card);
-	// 		});
-	// 	}
-	// }
 
 	protected onResize(): void {
 		this.update();
